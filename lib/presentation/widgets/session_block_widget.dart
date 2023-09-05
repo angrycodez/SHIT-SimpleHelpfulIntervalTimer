@@ -12,7 +12,7 @@ class SessionBlockWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SessionBlock block = blockCubit.state.sessionStep as SessionBlock;
+    SessionBlockState block = blockCubit.state;
     return Container(
       margin: Layout.cardMargin,
       padding: Layout.cardPadding,
@@ -41,13 +41,9 @@ class SessionBlockWidget extends StatelessWidget {
                 shrinkWrap: true,
                 itemCount: block.children.length,
                 itemBuilder: (context, index) {
-                  SessionStep step = block.children[index];
-                  return SessionStepWidget(
-                  SessionStepCubit.getCubit(
-                    step,
-                    context.read<SessionCubit>(),
-                  ),
-                  key: Key(step.id)
+                  SessionStepCubit step = block.children[index];
+                  return SessionStepWidget(step,
+                  key: Key(step.state.id)
                 );},
               ),
             ),

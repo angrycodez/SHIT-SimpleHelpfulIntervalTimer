@@ -45,10 +45,17 @@ class SessionDatabase extends _$SessionDatabase {
 
       if (details.wasCreated) {
         sessions.insertOne(SessionsCompanion.insert(id: Value("1") ,name: "Test"));
+
         sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: Value("1"), name: Value("first"),sequenceIndex: 0, durationInSeconds: 10, isPause: false,));
-        sessionBlocks.insertOne(SessionBlocksCompanion.insert(sessionId: "1", id: Value("1"), name: Value("first_block"), sequenceIndex: 1, repetitions: 2,));
-        sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: Value("3"), name: Value("second_in_block"), parentBlockId: Value("1"),sequenceIndex: 1, durationInSeconds: 2, isPause: true,));
-        sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: Value("2"), name: Value("first_in_block"), parentBlockId: Value("1"),sequenceIndex: 0, durationInSeconds: 10, isPause: false,));
+
+        sessionBlocks.insertOne(SessionBlocksCompanion.insert(sessionId: "1", id: Value("2"), name: Value("first_block"), sequenceIndex: 1, repetitions: 2,));
+        sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: Value("4"), name: Value("second_in_block"), parentBlockId: Value("2"),sequenceIndex: 1, durationInSeconds: 2, isPause: true,));
+        sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: Value("3"), name: Value("first_in_block"), parentBlockId: Value("2"),sequenceIndex: 0, durationInSeconds: 10, isPause: false,));
+
+        sessionBlocks.insertOne(SessionBlocksCompanion.insert(sessionId: "1", id: Value("5"), name: Value("second_block"), sequenceIndex: 2, repetitions: 5,));
+        sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: Value("6"), name: Value("second_in_block"), parentBlockId: Value("5"),sequenceIndex: 1, durationInSeconds: 42, isPause: true,));
+        sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: Value("7"), name: Value("first_in_block"), parentBlockId: Value("5"),sequenceIndex: 0, durationInSeconds: 3, isPause: true,));
+
       }
     }));
   }
@@ -58,7 +65,7 @@ class SessionDatabase extends _$SessionDatabase {
 LazyDatabase openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(path.join(dbFolder.path, 'sit/db.sqlite'));
+    final file = File(path.join(dbFolder.path, 'shit/db.sqlite'));
     return NativeDatabase(file);
   });
 }

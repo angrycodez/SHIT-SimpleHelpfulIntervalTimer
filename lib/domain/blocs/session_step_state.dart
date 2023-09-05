@@ -1,28 +1,36 @@
 part of 'session_step_cubit.dart';
 
 class SessionStepState extends Equatable {
-  final SessionStep sessionStep;
-  final SessionCubit sessionCubit;
-  final bool isEditMode;
-  String get id => sessionStep.id;
-  String? get name => sessionStep.name;
+  final String id;
+  final String? name;
 
-  const SessionStepState({
-    required this.sessionStep,
-    required this.sessionCubit,
-    this.isEditMode = false,
-  });
+  final bool isEditMode;
+
+  Duration get duration => Duration.zero;
+
+  SessionStepState.fromStep(
+    SessionStep sessionStep,
+  {
+    bool isEditMode = false,
+  }): this(id: sessionStep.id, name: sessionStep.name, isEditMode: isEditMode,);
+
+  const SessionStepState({required this.id, this.name, this.isEditMode=false,});
 
   @override
-  List<Object> get props => [sessionStep, isEditMode];
+  List<Object?> get props => [id, name, isEditMode];
+
+  SessionStep getObject(int sequenceIndex, SessionBlock? parent){
+    return SessionStep(id: id, sequenceIndex: sequenceIndex, name: name, parentStep: parent);
+  }
 
   SessionStepState copyWith({
-    SessionStep? sessionStep,
+    String? id,
+    String? name,
     bool? isEditMode,
   }) {
     return SessionStepState(
-      sessionStep: sessionStep ?? this.sessionStep,
-      sessionCubit: sessionCubit,
+      id: id ?? this.id,
+      name: name ?? this.name,
       isEditMode: isEditMode ?? this.isEditMode,
     );
   }

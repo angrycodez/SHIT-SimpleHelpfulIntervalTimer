@@ -11,7 +11,7 @@ class SessionIntervalWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SessionInterval interval = intervalCubit.state.sessionStep as SessionInterval;
+    SessionIntervalState interval = intervalCubit.state;
     bool isEditMode = intervalCubit.state.isEditMode;
     return Container(
       margin: Layout.cardMargin,

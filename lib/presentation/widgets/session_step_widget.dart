@@ -18,34 +18,38 @@ class SessionStepWidget extends StatelessWidget {
       child: BlocBuilder<SessionStepCubit, SessionStepState>(
         builder: (context, state) {
           return Row(
-              children: [
-                if(state.isEditMode)...[
-                  IconButton(
-                    onPressed: ()=>sessionStepCubit.delete(),
-                    icon: MyIcons.deleteIcon,
-                  )
-                ],
-                Expanded(
-                  child: GestureDetector(
-                    onTap: ()=>sessionStepCubit.setEditMode(),
-                    child: _getStepWidget(state),
-                  ),
-                ),
-                if(state.isEditMode)...[
-                  Column(
-                    children: [
-                      IconButton(
-                        onPressed: ()=>sessionStepCubit.moveUp(sessionStepCubit.state.sessionStep),
-                        icon: MyIcons.moveUpIcon,
-                      ),
-                      IconButton(
-                        onPressed: ()=>sessionStepCubit.moveDown(sessionStepCubit.state.sessionStep),
-                        icon: MyIcons.moveDownIcon,
-                      )
-                    ],
-                  ),
-                ]
+            children: [
+              if (state.isEditMode) ...[
+                IconButton(
+                  onPressed: () => sessionStepCubit.delete(sessionStepCubit),
+                  icon: MyIcons.deleteIcon,
+                )
               ],
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => sessionStepCubit.setEditMode(),
+                  child: _getStepWidget(state),
+                ),
+              ),
+              if (state.isEditMode) ...[
+                Column(
+                  children: [
+                    IconButton(
+                      onPressed: sessionStepCubit.canMoveUp(sessionStepCubit)
+                          ? () => sessionStepCubit.moveUp(sessionStepCubit)
+                          : null,
+                      icon: MyIcons.moveUpIcon,
+                    ),
+                    IconButton(
+                      onPressed: sessionStepCubit.canMoveDown(sessionStepCubit)
+                          ? () => sessionStepCubit.moveDown(sessionStepCubit)
+                          : null,
+                      icon: MyIcons.moveDownIcon,
+                    )
+                  ],
+                ),
+              ]
+            ],
           );
         },
       ),
@@ -53,12 +57,12 @@ class SessionStepWidget extends StatelessWidget {
   }
 
   Widget _getStepWidget(SessionStepState state) {
-    if (state.sessionStep is SessionBlock) {
+    if (state is SessionBlockState) {
       return SessionBlockWidget(
         sessionStepCubit as SessionBlockCubit,
         key: Key(sessionStepCubit.state.id),
       );
-    } else if (state.sessionStep is SessionInterval) {
+    } else if (state is SessionIntervalState) {
       return SessionIntervalWidget(
         sessionStepCubit as SessionIntervalCubit,
         key: Key(sessionStepCubit.state.id),
