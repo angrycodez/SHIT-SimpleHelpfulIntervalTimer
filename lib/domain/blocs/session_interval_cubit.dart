@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:simple_interval_timer/data/models/models.dart';
 
 import 'blocs.dart';
@@ -12,24 +10,22 @@ class SessionIntervalCubit extends SessionStepCubit {
 
   SessionIntervalCubit(
     SessionInterval sessionInterval,
-    SessionCubit sessionCubit, {
-    void Function(SessionStepCubit, {SessionStepCubit? referenceStep})? moveUp,
-    void Function(SessionStepCubit, {SessionStepCubit? referenceStep})?
-        moveDown,
-    bool Function(SessionStepCubit, {SessionStepCubit? referenceStep})?
-        canMoveUp,
-    bool Function(SessionStepCubit, {SessionStepCubit? referenceStep})?
-        canMoveDown,
-    void Function(SessionStepCubit)? delete,
-  }) : super(
+    SessionCubit sessionCubit, ) : super(
           sessionInterval,
           sessionCubit,
-          moveUp: moveUp ?? (a, {SessionStepCubit? referenceStep}) {},
-          moveDown: moveDown ?? (a, {SessionStepCubit? referenceStep}) {},
-          canMoveUp:
-              canMoveUp ?? (a, {SessionStepCubit? referenceStep}) => false,
-          canMoveDown:
-              canMoveDown ?? (a, {SessionStepCubit? referenceStep}) => false,
-          delete: delete ?? (a) {},
         );
+
+  @override
+  SessionInterval getObject(int sequenceIndex, SessionBlock? parent) {
+    return SessionInterval(
+      id: state.id,
+      name: state.name,
+      parentStep: parent,
+      sequenceIndex: sequenceIndex,
+      duration: state.duration,
+      isPause: state.isPause,
+      startSound: state.startSound,
+      endSound: state.endSound,
+    );
+  }
 }

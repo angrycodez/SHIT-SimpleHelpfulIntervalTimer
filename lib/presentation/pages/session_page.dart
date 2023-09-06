@@ -25,21 +25,23 @@ class SessionPage extends StatelessWidget {
       appBar: StandardComponents.getAppBar(context, session.name),
       body: BlocProvider(
         create: (_) => SessionCubit(session),
-        child: BlocBuilder<SessionCubit, SessionState>(
-          builder: (context, state) => ListView.builder(
-            itemCount: state.session.steps.length,
-            itemBuilder: (context, index) {
-              SessionStep step = state.session.steps[index];
-              return SessionStepWidget(
-                SessionStepCubit.getCubit(
-                  step,
-                  context.read<SessionCubit>(),
-                ),
-                key: Key(step.id),
-              );
-            },
-          ),
-        ),
+        child:
+            BlocBuilder<SessionCubit, SessionState>(builder: (context, state) {
+          return state is SessionStateLoaded
+              ? ListView.builder(
+                  itemCount: state.steps.length,
+                  itemBuilder: (context, index) {
+                    SessionStepCubit step = state.steps[index];
+                    return SessionStepWidget(
+                      step,
+                      key: Key(step.state.id),
+                    );
+                  },
+                )
+              : const Center(
+                  child: CircularProgressIndicator(),
+                );
+        }),
       ),
     );
   }

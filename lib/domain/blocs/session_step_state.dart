@@ -19,9 +19,6 @@ class SessionStepState extends Equatable {
   @override
   List<Object?> get props => [id, name, isEditMode];
 
-  SessionStep getObject(int sequenceIndex, SessionBlock? parent){
-    return SessionStep(id: id, sequenceIndex: sequenceIndex, name: name, parentStep: parent);
-  }
 
   SessionStepState copyWith({
     String? id,

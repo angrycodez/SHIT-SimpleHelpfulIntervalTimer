@@ -8,6 +8,7 @@ class Layout {
 
 class MyColors{
   static const Color cardEditBorderColor = Colors.blueGrey;
+  static const Color cardBorderColor = Colors.grey;
 }
 
 class MyIcons {
@@ -39,14 +40,14 @@ class StandardComponents {
 
 class MyDecoration {
   static BoxDecoration cardDecoration(BuildContext context,
-      {Color? color, bool showBorder=false}) {
+      {Color? color, Color? borderColor}) {
     ThemeData theme = Theme.of(context);
     return BoxDecoration(
       color: color ?? theme.cardColor,
       borderRadius: const BorderRadius.all(Radius.circular(5)),
-      border: showBorder
+      border: borderColor != null
           ? Border.all(
-              color: MyColors.cardEditBorderColor,
+              color: borderColor,
               width: Layout.borderWidth,
             )
           : null,

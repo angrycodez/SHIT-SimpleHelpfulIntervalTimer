@@ -20,8 +20,8 @@ class SessionBlockState extends SessionStepState {
           name: sessionBlock.name,
           repetitions: sessionBlock.repetitions,
           children: sessionBlock.children,
-          sessionCubit: sessionCubit,
           isEditMode: isEditMode,
+          sessionCubit: sessionCubit,
         );
 
   SessionBlockState.fromCopy({
@@ -30,6 +30,7 @@ class SessionBlockState extends SessionStepState {
     required this.repetitions,
     required this.children,
     super.isEditMode = false,
+
   });
 
   SessionBlockState({
@@ -39,18 +40,13 @@ class SessionBlockState extends SessionStepState {
     required List<SessionStep> children,
     required SessionCubit sessionCubit,
     super.isEditMode = false,
+
   }) {
     this.children = children
-        .map((e) {
-          if (e is SessionBlock) {
-            return SessionBlockCubit(e, sessionCubit);
-          } else if (e is SessionInterval) {
-            return SessionIntervalCubit(e, sessionCubit);
-          }
-          return null;
-        })
-        .where((element) => element != null)
-        .map((e) => e!)
+        .map((e) => SessionStepCubit.getCubit(
+              e,
+              sessionCubit,
+            ))
         .toList();
   }
 
@@ -68,6 +64,16 @@ class SessionBlockState extends SessionStepState {
     List<SessionStepCubit>? children,
     int? repetitions,
     bool? isEditMode,
+void Function(SessionStepCubit movingStep, {SessionStepCubit? referenceStep})?
+moveUp,
+bool Function(SessionStepCubit movingStep, {SessionStepCubit? referenceStep})?
+canMoveUp,
+void Function(SessionStepCubit movingStep, {SessionStepCubit? referenceStep})?
+moveDown,
+bool Function(SessionStepCubit movingStep, {SessionStepCubit? referenceStep})?
+canMoveDown,
+
+void Function(SessionStepCubit deletedStep)? delete,
   }) {
     return SessionBlockState.fromCopy(
       id: id ?? this.id,
@@ -75,44 +81,7 @@ class SessionBlockState extends SessionStepState {
       children: children ?? this.children,
       repetitions: repetitions ?? this.repetitions,
       isEditMode: isEditMode ?? this.isEditMode,
+
     );
-  }
-
-  @override
-  SessionBlock getObject(int sequenceIndex, SessionBlock? parent) {
-    List<SessionStep> children = List.empty(growable: true);
-
-    // create children from cubits
-    for (int i = 0; i < this.children.length; i++) {
-      SessionStepCubit child = this.children[i];
-      if (child is SessionBlockCubit) {
-        children.add(child.state.getObject(i, null));
-      } else if (child is SessionIntervalCubit) {
-        children.add(child.state.getObject(i, null));
-      }
-    }
-
-    // create object
-    SessionBlock object = SessionBlock(
-      id: id,
-      sequenceIndex: sequenceIndex,
-      name: name,
-      repetitions: repetitions,
-      children: children,
-      parentStep: parent,
-    );
-
-    // reference parent
-    for (int i = 0; i < object.children.length; i++) {
-      SessionStep child = object.children[i];
-      if (child is SessionBlock) {
-        child = child.copyWith(parentStep: object);
-      } else if (child is SessionInterval) {
-        child = child.copyWith(parentStep: object);
-      }
-      object.children[i] = child;
-    }
-
-    return object;
   }
 }

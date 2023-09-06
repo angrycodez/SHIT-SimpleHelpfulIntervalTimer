@@ -16,3 +16,6 @@ A simple interval timer.
     - [ ] set values
   - [ ] store and update the data properly
   - [ ] timer functionality
+
+# TODO: SHIT got messed up!! fix that moving in your head and then fix the code!!!
+## Clean up that function for moving steps around!

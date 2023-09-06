@@ -16,12 +16,11 @@ class SessionBlockWidget extends StatelessWidget {
     return Container(
       margin: Layout.cardMargin,
       padding: Layout.cardPadding,
-      decoration:
-          MyDecoration.cardDecoration(
-            context,
-            color: Colors.lightGreenAccent,
-            showBorder: blockCubit.state.isEditMode,
-          ),
+      decoration: MyDecoration.cardDecoration(
+        context,
+        color: Colors.lightGreenAccent,
+        borderColor: blockCubit.state.isEditMode ? MyColors.cardEditBorderColor : MyColors.cardEditBorderColor,
+      ),
       child: Column(
         children: [
           Row(
@@ -42,9 +41,11 @@ class SessionBlockWidget extends StatelessWidget {
                 itemCount: block.children.length,
                 itemBuilder: (context, index) {
                   SessionStepCubit step = block.children[index];
-                  return SessionStepWidget(step,
-                  key: Key(step.state.id)
-                );},
+                  return SessionStepWidget(
+                    step,
+                    key: Key(step.state.id),
+                  );
+                },
               ),
             ),
           )

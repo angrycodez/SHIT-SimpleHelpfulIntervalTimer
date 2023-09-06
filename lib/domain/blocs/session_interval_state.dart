@@ -60,17 +60,4 @@ class SessionIntervalState extends SessionStepState {
     );
   }
 
-  @override
-  SessionInterval getObject(int sequenceIndex, SessionBlock? parent) {
-    return SessionInterval(
-      id: id,
-      name: name,
-      parentStep: parent,
-      sequenceIndex: sequenceIndex,
-      duration: duration,
-      isPause: isPause,
-      startSound: startSound,
-      endSound: endSound,
-    );
-  }
 }

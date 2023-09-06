@@ -19,7 +19,7 @@ class SessionIntervalWidget extends StatelessWidget {
       decoration: MyDecoration.cardDecoration(
         context,
         color: Colors.lightBlueAccent,
-        showBorder: isEditMode,
+        borderColor: isEditMode? MyColors.cardEditBorderColor : MyColors.cardBorderColor,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
