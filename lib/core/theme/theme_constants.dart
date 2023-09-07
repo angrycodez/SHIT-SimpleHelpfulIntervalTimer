@@ -17,6 +17,7 @@ class MyIcons {
   static const Icon workIcon = Icon(Icons.work);
   static const Icon moveUpIcon = Icon(Icons.arrow_upward);
   static const Icon moveDownIcon = Icon(Icons.arrow_downward);
+  static const Icon createNewIcon = Icon(Icons.add);
   static const Icon deleteIcon = Icon(
     Icons.delete_forever,
     color: Colors.red,

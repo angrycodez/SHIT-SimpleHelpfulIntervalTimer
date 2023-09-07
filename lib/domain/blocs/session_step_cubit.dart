@@ -20,13 +20,13 @@ abstract class SessionStepCubit extends Cubit<SessionStepState> {
   }
 
   // if referenceStep is null, use movingStep for reference
-  void moveUp(SessionStepCubit movingStep) => sessionCubit.moveUpChild(movingStep);
-  void moveDown(SessionStepCubit movingStep) => sessionCubit.moveUpChild(movingStep);
+  void moveUp() => sessionCubit.moveUpChild(this);
+  void moveDown() => sessionCubit.moveDownChild(this);
 
-  bool canMoveUp(SessionStepCubit movingStep)=>sessionCubit.canMoveUpChild(movingStep);
-  bool canMoveDown(SessionStepCubit movingStep)=>sessionCubit.canMoveUpChild(movingStep);
+  bool canMoveUp()=>sessionCubit.canMoveUpChild(this);
+  bool canMoveDown()=>sessionCubit.canMoveDownChild(this);
 
-  void delete(SessionStepCubit deletedStep){}
+  void delete()=>sessionCubit.delete(this);
 
   void onEditModeChanged(String? editStepId) {
     if (editStepId != state.id) {

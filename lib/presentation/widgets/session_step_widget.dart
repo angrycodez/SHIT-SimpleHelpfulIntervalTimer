@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simple_interval_timer/core/theme/theme_constants.dart';
-import 'package:simple_interval_timer/data/models/models.dart';
 import 'package:simple_interval_timer/presentation/widgets/session_block_widget.dart';
 import 'package:simple_interval_timer/presentation/widgets/session_interval_widget.dart';
 
@@ -21,7 +20,7 @@ class SessionStepWidget extends StatelessWidget {
             children: [
               if (state.isEditMode) ...[
                 IconButton(
-                  onPressed: () => sessionStepCubit.delete(sessionStepCubit),
+                  onPressed: () => sessionStepCubit.delete(),
                   icon: MyIcons.deleteIcon,
                 )
               ],
@@ -35,14 +34,14 @@ class SessionStepWidget extends StatelessWidget {
                 Column(
                   children: [
                     IconButton(
-                      onPressed: sessionStepCubit.canMoveUp(sessionStepCubit)
-                          ? () => sessionStepCubit.moveUp(sessionStepCubit)
+                      onPressed: sessionStepCubit.canMoveUp()
+                          ? () => sessionStepCubit.moveUp()
                           : null,
                       icon: MyIcons.moveUpIcon,
                     ),
                     IconButton(
-                      onPressed: sessionStepCubit.canMoveDown(sessionStepCubit)
-                          ? () => sessionStepCubit.moveDown(sessionStepCubit)
+                      onPressed: sessionStepCubit.canMoveDown()
+                          ? () => sessionStepCubit.moveDown()
                           : null,
                       icon: MyIcons.moveDownIcon,
                     )

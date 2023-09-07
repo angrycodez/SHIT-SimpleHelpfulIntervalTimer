@@ -64,16 +64,6 @@ class SessionBlockState extends SessionStepState {
     List<SessionStepCubit>? children,
     int? repetitions,
     bool? isEditMode,
-void Function(SessionStepCubit movingStep, {SessionStepCubit? referenceStep})?
-moveUp,
-bool Function(SessionStepCubit movingStep, {SessionStepCubit? referenceStep})?
-canMoveUp,
-void Function(SessionStepCubit movingStep, {SessionStepCubit? referenceStep})?
-moveDown,
-bool Function(SessionStepCubit movingStep, {SessionStepCubit? referenceStep})?
-canMoveDown,
-
-void Function(SessionStepCubit deletedStep)? delete,
   }) {
     return SessionBlockState.fromCopy(
       id: id ?? this.id,

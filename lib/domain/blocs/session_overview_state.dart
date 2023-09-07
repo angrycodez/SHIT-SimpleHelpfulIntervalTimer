@@ -6,4 +6,8 @@ class SessionOverviewState extends Equatable {
 
   @override
   List<Object> get props => [sessions];
+
+  SessionOverviewState copyWith({List<Session>? sessions}){
+    return SessionOverviewState(sessions ?? this.sessions);
+  }
 }
