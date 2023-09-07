@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:simple_interval_timer/domain/blocs/blocs.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../data/models/models.dart';
@@ -7,12 +8,22 @@ import '../../data/models/models.dart';
 part 'session_overview_state.dart';
 
 class SessionOverviewCubit extends Cubit<SessionOverviewState> {
-  SessionOverviewCubit(List<Session> sessions) : super(SessionOverviewState(sessions));
+  SessionOverviewStateInitialized get _state {
+    assert(state is SessionOverviewStateInitialized);
+    return state as SessionOverviewStateInitialized;
+  }
+  SessionOverviewCubit(List<Session> sessions) : super(SessionOverviewState()){
+    emit(SessionOverviewStateInitialized(sessions.map((e) => SessionCubit(e)).toList()));
+  }
 
   void createNewSession(){
-    var sessions = List.of(state.sessions);
-    sessions.add(Session(const Uuid().v4(), "New Session", List.empty()));
-    emit(state.copyWith(sessions: sessions));
+    if(state is SessionOverviewStateInitialized) {
+      var sessions = List.of(_state.sessions);
+      var sessionCubit = SessionCubit(Session(const Uuid().v4(), "New Session", List.empty()));
+      sessions.add(sessionCubit);
+
+      emit(_state.copyWith(sessions: sessions));
+    }
   }
 
 }

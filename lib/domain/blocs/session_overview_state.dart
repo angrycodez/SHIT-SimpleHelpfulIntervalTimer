@@ -1,13 +1,19 @@
 part of 'session_overview_cubit.dart';
 
 class SessionOverviewState extends Equatable {
-  final List<Session> sessions;
-  const SessionOverviewState(this.sessions);
+  const SessionOverviewState();
+
+  @override
+  List<Object> get props => [];
+}
+class SessionOverviewStateInitialized extends SessionOverviewState {
+  final List<SessionCubit> sessions;
+  const SessionOverviewStateInitialized(this.sessions);
 
   @override
   List<Object> get props => [sessions];
 
-  SessionOverviewState copyWith({List<Session>? sessions}){
-    return SessionOverviewState(sessions ?? this.sessions);
+  SessionOverviewStateInitialized copyWith({List<SessionCubit>? sessions}){
+    return SessionOverviewStateInitialized(sessions ?? this.sessions);
   }
 }

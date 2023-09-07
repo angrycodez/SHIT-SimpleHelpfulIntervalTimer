@@ -15,22 +15,28 @@ class SessionOverviewPage extends StatelessWidget {
     return BlocProvider(
       create: (_) => SessionOverviewCubit(sessions),
       child: BlocBuilder<SessionOverviewCubit, SessionOverviewState>(
-        builder: (context, state) => SingleChildScrollView(
-          child: Column(
-            children: [ListView.builder(
-              shrinkWrap: true,
-              itemCount: state.sessions.length,
-              itemBuilder: (context, index) =>
-                  SessionWidget(state.sessions[index]),
-            ),Center(
-              child: IconButton(
-                onPressed: () =>
-                    context.read<SessionOverviewCubit>().createNewSession(),
-                icon: MyIcons.createNewIcon,
-              ),
-            ),],
-          ),
-        ),
+        builder: (context, state) => state is SessionOverviewStateInitialized
+            ? SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: state.sessions.length,
+                      itemBuilder: (context, index) =>
+                          SessionWidget(state.sessions[index]),
+                    ),
+                    Center(
+                      child: IconButton(
+                        onPressed: () => context
+                            .read<SessionOverviewCubit>()
+                            .createNewSession(),
+                        icon: MyIcons.createNewIcon,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : const SizedBox.shrink(),
       ),
     );
   }

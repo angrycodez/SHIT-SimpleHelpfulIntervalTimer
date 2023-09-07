@@ -7,10 +7,10 @@ import '../../data/models/models.dart';
 import '../widgets/session_step_widget.dart';
 
 class SessionPage extends StatelessWidget {
-  final Session session;
+  final SessionCubit session;
   const SessionPage(this.session, {super.key});
 
-  static MaterialPageRoute getRoute(Session session, {Key? key}) {
+  static MaterialPageRoute getRoute(SessionCubit session, {Key? key}) {
     return MaterialPageRoute(
       builder: (context) => SessionPage(
         session,
@@ -21,14 +21,13 @@ class SessionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: StandardComponents.getAppBar(context, session.name),
-      body: BlocProvider(
-        create: (_) => SessionCubit(session),
-        child:
-            BlocBuilder<SessionCubit, SessionState>(builder: (context, state) {
-          return state is SessionStateLoaded
-              ? ListView.builder(
+    return BlocProvider.value(
+      value: session,
+      child: BlocBuilder<SessionCubit, SessionState>(builder: (context, state) {
+        return state is SessionStateLoaded
+            ? Scaffold(
+                appBar: StandardComponents.getAppBar(context, state.name),
+                body: ListView.builder(
                   itemCount: state.steps.length,
                   itemBuilder: (context, index) {
                     SessionStepCubit step = state.steps[index];
@@ -37,12 +36,12 @@ class SessionPage extends StatelessWidget {
                       key: Key(step.state.id),
                     );
                   },
-                )
-              : const Center(
-                  child: CircularProgressIndicator(),
-                );
-        }),
-      ),
+                ),
+              )
+            : const Center(
+                child: CircularProgressIndicator(),
+              );
+      }),
     );
   }
 }
