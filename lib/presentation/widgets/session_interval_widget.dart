@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simple_interval_timer/core/theme/theme_constants.dart';
 import 'package:simple_interval_timer/data/models/models.dart';
+import 'package:simple_interval_timer/presentation/widgets/duration_text_field.dart';
 
 import '../../domain/blocs/blocs.dart';
 
@@ -14,6 +15,7 @@ class SessionIntervalWidget extends StatelessWidget {
     SessionIntervalState interval = intervalCubit.state;
     bool isSelected = intervalCubit.state.isSelected;
     return Container(
+      height: 200,
       margin: Layout.cardMargin,
       padding: Layout.cardPadding,
       decoration: MyDecoration.cardDecoration(
@@ -63,24 +65,18 @@ class SessionIntervalEditWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SessionIntervalState interval = intervalCubit.state;
-    bool isSelected = intervalCubit.state.isSelected;
     return Column(
       mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          width: 100,
-          child: TextFormField(
-            initialValue: interval.name ?? "",
-            decoration: const InputDecoration(
-              helperText: "Name",
-            ),
-            onChanged: (newValue) => intervalCubit.setName(newValue),
-          ),
+        _nameTextField(),
+        DurationTextField(
+          initalDuration: interval.duration,
+          updateDuration: (duration) => intervalCubit.setDuration(duration),
         ),
-        Text(interval.duration.toString()),
         Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Checkbox(
                 value: interval.isPause,
@@ -94,6 +90,19 @@ class SessionIntervalEditWidget extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+
+  Widget _nameTextField() {
+    return SizedBox(
+      width: 100,
+      child: TextFormField(
+        initialValue: intervalCubit.state.name ?? "",
+        decoration: const InputDecoration(
+          helperText: "Name",
+        ),
+        onChanged: (newValue) => intervalCubit.setName(newValue),
+      ),
     );
   }
 }

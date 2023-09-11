@@ -36,4 +36,8 @@ class SessionIntervalCubit extends SessionStepCubit {
   setIsPause(bool? isPause) {
     emit(state.copyWith(isPause: isPause));
   }
+
+  void setDuration(Duration duration) {
+    emit(state.copyWith(duration: duration));
+  }
 }

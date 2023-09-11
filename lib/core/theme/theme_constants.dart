@@ -4,6 +4,7 @@ class Layout {
   static const EdgeInsets cardPadding = EdgeInsets.all(10);
   static const EdgeInsets cardMargin = EdgeInsets.all(10);
   static const double borderWidth = 2.0;
+  static const double durationFieldWidth = 50.0;
 }
 
 class MyColors{

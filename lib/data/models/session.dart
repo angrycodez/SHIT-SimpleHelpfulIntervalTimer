@@ -10,6 +10,14 @@ class Session extends Equatable {
   String name;
   String description;
   List<SessionStep> steps;
+  List<SessionStep> get flattenedSteps => steps.fold(List<SessionStep>.empty(growable: true), (previousValue, element) {
+    if(element is SessionInterval){
+      previousValue.add(element);
+    }else{
+      previousValue.addAll((element as SessionBlock).flattenedSteps);
+    }
+    return previousValue;
+  }).toList();
   Duration get duration => steps.fold(Duration.zero, (previousValue, element) => Duration(seconds: previousValue.inSeconds + element.duration.inSeconds));
 
   Session(this.id, this.name, this.description, this.steps);

@@ -123,8 +123,8 @@ class SessionRepository {
     return childSteps;
   }
 
-  void storeSession(Session session) {
+  Future storeSession(Session session) async {
     // TODO: delete all sessionSteps (blocks+intervals) that are no longer part of the session. Then, insertOnConflictUpdate all steps in the session and the session itself
-
+    await _sessionsDao.updateSession(session);
   }
 }

@@ -9,12 +9,11 @@ class SessionBlockState extends SessionStepState {
   bool get hasChanges => hasDirectChanges
       || children.any((child) => child.hasChanges);
 
-  @override
-  Duration get duration => children.fold(
-      Duration.zero,
-      (previousValue, element) => Duration(
-          seconds: (previousValue.inSeconds + element.state.duration.inSeconds)
-              .toInt() * repetitions));
+  Duration computeDuration(){
+    return Duration(seconds: children.fold(
+        0,
+            (previousValue, element) => previousValue + element.state.duration.inSeconds) * repetitions);
+  }
 
   SessionBlockState.fromBlock(
     SessionBlock sessionBlock,
@@ -32,6 +31,7 @@ class SessionBlockState extends SessionStepState {
   SessionBlockState.fromCopy({
     required super.id,
     super.name,
+    required super.duration,
     required this.repetitions,
     required this.children,
     super.isSelected = false,
@@ -42,6 +42,7 @@ class SessionBlockState extends SessionStepState {
   SessionBlockState({
     required super.id,
     super.name,
+    super.duration = Duration.zero,
     required this.repetitions,
     required List<SessionStep> children,
     required SessionCubit sessionCubit,
@@ -68,6 +69,7 @@ class SessionBlockState extends SessionStepState {
   SessionBlockState copyWith({
     String? id,
     String? name,
+    Duration? duration,
     List<SessionStepCubit>? children,
     int? repetitions,
     bool? isSelected,
@@ -76,6 +78,7 @@ class SessionBlockState extends SessionStepState {
     return SessionBlockState.fromCopy(
       id: id ?? this.id,
       name: name ?? this.name,
+      duration: duration ?? this.duration,
       children: children ?? this.children,
       repetitions: repetitions ?? this.repetitions,
       isSelected: isSelected ?? this.isSelected,

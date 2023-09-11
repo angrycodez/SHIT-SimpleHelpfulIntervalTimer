@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:simple_interval_timer/data/datasources/local/daos/daos.dart';
 import 'package:simple_interval_timer/data/models/models.dart';
+import 'package:simple_interval_timer/data/repositories/session_repository.dart';
 import 'package:uuid/uuid.dart';
 
 import 'blocs.dart';
@@ -259,6 +261,13 @@ class SessionCubit extends Cubit<SessionState> {
       state.description,
       steps,
     );
+  }
+
+  Future storeSession(SessionRepository sessionRepository) async {
+    var session = getObject();
+    if(session != null) {
+      await sessionRepository.storeSession(session);
+    }
   }
 }
 

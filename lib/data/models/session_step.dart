@@ -31,6 +31,14 @@ class SessionStep extends Equatable {
 class SessionBlock extends SessionStep {
   final int repetitions;
   final List<SessionStep> children;
+  List<SessionStep> get flattenedSteps => children.fold(List<SessionStep>.of([this]), (previousValue, element) {
+    if(element is SessionInterval){
+      previousValue.add(element);
+    }else{
+      previousValue.addAll((element as SessionBlock).flattenedSteps);
+    }
+    return previousValue;
+  }).toList();
 
   @override
   Duration get duration => children.fold(Duration.zero, (previousValue, element) =>Duration(seconds: previousValue.inSeconds + element.duration.inSeconds));

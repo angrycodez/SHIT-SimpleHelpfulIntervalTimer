@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:simple_interval_timer/data/datasources/local/daos/daos.dart';
 import 'package:simple_interval_timer/data/datasources/local/database.dart';
 import 'package:simple_interval_timer/data/datasources/local/tables.dart';
+import 'package:simple_interval_timer/data/models/models.dart';
 
 part 'sessions_dao.g.dart';
 
@@ -15,29 +16,71 @@ class SessionsDao extends DatabaseAccessor<SessionDatabase>
     return await db.sessions.select().get();
   }
 
-  Future<bool> sessionExists(String id)async{
+  Future<bool> sessionExists(String id) async {
     return await getSession(id) != null;
   }
 
-  Future<SessionEntry?> getSession(String id)async{
+  Future<SessionEntry?> getSession(String id) async {
     // get a session entry for the given id
-    return await (db.sessions.select()..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
+    return await (db.sessions.select()..where((tbl) => tbl.id.equals(id)))
+        .getSingleOrNull();
   }
 
-  Future updateSession({required String id, String? name})async{
+  Future updateSession(Session session) async {
     // update the values of a session
-    await db.sessions.insertOnConflictUpdate(SessionsCompanion(id: Value(id), name: name != null ? Value(name) : const Value.absent()));
+    var allSteps = session.flattenedSteps;
+    var intervals = allSteps.whereType<SessionInterval>().toList();
+    var blocks = allSteps.whereType<SessionBlock>().toList();
+    await db.sessionIntervals
+        .deleteWhere((tbl) =>  tbl.sessionId.equals(session.id) & tbl.id.isNotIn(intervals.map((e) => e.id)));
+    await db.sessionBlocks
+        .deleteWhere((tbl) => tbl.sessionId.equals(session.id) & tbl.id.isNotIn(blocks.map((e) => e.id)));
+
+    await db.sessions.insertOnConflictUpdate(SessionsCompanion(
+      id: Value(session.id),
+      name: Value(session.name),
+      description: Value(session.description),
+    ));
+
+    for (var block in blocks) {
+      await db.sessionBlocks.insertOnConflictUpdate(
+        SessionBlocksCompanion(
+          id: Value(block.id),
+          name: Value(block.name),
+          sessionId: Value(session.id),
+          parentBlockId: Value(block.parentStep?.id),
+          sequenceIndex: Value(block.sequenceIndex),
+          repetitions: Value(block.repetitions),
+        ),
+      );
+    }
+    for (var interval in intervals) {
+      await db.sessionIntervals.insertOnConflictUpdate(
+        SessionIntervalsCompanion(
+          id: Value(interval.id),
+          name: Value(interval.name),
+          sessionId: Value(session.id),
+          parentBlockId: Value(interval.parentStep?.id),
+          sequenceIndex: Value(interval.sequenceIndex),
+          durationInSeconds: Value(interval.duration.inSeconds),
+          isPause: Value(interval.isPause),
+          startSoundId: Value(interval.startSound?.id),
+          endSoundId: Value(interval.endSound?.id),
+        ),
+      );
+    }
   }
 
-  Future deleteSession(String id)async{
+  Future deleteSession(String id) async {
     // delete the session with the given id
     var session = await getSession(id);
-    if(session == null){
+    if (session == null) {
       return;
     }
-    await db.sessionIntervals.deleteWhere((tbl) => tbl.parentBlockId.equals(session.id));
-    await db.sessionBlocks.deleteWhere((tbl) => tbl.parentBlockId.equals(session.id));
+    await db.sessionIntervals
+        .deleteWhere((tbl) => tbl.parentBlockId.equals(session.id));
+    await db.sessionBlocks
+        .deleteWhere((tbl) => tbl.parentBlockId.equals(session.id));
     await db.sessions.deleteWhere((tbl) => tbl.id.equals(id));
   }
-
 }

@@ -10,21 +10,36 @@ class SessionBlockCubit extends SessionStepCubit {
 
   SessionBlockCubit(
     SessionBlock sessionBlock,
-    SessionCubit sessionCubit, ) : super(
+    SessionCubit sessionCubit,
+  ) : super(
           sessionBlock,
           sessionCubit,
-        ) {}
+        ) {
+    state.children.forEach((element) {
+      element.stream.listen((event) {
+        emit(state.copyWith(duration: state.computeDuration()));
+      });
+    });
+  }
 
-  void addInterval(){
-    var interval = SessionInterval(id: Uuid().v4(), sequenceIndex: state.children.length, duration: Duration(seconds: 1), isPause: false);
+  void addInterval() {
+    var interval = SessionInterval(
+        id: Uuid().v4(),
+        sequenceIndex: state.children.length,
+        duration: Duration(seconds: 1),
+        isPause: false);
     var cubit = SessionIntervalCubit(interval, sessionCubit);
     var children = List.of(state.children);
     children.add(cubit);
     emit(state.copyWith(children: children));
   }
 
-  void addBlock(){
-    var block = SessionBlock(id: Uuid().v4(), sequenceIndex: state.children.length, repetitions: 1, children: []);
+  void addBlock() {
+    var block = SessionBlock(
+        id: Uuid().v4(),
+        sequenceIndex: state.children.length,
+        repetitions: 1,
+        children: []);
     var cubit = SessionBlockCubit(block, sessionCubit);
     var children = List.of(state.children);
     children.add(cubit);
@@ -76,5 +91,4 @@ class SessionBlockCubit extends SessionStepCubit {
   void setName(String name) {
     emit(state.copyWith(name: name));
   }
-
 }

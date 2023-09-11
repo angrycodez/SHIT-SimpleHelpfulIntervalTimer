@@ -1,8 +1,7 @@
 part of 'session_interval_cubit.dart';
 
 class SessionIntervalState extends SessionStepState {
-  @override
-  final Duration duration;
+
   final bool isPause;
   final Sound? startSound;
   final Sound? endSound;
@@ -21,7 +20,7 @@ class SessionIntervalState extends SessionStepState {
   const SessionIntervalState({
     required super.id,
     super.name,
-    required this.duration,
+    required super.duration,
     required this.isPause,
     this.startSound,
     this.endSound,
@@ -33,7 +32,6 @@ class SessionIntervalState extends SessionStepState {
   @override
   List<Object?> get props => [
         ...super.props,
-        duration,
         isPause,
         startSound,
         endSound,
