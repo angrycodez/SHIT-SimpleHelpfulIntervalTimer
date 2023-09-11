@@ -16,39 +16,9 @@ class SessionStepWidget extends StatelessWidget {
       value: sessionStepCubit,
       child: BlocBuilder<SessionStepCubit, SessionStepState>(
         builder: (context, state) {
-          return Row(
-            children: [
-              if (state.isEditMode) ...[
-                IconButton(
-                  onPressed: () => sessionStepCubit.delete(),
-                  icon: MyIcons.deleteIcon,
-                )
-              ],
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => sessionStepCubit.setEditMode(),
-                  child: _getStepWidget(state),
-                ),
-              ),
-              if (state.isEditMode) ...[
-                Column(
-                  children: [
-                    IconButton(
-                      onPressed: sessionStepCubit.canMoveUp()
-                          ? () => sessionStepCubit.moveUp()
-                          : null,
-                      icon: MyIcons.moveUpIcon,
-                    ),
-                    IconButton(
-                      onPressed: sessionStepCubit.canMoveDown()
-                          ? () => sessionStepCubit.moveDown()
-                          : null,
-                      icon: MyIcons.moveDownIcon,
-                    )
-                  ],
-                ),
-              ]
-            ],
+          return GestureDetector(
+            onTap: () => sessionStepCubit.setSelected(),
+            child: _getStepWidget(state),
           );
         },
       ),

@@ -45,7 +45,7 @@ class SessionRepository {
       }
     }
 
-    Session session = Session(id, sessionEntry.name, stepObjects);
+    Session session = Session(id, sessionEntry.name, sessionEntry.description, stepObjects);
     _addParentReferences(session.steps);
     return session;
   }

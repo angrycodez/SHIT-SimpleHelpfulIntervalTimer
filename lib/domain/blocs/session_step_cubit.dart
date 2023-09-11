@@ -16,8 +16,9 @@ abstract class SessionStepCubit extends Cubit<SessionStepState> {
             ? SessionBlockState.fromBlock(sessionStep, sessionCubit)
             : SessionIntervalState.fromInterval(
                 sessionStep as SessionInterval)) {
-    sessionCubit.editModeChangedStream.listen(onEditModeChanged);
+    sessionCubit.editModeChangedStream.listen(onSelectionChanged);
   }
+  bool get hasChanges => state.hasChanges;
 
   // if referenceStep is null, use movingStep for reference
   void moveUp() => sessionCubit.moveUpChild(this);
@@ -28,15 +29,19 @@ abstract class SessionStepCubit extends Cubit<SessionStepState> {
 
   void delete()=>sessionCubit.delete(this);
 
-  void onEditModeChanged(String? editStepId) {
+  void onSelectionChanged(String? editStepId) {
     if (editStepId != state.id) {
-      emit(state.copyWith(isEditMode: false));
+      emit(state.copyWith(isSelected: false, isEditMode: false));
     }
   }
 
-  void setEditMode() {
-    sessionCubit.editModeChanged(state.id);
-    emit(state.copyWith(isEditMode: true));
+  void setSelected() {
+    sessionCubit.selectionChanged(this);
+    emit(state.copyWith(isSelected: true));
+  }
+
+  void toggleEditMode(){
+    emit(state.copyWith(isEditMode: !state.isEditMode));
   }
 
   static SessionStepCubit getCubit(

@@ -1,4 +1,5 @@
 import 'package:simple_interval_timer/data/models/models.dart';
+import 'package:uuid/uuid.dart';
 import 'blocs.dart';
 
 part 'session_block_state.dart';
@@ -13,8 +14,22 @@ class SessionBlockCubit extends SessionStepCubit {
           sessionBlock,
           sessionCubit,
         ) {}
-  void addStep() {}
-  void addBlock() {}
+
+  void addInterval(){
+    var interval = SessionInterval(id: Uuid().v4(), sequenceIndex: state.children.length, duration: Duration(seconds: 1), isPause: false);
+    var cubit = SessionIntervalCubit(interval, sessionCubit);
+    var children = List.of(state.children);
+    children.add(cubit);
+    emit(state.copyWith(children: children));
+  }
+
+  void addBlock(){
+    var block = SessionBlock(id: Uuid().v4(), sequenceIndex: state.children.length, repetitions: 1, children: []);
+    var cubit = SessionBlockCubit(block, sessionCubit);
+    var children = List.of(state.children);
+    children.add(cubit);
+    emit(state.copyWith(children: children));
+  }
 
   @override
   SessionBlock getObject(int sequenceIndex, SessionBlock? parent) {
@@ -52,6 +67,14 @@ class SessionBlockCubit extends SessionStepCubit {
     }
 
     return object;
+  }
+
+  void setRepetitions(int repititions) {
+    emit(state.copyWith(repetitions: repititions));
+  }
+
+  void setName(String name) {
+    emit(state.copyWith(name: name));
   }
 
 }

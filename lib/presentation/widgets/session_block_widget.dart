@@ -19,38 +19,117 @@ class SessionBlockWidget extends StatelessWidget {
       decoration: MyDecoration.cardDecoration(
         context,
         color: Colors.lightGreenAccent,
-        borderColor: blockCubit.state.isEditMode ? MyColors.cardEditBorderColor : MyColors.cardEditBorderColor,
+        borderColor: blockCubit.state.isSelected ? MyColors.cardEditBorderColor : MyColors.cardBorderColor,
       ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(block.name ?? ""),
-              Text(block.duration.toString()),
-              const SizedBox.shrink(),
-            ],
-          ),
-          Container(
-            padding: Layout.cardPadding,
-            margin: Layout.cardMargin,
-            child: Flexible(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: block.children.length,
-                itemBuilder: (context, index) {
-                  SessionStepCubit step = block.children[index];
-                  return SessionStepWidget(
-                    step,
-                    key: Key(step.state.id),
-                  );
-                },
-              ),
-            ),
-          )
-        ],
+      child: block.isEditMode
+        ? SessionBlockEditWidget(blockCubit)
+        : SessionBlockInfoWidget(blockCubit),
+    );
+  }
+}
+
+
+class SessionBlockInfoWidget extends StatelessWidget {
+  final SessionBlockCubit blockCubit;
+  const SessionBlockInfoWidget(this.blockCubit, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    SessionBlockState block = blockCubit.state;
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(block.name ?? ""),
+            Text(block.duration.toString()),
+            Text(block.repetitions.toString()),
+            const SizedBox.shrink(),
+          ],
+        ),
+        SessionBlockChildrenWidget(children: block.children),
+      ],
+    );
+  }
+}
+
+class SessionBlockEditWidget extends StatelessWidget {
+  final SessionBlockCubit blockCubit;
+  const SessionBlockEditWidget(this.blockCubit, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    SessionBlockState block = blockCubit.state;
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            nameTextField(),
+            Text(block.duration.toString()),
+            repetitionsTextField(),
+            const SizedBox.shrink(),
+          ],
+        ),
+        SessionBlockChildrenWidget(children: block.children),
+      ],
+    );
+  }
+
+  Widget nameTextField(){
+    return SizedBox(
+      width: 100,
+      child: TextFormField(
+        initialValue: blockCubit.state.name ?? "",
+        decoration: const InputDecoration(
+          helperText: "Name",
+        ),
+        onChanged: (newValue) => blockCubit.setName(newValue),
       ),
     );
   }
+  Widget repetitionsTextField(){
+    return SizedBox(
+      width: 100,
+      child: TextFormField(
+        initialValue: blockCubit.state.repetitions.toString() ?? "",
+        keyboardType: const TextInputType.numberWithOptions(),
+        decoration: const InputDecoration(
+          helperText: "Repetitions",
+        ),
+        onChanged: (newValue) => blockCubit.setRepetitions(int.parse(newValue)),
+      ),
+    );
+  }
+}
+
+
+class SessionBlockChildrenWidget extends StatelessWidget{
+  final List<SessionStepCubit> children;
+
+  const SessionBlockChildrenWidget({super.key, required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: Layout.cardPadding,
+      margin: Layout.cardMargin,
+      child: Flexible(
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: children.length,
+          itemBuilder: (context, index) {
+            SessionStepCubit step = children[index];
+            return SessionStepWidget(
+              step,
+              key: Key(step.state.id),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
 }

@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 @DataClassName("SessionEntry")
 class Sessions extends Table with UuidPrimaryKey{
   TextColumn get name => text().withLength(min: 1, max: 64)();
+  TextColumn get description => text().withLength(min: 1, max: 1024)();
 }
 
 @UseRowClass(SessionIntervalEntry)

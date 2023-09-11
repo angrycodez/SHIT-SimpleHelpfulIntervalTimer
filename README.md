@@ -13,6 +13,9 @@ A simple interval timer.
   - [ ] add/edit/delete session
   - [ ] add/edit/delete steps
     - [x] move step up/down
+    - [x] add/delete steps
     - [ ] set values
+      - [ ] edit page for intervals
+      - [ ] in-widget edit for blocks
   - [ ] store and update the data properly
   - [ ] timer functionality

@@ -24,8 +24,17 @@ class $SessionsTable extends Sessions
           GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 64),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
   @override
-  List<GeneratedColumn> get $columns => [id, name];
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      additionalChecks: GeneratedColumn.checkTextLength(
+          minTextLength: 1, maxTextLength: 1024),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, name, description];
   @override
   String get aliasedName => _alias ?? 'sessions';
   @override
@@ -44,6 +53,14 @@ class $SessionsTable extends Sessions
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
     return context;
   }
 
@@ -57,6 +74,8 @@ class $SessionsTable extends Sessions
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
     );
   }
 
@@ -69,12 +88,15 @@ class $SessionsTable extends Sessions
 class SessionEntry extends DataClass implements Insertable<SessionEntry> {
   final String id;
   final String name;
-  const SessionEntry({required this.id, required this.name});
+  final String description;
+  const SessionEntry(
+      {required this.id, required this.name, required this.description});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
     return map;
   }
 
@@ -82,6 +104,7 @@ class SessionEntry extends DataClass implements Insertable<SessionEntry> {
     return SessionsCompanion(
       id: Value(id),
       name: Value(name),
+      description: Value(description),
     );
   }
 
@@ -91,6 +114,7 @@ class SessionEntry extends DataClass implements Insertable<SessionEntry> {
     return SessionEntry(
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
     );
   }
   @override
@@ -99,61 +123,78 @@ class SessionEntry extends DataClass implements Insertable<SessionEntry> {
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
     };
   }
 
-  SessionEntry copyWith({String? id, String? name}) => SessionEntry(
+  SessionEntry copyWith({String? id, String? name, String? description}) =>
+      SessionEntry(
         id: id ?? this.id,
         name: name ?? this.name,
+        description: description ?? this.description,
       );
   @override
   String toString() {
     return (StringBuffer('SessionEntry(')
           ..write('id: $id, ')
-          ..write('name: $name')
+          ..write('name: $name, ')
+          ..write('description: $description')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name);
+  int get hashCode => Object.hash(id, name, description);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is SessionEntry && other.id == this.id && other.name == this.name);
+      (other is SessionEntry &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description);
 }
 
 class SessionsCompanion extends UpdateCompanion<SessionEntry> {
   final Value<String> id;
   final Value<String> name;
+  final Value<String> description;
   final Value<int> rowid;
   const SessionsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.description = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   SessionsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
+    required String description,
     this.rowid = const Value.absent(),
-  }) : name = Value(name);
+  })  : name = Value(name),
+        description = Value(description);
   static Insertable<SessionEntry> custom({
     Expression<String>? id,
     Expression<String>? name,
+    Expression<String>? description,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      if (description != null) 'description': description,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
   SessionsCompanion copyWith(
-      {Value<String>? id, Value<String>? name, Value<int>? rowid}) {
+      {Value<String>? id,
+      Value<String>? name,
+      Value<String>? description,
+      Value<int>? rowid}) {
     return SessionsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
+      description: description ?? this.description,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -167,6 +208,9 @@ class SessionsCompanion extends UpdateCompanion<SessionEntry> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -178,6 +222,7 @@ class SessionsCompanion extends UpdateCompanion<SessionEntry> {
     return (StringBuffer('SessionsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('description: $description, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();

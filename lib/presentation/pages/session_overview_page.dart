@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simple_interval_timer/core/theme/theme_constants.dart';
 import 'package:simple_interval_timer/domain/blocs/session_overview_cubit.dart';
+import 'package:simple_interval_timer/presentation/pages/session_page.dart';
 import 'package:simple_interval_timer/presentation/widgets/session_widget.dart';
 
 import '../../data/models/models.dart';
@@ -27,10 +28,15 @@ class SessionOverviewPage extends StatelessWidget {
                     ),
                     Center(
                       child: IconButton(
-                        onPressed: () => context
+                        onPressed: () {
+                          var sessionCubit = context
                             .read<SessionOverviewCubit>()
-                            .createNewSession(),
-                        icon: MyIcons.createNewIcon,
+                            .createNewSession();
+                          if(sessionCubit != null){
+                            Navigator.of(context).push(SessionPage.getRoute(sessionCubit));
+                          }
+                        },
+                        icon: MyIcons.createNewSessionIcon,
                       ),
                     ),
                   ],

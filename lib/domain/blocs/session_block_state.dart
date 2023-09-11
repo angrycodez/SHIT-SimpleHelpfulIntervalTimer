@@ -3,24 +3,29 @@ part of 'session_block_cubit.dart';
 class SessionBlockState extends SessionStepState {
   late final List<SessionStepCubit> children;
   final int repetitions;
+  final bool hasDirectChanges;
+
+  @override
+  bool get hasChanges => hasDirectChanges
+      || children.any((child) => child.hasChanges);
 
   @override
   Duration get duration => children.fold(
       Duration.zero,
       (previousValue, element) => Duration(
           seconds: (previousValue.inSeconds + element.state.duration.inSeconds)
-              .toInt()));
+              .toInt() * repetitions));
 
   SessionBlockState.fromBlock(
     SessionBlock sessionBlock,
-    SessionCubit sessionCubit, {
-    bool isEditMode = false,
-  }) : this(
+    SessionCubit sessionCubit,
+  ) : this(
           id: sessionBlock.id,
           name: sessionBlock.name,
           repetitions: sessionBlock.repetitions,
           children: sessionBlock.children,
-          isEditMode: isEditMode,
+          isSelected: false,
+          isEditMode: false,
           sessionCubit: sessionCubit,
         );
 
@@ -29,8 +34,9 @@ class SessionBlockState extends SessionStepState {
     super.name,
     required this.repetitions,
     required this.children,
+    super.isSelected = false,
     super.isEditMode = false,
-
+    this.hasDirectChanges = true
   });
 
   SessionBlockState({
@@ -39,8 +45,9 @@ class SessionBlockState extends SessionStepState {
     required this.repetitions,
     required List<SessionStep> children,
     required SessionCubit sessionCubit,
+    super.isSelected = false,
     super.isEditMode = false,
-
+    this.hasDirectChanges = false,
   }) {
     this.children = children
         .map((e) => SessionStepCubit.getCubit(
@@ -63,6 +70,7 @@ class SessionBlockState extends SessionStepState {
     String? name,
     List<SessionStepCubit>? children,
     int? repetitions,
+    bool? isSelected,
     bool? isEditMode,
   }) {
     return SessionBlockState.fromCopy(
@@ -70,8 +78,9 @@ class SessionBlockState extends SessionStepState {
       name: name ?? this.name,
       children: children ?? this.children,
       repetitions: repetitions ?? this.repetitions,
+      isSelected: isSelected ?? this.isSelected,
       isEditMode: isEditMode ?? this.isEditMode,
-
+      hasDirectChanges: true,
     );
   }
 }

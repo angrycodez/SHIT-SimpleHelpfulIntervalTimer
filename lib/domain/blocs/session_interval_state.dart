@@ -7,17 +7,15 @@ class SessionIntervalState extends SessionStepState {
   final Sound? startSound;
   final Sound? endSound;
 
-  SessionIntervalState.fromInterval(
-    SessionInterval sessionInterval, {
-    bool isEditMode = false,
-  }) : this(
+  SessionIntervalState.fromInterval(SessionInterval sessionInterval) : this(
           id: sessionInterval.id,
           name: sessionInterval.name,
           duration: sessionInterval.duration,
           isPause: sessionInterval.isPause,
           startSound: sessionInterval.startSound,
           endSound: sessionInterval.endSound,
-          isEditMode: isEditMode,
+          isSelected: false,
+          isEditMode: false,
         );
 
   const SessionIntervalState({
@@ -27,7 +25,9 @@ class SessionIntervalState extends SessionStepState {
     required this.isPause,
     this.startSound,
     this.endSound,
+    super.isSelected = false,
     super.isEditMode = false,
+    super.hasChanges = false,
   });
 
   @override
@@ -47,6 +47,7 @@ class SessionIntervalState extends SessionStepState {
     bool? isPause,
     Sound? startSound,
     Sound? endSound,
+    bool? isSelected,
     bool? isEditMode,
   }) {
     return SessionIntervalState(
@@ -56,7 +57,9 @@ class SessionIntervalState extends SessionStepState {
       isPause: isPause ?? this.isPause,
       startSound: startSound ?? this.startSound,
       endSound: endSound ?? this.endSound,
+      isSelected: isSelected ?? this.isSelected,
       isEditMode: isEditMode ?? this.isEditMode,
+      hasChanges: true,
     );
   }
 

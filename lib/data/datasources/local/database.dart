@@ -44,7 +44,7 @@ class SessionDatabase extends _$SessionDatabase {
       await customStatement('PRAGMA foreign_keys = ON');
 
       if (details.wasCreated) {
-        sessions.insertOne(SessionsCompanion.insert(id: Value("1") ,name: "Test"));
+        sessions.insertOne(SessionsCompanion.insert(id: Value("1") ,name: "Test", description: "Eine Testsession"));
 
         sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: Value("1"), name: Value("first"),sequenceIndex: 0, durationInSeconds: 10, isPause: false,));
 

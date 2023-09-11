@@ -15,6 +15,10 @@ class SessionIntervalCubit extends SessionStepCubit {
           sessionCubit,
         );
 
+  void setName(String name){
+    emit(state.copyWith(name: name));
+  }
+
   @override
   SessionInterval getObject(int sequenceIndex, SessionBlock? parent) {
     return SessionInterval(
@@ -27,5 +31,9 @@ class SessionIntervalCubit extends SessionStepCubit {
       startSound: state.startSound,
       endSound: state.endSound,
     );
+  }
+
+  setIsPause(bool? isPause) {
+    emit(state.copyWith(isPause: isPause));
   }
 }

@@ -16,13 +16,14 @@ class SessionOverviewCubit extends Cubit<SessionOverviewState> {
     emit(SessionOverviewStateInitialized(sessions.map((e) => SessionCubit(e)).toList()));
   }
 
-  void createNewSession(){
+  SessionCubit? createNewSession(){
     if(state is SessionOverviewStateInitialized) {
       var sessions = List.of(_state.sessions);
-      var sessionCubit = SessionCubit(Session(const Uuid().v4(), "New Session", List.empty()));
+      var sessionCubit = SessionCubit(Session(const Uuid().v4(), "New Session", "", List.empty()));
       sessions.add(sessionCubit);
 
       emit(_state.copyWith(sessions: sessions));
+      return sessionCubit;
     }
   }
 

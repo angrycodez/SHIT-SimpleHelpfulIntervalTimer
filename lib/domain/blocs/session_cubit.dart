@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:simple_interval_timer/data/models/models.dart';
+import 'package:uuid/uuid.dart';
 
 import 'blocs.dart';
 
@@ -26,10 +27,12 @@ class SessionCubit extends Cubit<SessionState> {
     return state as SessionStateLoaded;
   }
 
-  void editModeChanged(String? stepId) {
-    _editModeChangedStreamController.sink.add(stepId);
+  void selectionChanged(SessionStepCubit? step) {
+    _editModeChangedStreamController.sink.add(step?.state.id);
+    if(state is SessionStateLoaded) {
+      emit((state as SessionStateLoaded).withSelectedStep(step));
+    }
   }
-
 
   StepSearchResult? _findStep(
       SessionStepCubit step, SessionBlockCubit? parent) {
@@ -56,10 +59,10 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   List<SessionStepCubit> _moveStepInList(
-      List<SessionStepCubit> steps,
-      int index,
-      Direction direction,
-      ) {
+    List<SessionStepCubit> steps,
+    int index,
+    Direction direction,
+  ) {
     assert(0 <= index && index < steps.length);
     if (index == 0 && direction == Direction.up ||
         index == steps.length - 1 && direction == Direction.down) {
@@ -90,9 +93,9 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   void _moveStepToParent(
-      StepSearchResult stepLocation,
-      Direction direction,
-      ) {
+    StepSearchResult stepLocation,
+    Direction direction,
+  ) {
     assert(stepLocation.parent != null);
     assert(this.state is SessionStateLoaded);
 
@@ -107,7 +110,7 @@ class SessionCubit extends Cubit<SessionState> {
     var parentLocation = _findStep(stepLocation.parent!, null)!;
 
     int newIndex = parentLocation.index;
-    if(direction == Direction.down){
+    if (direction == Direction.down) {
       newIndex += 1;
     }
     locationSteps = List.of(parentLocation.steps);
@@ -124,8 +127,17 @@ class SessionCubit extends Cubit<SessionState> {
     }
   }
 
-  void moveUpChild(SessionStepCubit movingStep) {
-    if (!canMoveUpChild(movingStep)) {
+  bool _isStepAtListEnd(
+      int index, List<SessionStepCubit> steps, Direction direction) {
+    if (index == 0 && direction == Direction.up ||
+        index == steps.length - 1 && direction == Direction.down) {
+      return true;
+    }
+    return false;
+  }
+
+  void _moveChild(SessionStepCubit movingStep, Direction direction) {
+    if (!_canMoveChild(movingStep, direction)) {
       return;
     }
     SessionStateLoaded state = this.state as SessionStateLoaded;
@@ -141,14 +153,15 @@ class SessionCubit extends Cubit<SessionState> {
           steps: _moveStepInList(
             stepLocation.steps,
             stepLocation.index,
-            Direction.up,
+            direction,
           ),
         ),
       );
       return;
     } else {
       // step is found in some block
-      if (stepLocation.index > 0) {
+      if (!_isStepAtListEnd(
+          stepLocation.index, stepLocation.steps, direction)) {
         // step can be moved around within this block
         SessionBlockCubit parent = stepLocation.parent!;
         parent.emit(
@@ -156,85 +169,79 @@ class SessionCubit extends Cubit<SessionState> {
             children: _moveStepInList(
               stepLocation.steps,
               stepLocation.index,
-              Direction.up,
+              direction,
             ),
           ),
         );
         return;
       } else {
         // step needs to be moved to parent block
-        _moveStepToParent(stepLocation, Direction.up);
+        _moveStepToParent(stepLocation, direction);
       }
     }
   }
-  bool canMoveUpChild(SessionStepCubit movingStep) {
-    var search = _findStep(movingStep, null);
-    return search != null && (search.index > 0 || search.parent != null);
-  }
 
-  void moveDownChild(SessionStepCubit movingStep) {
-    if (!canMoveDownChild(movingStep)) {
-      return;
-    }
-    SessionStateLoaded state = this.state as SessionStateLoaded;
-
-    var stepLocation = _findStep(movingStep, null);
-    assert(stepLocation != null);
-    stepLocation = stepLocation!;
-
-    if (stepLocation.parent == null) {
-      // move the step in first level (Session.steps)
-      emit(
-        state.copyWith(
-          steps: _moveStepInList(
-            stepLocation.steps,
-            stepLocation.index,
-            Direction.down,
-          ),
-        ),
-      );
-      return;
-    } else {
-      // step is found in some block
-      if (stepLocation.index < stepLocation.steps.length - 1) {
-        // step can be moved around within this block
-        SessionBlockCubit parent = stepLocation.parent!;
-        parent.emit(
-          parent.state.copyWith(
-            children: _moveStepInList(
-              stepLocation.steps,
-              stepLocation.index,
-              Direction.down,
-            ),
-          ),
-        );
-        return;
-      } else {
-        // step needs to be moved to parent block
-        _moveStepToParent(stepLocation, Direction.down);
-      }
-    }
-  }
-  bool canMoveDownChild(SessionStepCubit movingStep) {
+  bool _canMoveChild(SessionStepCubit movingStep, Direction direction) {
     var search = _findStep(movingStep, null);
     return search != null &&
-        (search.index < (state as SessionStateLoaded).steps.length - 1 ||
+        (!_isStepAtListEnd(search.index, search.steps, direction) ||
             search.parent != null);
   }
 
-  void delete(SessionStepCubit step){
+  void moveUpChild(SessionStepCubit movingStep) {
+    _moveChild(movingStep, Direction.up);
+  }
+
+  bool canMoveUpChild(SessionStepCubit movingStep) {
+    return _canMoveChild(movingStep, Direction.up);
+  }
+
+  void moveDownChild(SessionStepCubit movingStep) {
+    _moveChild(movingStep, Direction.down);
+  }
+
+  bool canMoveDownChild(SessionStepCubit movingStep) {
+    return _canMoveChild(movingStep, Direction.down);
+  }
+
+  void delete(SessionStepCubit step) {
     var stepLocation = _findStep(step, null);
     assert(stepLocation != null);
     stepLocation = stepLocation!;
     var steps = List.of(stepLocation.steps);
     steps.removeAt(stepLocation.index);
 
-    if(stepLocation.parent == null){
+    if (stepLocation.parent == null) {
       emit((state as SessionStateLoaded).copyWith(steps: steps));
-    }else{
+    } else {
       SessionBlockCubit parent = stepLocation.parent!;
       parent.emit(parent.state.copyWith(children: steps));
     }
+  }
+
+  void addInterval(){
+    var state = this.state as SessionStateLoaded;
+    var interval = SessionInterval(id: Uuid().v4(), sequenceIndex: state.steps.length, duration: Duration(seconds: 1), isPause: false);
+    var cubit = SessionIntervalCubit(interval, this);
+    var steps = List.of(state.steps);
+    steps.add(cubit);
+    emit(state.copyWith(steps: steps));
+  }
+
+  void addBlock(){
+    var state = this.state as SessionStateLoaded;
+    var block = SessionBlock(id: Uuid().v4(), sequenceIndex: state.steps.length, repetitions: 1, children: []);
+    var cubit = SessionBlockCubit(block, this);
+    var steps = List.of(state.steps);
+    steps.add(cubit);
+    emit(state.copyWith(steps: steps));
+  }
+
+  void setName(String name){
+    emit(loadedState.copyWith(name: name));
+  }
+  void setDescription(String description){
+    emit(loadedState.copyWith(description: description));
   }
 
   Session? getObject() {
@@ -249,6 +256,7 @@ class SessionCubit extends Cubit<SessionState> {
     return Session(
       state.id,
       state.name,
+      state.description,
       steps,
     );
   }
