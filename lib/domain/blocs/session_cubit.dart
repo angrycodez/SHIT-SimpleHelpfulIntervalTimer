@@ -246,11 +246,8 @@ class SessionCubit extends Cubit<SessionState> {
     emit(loadedState.copyWith(description: description));
   }
 
-  Session? getObject() {
-    if (this.state is! SessionStateLoaded) {
-      return null;
-    }
-    SessionStateLoaded state = this.state as SessionStateLoaded;
+  Session getObject() {
+    SessionStateLoaded state = loadedState;
     List<SessionStep> steps = List.empty(growable: true);
     for (int i = 0; i < state.steps.length; i++) {
       steps.add(state.steps[i].getObject(i, null));
@@ -263,11 +260,12 @@ class SessionCubit extends Cubit<SessionState> {
     );
   }
 
+  List<SessionInterval> getIntervalSequence(){
+    return getObject().intervalSequence;
+  }
+
   Future storeSession(SessionRepository sessionRepository) async {
-    var session = getObject();
-    if(session != null) {
-      await sessionRepository.storeSession(session);
-    }
+    await sessionRepository.storeSession(getObject());
   }
 }
 

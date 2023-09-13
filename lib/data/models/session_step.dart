@@ -3,12 +3,13 @@ import 'package:equatable/equatable.dart';
 
 import 'package:simple_interval_timer/data/models/models.dart';
 
-class SessionStep extends Equatable {
+abstract class SessionStep extends Equatable {
   final String id;
   final String? name;
   final SessionBlock? parentStep;
   final int sequenceIndex;
   Duration get duration => Duration.zero;
+  List<SessionInterval> get intervalSequence;
 
   const SessionStep({
     required this.id,
@@ -31,14 +32,25 @@ class SessionStep extends Equatable {
 class SessionBlock extends SessionStep {
   final int repetitions;
   final List<SessionStep> children;
-  List<SessionStep> get flattenedSteps => children.fold(List<SessionStep>.of([this]), (previousValue, element) {
+  List<SessionStep> get distinctSteps => children.fold(List<SessionStep>.of([this]), (previousValue, element) {
     if(element is SessionInterval){
       previousValue.add(element);
     }else{
-      previousValue.addAll((element as SessionBlock).flattenedSteps);
+      previousValue.addAll((element as SessionBlock).distinctSteps);
     }
     return previousValue;
   }).toList();
+
+  @override
+  List<SessionInterval> get intervalSequence {
+    List<SessionInterval> intervals = List.empty(growable: true);
+    for(int i=0; i<repetitions;i++) {
+      for (var step in children) {
+        intervals.addAll(step.intervalSequence);
+      }
+    }
+    return intervals;
+  }
 
   @override
   Duration get duration => children.fold(Duration.zero, (previousValue, element) =>Duration(seconds: previousValue.inSeconds + element.duration.inSeconds));
@@ -82,6 +94,7 @@ class SessionBlock extends SessionStep {
       children: children ?? this.children,
     );
   }
+
 }
 
 class SessionInterval extends SessionStep {
@@ -90,6 +103,9 @@ class SessionInterval extends SessionStep {
   final bool isPause;
   final Sound? startSound;
   final Sound? endSound;
+
+  @override
+  List<SessionInterval> get intervalSequence => List.of([this]);
 
   const SessionInterval({
     required String id,

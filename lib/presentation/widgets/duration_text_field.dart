@@ -26,39 +26,28 @@ class _DurationTextFieldState extends State<DurationTextField> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(
-          width: widget.fieldWidth,
-          child: TextFormField(
-            controller: hoursTextEditingController,
-            keyboardType: TextInputType.number,
-            maxLength: 2,
-            textAlign: TextAlign.center,
-            decoration: const InputDecoration(counterText: ""),
-          ),
-        ),
+        _entryField(hoursTextEditingController, "H"),
         const Text(":"),
-        SizedBox(
-          width: widget.fieldWidth,
-          child: TextFormField(
-            controller: minutesTextEditingController,
-            keyboardType: TextInputType.number,
-            maxLength: 2,
-            textAlign: TextAlign.center,
-            decoration: const InputDecoration(counterText: ""),
-          ),
-        ),
+        _entryField(minutesTextEditingController, "m"),
         const Text(":"),
-        SizedBox(
-          width: widget.fieldWidth,
-          child: TextFormField(
-            controller: secondsTextEditingController,
-            keyboardType: TextInputType.number,
-            maxLength: 2,
-            textAlign: TextAlign.center,
-            decoration: const InputDecoration(counterText: "", ),
-          ),
-        ),
+        _entryField(secondsTextEditingController, "s"),
       ],
+    );
+  }
+
+  Widget _entryField(TextEditingController controller, String helperText){
+    return SizedBox(
+      width: widget.fieldWidth,
+      child: TextFormField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        maxLength: 2,
+        textAlign: TextAlign.center,
+        decoration: InputDecoration(
+          helperText: helperText,
+          counterText: "",
+        ),
+      ),
     );
   }
 

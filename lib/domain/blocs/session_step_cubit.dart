@@ -57,12 +57,6 @@ abstract class SessionStepCubit extends Cubit<SessionStepState> {
         : SessionIntervalCubit(sessionStep as SessionInterval, sessionCubit,);
   }
 
-  SessionStep getObject(int sequenceIndex, SessionBlock? parent) {
-    return SessionStep(
-      id: state.id,
-      sequenceIndex: sequenceIndex,
-      name: state.name,
-      parentStep: parent,
-    );
-  }
+
+  SessionStep getObject(int sequenceIndex, SessionBlock? parent);
 }

@@ -28,7 +28,7 @@ class SessionsDao extends DatabaseAccessor<SessionDatabase>
 
   Future updateSession(Session session) async {
     // update the values of a session
-    var allSteps = session.flattenedSteps;
+    var allSteps = session.distinctSteps;
     var intervals = allSteps.whereType<SessionInterval>().toList();
     var blocks = allSteps.whereType<SessionBlock>().toList();
     await db.sessionIntervals
