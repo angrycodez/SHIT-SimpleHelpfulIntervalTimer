@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:simple_interval_timer/core/helper/converter.dart';
 import 'package:simple_interval_timer/core/theme/theme_constants.dart';
 import 'package:simple_interval_timer/data/models/models.dart';
 import 'package:simple_interval_timer/presentation/widgets/session_step_widget.dart';
@@ -19,15 +20,16 @@ class SessionBlockWidget extends StatelessWidget {
       decoration: MyDecoration.cardDecoration(
         context,
         color: Colors.lightGreenAccent,
-        borderColor: blockCubit.state.isSelected ? MyColors.cardEditBorderColor : MyColors.cardBorderColor,
+        borderColor: blockCubit.state.isSelected
+            ? MyColors.cardEditBorderColor
+            : MyColors.cardBorderColor,
       ),
       child: block.isEditMode
-        ? SessionBlockEditWidget(blockCubit)
-        : SessionBlockInfoWidget(blockCubit),
+          ? SessionBlockEditWidget(blockCubit)
+          : SessionBlockInfoWidget(blockCubit),
     );
   }
 }
-
 
 class SessionBlockInfoWidget extends StatelessWidget {
   final SessionBlockCubit blockCubit;
@@ -43,7 +45,7 @@ class SessionBlockInfoWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(block.name ?? ""),
-            Text(block.duration.toString()),
+            Text(TypeConverter.durationToString(block.duration)),
             Text(block.repetitions.toString()),
             const SizedBox.shrink(),
           ],
@@ -78,7 +80,7 @@ class SessionBlockEditWidget extends StatelessWidget {
     );
   }
 
-  Widget nameTextField(){
+  Widget nameTextField() {
     return SizedBox(
       width: 100,
       child: TextFormField(
@@ -90,23 +92,26 @@ class SessionBlockEditWidget extends StatelessWidget {
       ),
     );
   }
-  Widget repetitionsTextField(){
+
+  Widget repetitionsTextField() {
     return SizedBox(
       width: 100,
       child: TextFormField(
-        initialValue: blockCubit.state.repetitions.toString() ?? "",
+        initialValue: blockCubit.state.repetitions.toString(),
         keyboardType: const TextInputType.numberWithOptions(),
         decoration: const InputDecoration(
           helperText: "Repetitions",
         ),
-        onChanged: (newValue) => blockCubit.setRepetitions(int.parse(newValue)),
+        onChanged: (newValue) {
+          int repetitions = int.tryParse(newValue) ?? 0;
+          blockCubit.setRepetitions(repetitions);
+        },
       ),
     );
   }
 }
 
-
-class SessionBlockChildrenWidget extends StatelessWidget{
+class SessionBlockChildrenWidget extends StatelessWidget {
   final List<SessionStepCubit> children;
 
   const SessionBlockChildrenWidget({super.key, required this.children});
@@ -131,5 +136,4 @@ class SessionBlockChildrenWidget extends StatelessWidget{
       ),
     );
   }
-
 }

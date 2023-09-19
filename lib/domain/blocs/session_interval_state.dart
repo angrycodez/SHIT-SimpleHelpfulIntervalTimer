@@ -19,7 +19,7 @@ class SessionIntervalState extends SessionStepState {
 
   const SessionIntervalState({
     required super.id,
-    super.name,
+    required super.name,
     required super.duration,
     required this.isPause,
     this.startSound,

@@ -1,11 +1,11 @@
 class SessionStepEntry {
   String id;
-  String? name;
+  String name;
   String? parentBlockId;
   int sequenceIndex;
   SessionStepEntry({
     required this.id,
-    this.name,
+    required this.name,
     this.parentBlockId,
     required this.sequenceIndex,
   });
@@ -15,7 +15,7 @@ class SessionBlockEntry extends SessionStepEntry {
   int repetitions;
   SessionBlockEntry({
     required super.id,
-    super.name,
+    required super.name,
     super.parentBlockId,
     required super.sequenceIndex,
     required this.repetitions,
@@ -29,7 +29,7 @@ class SessionIntervalEntry extends SessionStepEntry {
   String? endSoundId;
   SessionIntervalEntry({
     required super.id,
-    super.name,
+    required super.name,
     super.parentBlockId,
     required super.sequenceIndex,
     required this.durationInSeconds,

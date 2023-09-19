@@ -16,17 +16,23 @@ class SessionBlockCubit extends SessionStepCubit {
           sessionCubit,
         ) {
     state.children.forEach((element) {
-      element.stream.listen((event) {
-        emit(state.copyWith(duration: state.computeDuration()));
+      element.durationUpdatedStream.listen((newDuration) {
+        _updateDuration();
       });
     });
   }
 
+  void _updateDuration() {
+    emit(state.copyWith(duration: state.computeDuration()));
+    durationUpdatedStreamController.add(state.duration);
+  }
+
   void addInterval() {
     var interval = SessionInterval(
-        id: Uuid().v4(),
+        id: const Uuid().v4(),
+        name: "",
         sequenceIndex: state.children.length,
-        duration: Duration(seconds: 1),
+        duration: const Duration(seconds: 1),
         isPause: false);
     var cubit = SessionIntervalCubit(interval, sessionCubit);
     var children = List.of(state.children);
@@ -36,7 +42,8 @@ class SessionBlockCubit extends SessionStepCubit {
 
   void addBlock() {
     var block = SessionBlock(
-        id: Uuid().v4(),
+        id: const Uuid().v4(),
+        name: "",
         sequenceIndex: state.children.length,
         repetitions: 1,
         children: []);
@@ -84,8 +91,9 @@ class SessionBlockCubit extends SessionStepCubit {
     return object;
   }
 
-  void setRepetitions(int repititions) {
-    emit(state.copyWith(repetitions: repititions));
+  void setRepetitions(int repetitions) {
+    emit(state.copyWith(repetitions: repetitions));
+    _updateDuration();
   }
 
   void setName(String name) {

@@ -5,3 +5,5 @@ export 'session_overview_cubit.dart';
 export 'session_step_cubit.dart';
 export 'session_block_cubit.dart';
 export 'session_interval_cubit.dart';
+export 'settings_cubit.dart';
+export 'sounds_edit_cubit.dart';

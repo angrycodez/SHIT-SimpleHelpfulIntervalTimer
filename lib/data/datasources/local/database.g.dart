@@ -18,19 +18,20 @@ class $SessionsTable extends Sessions
       clientDefault: () => const Uuid().v4());
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 64),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
+  late final GeneratedColumn<String> name =
+      GeneratedColumn<String>('name', aliasedName, false,
+          additionalChecks: GeneratedColumn.checkTextLength(
+            minTextLength: 0,
+          ),
+          type: DriftSqlType.string,
+          requiredDuringInsert: true);
   static const VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
   @override
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
       'description', aliasedName, false,
       additionalChecks: GeneratedColumn.checkTextLength(
-          minTextLength: 1, maxTextLength: 1024),
+          minTextLength: 0, maxTextLength: 1024),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
   @override
@@ -244,12 +245,13 @@ class $SessionBlocksTable extends SessionBlocks
       clientDefault: () => const Uuid().v4());
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, true,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 64),
-      type: DriftSqlType.string,
-      requiredDuringInsert: false);
+  late final GeneratedColumn<String> name =
+      GeneratedColumn<String>('name', aliasedName, false,
+          additionalChecks: GeneratedColumn.checkTextLength(
+            minTextLength: 0,
+          ),
+          type: DriftSqlType.string,
+          requiredDuringInsert: true);
   static const VerificationMeta _sessionIdMeta =
       const VerificationMeta('sessionId');
   @override
@@ -298,6 +300,8 @@ class $SessionBlocksTable extends SessionBlocks
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
     }
     if (data.containsKey('session_id')) {
       context.handle(_sessionIdMeta,
@@ -339,7 +343,7 @@ class $SessionBlocksTable extends SessionBlocks
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name']),
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       parentBlockId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}parent_block_id']),
       sequenceIndex: attachedDatabase.typeMapping
@@ -357,7 +361,7 @@ class $SessionBlocksTable extends SessionBlocks
 
 class SessionBlocksCompanion extends UpdateCompanion<SessionBlockEntry> {
   final Value<String> id;
-  final Value<String?> name;
+  final Value<String> name;
   final Value<String> sessionId;
   final Value<String?> parentBlockId;
   final Value<int> sequenceIndex;
@@ -374,13 +378,14 @@ class SessionBlocksCompanion extends UpdateCompanion<SessionBlockEntry> {
   });
   SessionBlocksCompanion.insert({
     this.id = const Value.absent(),
-    this.name = const Value.absent(),
+    required String name,
     required String sessionId,
     this.parentBlockId = const Value.absent(),
     required int sequenceIndex,
     required int repetitions,
     this.rowid = const Value.absent(),
-  })  : sessionId = Value(sessionId),
+  })  : name = Value(name),
+        sessionId = Value(sessionId),
         sequenceIndex = Value(sequenceIndex),
         repetitions = Value(repetitions);
   static Insertable<SessionBlockEntry> custom({
@@ -405,7 +410,7 @@ class SessionBlocksCompanion extends UpdateCompanion<SessionBlockEntry> {
 
   SessionBlocksCompanion copyWith(
       {Value<String>? id,
-      Value<String?>? name,
+      Value<String>? name,
       Value<String>? sessionId,
       Value<String?>? parentBlockId,
       Value<int>? sequenceIndex,
@@ -696,12 +701,13 @@ class $SessionIntervalsTable extends SessionIntervals
       clientDefault: () => const Uuid().v4());
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, true,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 64),
-      type: DriftSqlType.string,
-      requiredDuringInsert: false);
+  late final GeneratedColumn<String> name =
+      GeneratedColumn<String>('name', aliasedName, false,
+          additionalChecks: GeneratedColumn.checkTextLength(
+            minTextLength: 0,
+          ),
+          type: DriftSqlType.string,
+          requiredDuringInsert: true);
   static const VerificationMeta _sessionIdMeta =
       const VerificationMeta('sessionId');
   @override
@@ -787,6 +793,8 @@ class $SessionIntervalsTable extends SessionIntervals
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
     }
     if (data.containsKey('session_id')) {
       context.handle(_sessionIdMeta,
@@ -846,7 +854,7 @@ class $SessionIntervalsTable extends SessionIntervals
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name']),
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       parentBlockId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}parent_block_id']),
       sequenceIndex: attachedDatabase.typeMapping
@@ -870,7 +878,7 @@ class $SessionIntervalsTable extends SessionIntervals
 
 class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
   final Value<String> id;
-  final Value<String?> name;
+  final Value<String> name;
   final Value<String> sessionId;
   final Value<String?> parentBlockId;
   final Value<int> sequenceIndex;
@@ -893,7 +901,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
   });
   SessionIntervalsCompanion.insert({
     this.id = const Value.absent(),
-    this.name = const Value.absent(),
+    required String name,
     required String sessionId,
     this.parentBlockId = const Value.absent(),
     required int sequenceIndex,
@@ -902,7 +910,8 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
     this.startSoundId = const Value.absent(),
     this.endSoundId = const Value.absent(),
     this.rowid = const Value.absent(),
-  })  : sessionId = Value(sessionId),
+  })  : name = Value(name),
+        sessionId = Value(sessionId),
         sequenceIndex = Value(sequenceIndex),
         durationInSeconds = Value(durationInSeconds),
         isPause = Value(isPause);
@@ -934,7 +943,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
 
   SessionIntervalsCompanion copyWith(
       {Value<String>? id,
-      Value<String?>? name,
+      Value<String>? name,
       Value<String>? sessionId,
       Value<String?>? parentBlockId,
       Value<int>? sequenceIndex,
@@ -1011,6 +1020,321 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
   }
 }
 
+class $SettingsTable extends Settings
+    with TableInfo<$SettingsTable, SettingsEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SettingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => const Uuid().v4());
+  static const VerificationMeta _defaultIntervalStartSoundMeta =
+      const VerificationMeta('defaultIntervalStartSound');
+  @override
+  late final GeneratedColumn<String> defaultIntervalStartSound =
+      GeneratedColumn<String>('default_interval_start_sound', aliasedName, true,
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          defaultConstraints:
+              GeneratedColumn.constraintIsAlways('REFERENCES sounds (id)'));
+  static const VerificationMeta _defaultIntervalEndSoundMeta =
+      const VerificationMeta('defaultIntervalEndSound');
+  @override
+  late final GeneratedColumn<String> defaultIntervalEndSound =
+      GeneratedColumn<String>('default_interval_end_sound', aliasedName, true,
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          defaultConstraints:
+              GeneratedColumn.constraintIsAlways('REFERENCES sounds (id)'));
+  static const VerificationMeta _defaultSessionEndSoundMeta =
+      const VerificationMeta('defaultSessionEndSound');
+  @override
+  late final GeneratedColumn<String> defaultSessionEndSound =
+      GeneratedColumn<String>('default_session_end_sound', aliasedName, true,
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          defaultConstraints:
+              GeneratedColumn.constraintIsAlways('REFERENCES sounds (id)'));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        defaultIntervalStartSound,
+        defaultIntervalEndSound,
+        defaultSessionEndSound
+      ];
+  @override
+  String get aliasedName => _alias ?? 'settings';
+  @override
+  String get actualTableName => 'settings';
+  @override
+  VerificationContext validateIntegrity(Insertable<SettingsEntry> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('default_interval_start_sound')) {
+      context.handle(
+          _defaultIntervalStartSoundMeta,
+          defaultIntervalStartSound.isAcceptableOrUnknown(
+              data['default_interval_start_sound']!,
+              _defaultIntervalStartSoundMeta));
+    }
+    if (data.containsKey('default_interval_end_sound')) {
+      context.handle(
+          _defaultIntervalEndSoundMeta,
+          defaultIntervalEndSound.isAcceptableOrUnknown(
+              data['default_interval_end_sound']!,
+              _defaultIntervalEndSoundMeta));
+    }
+    if (data.containsKey('default_session_end_sound')) {
+      context.handle(
+          _defaultSessionEndSoundMeta,
+          defaultSessionEndSound.isAcceptableOrUnknown(
+              data['default_session_end_sound']!, _defaultSessionEndSoundMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SettingsEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SettingsEntry(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      defaultIntervalStartSound: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}default_interval_start_sound']),
+      defaultIntervalEndSound: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}default_interval_end_sound']),
+      defaultSessionEndSound: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}default_session_end_sound']),
+    );
+  }
+
+  @override
+  $SettingsTable createAlias(String alias) {
+    return $SettingsTable(attachedDatabase, alias);
+  }
+}
+
+class SettingsEntry extends DataClass implements Insertable<SettingsEntry> {
+  final String id;
+  final String? defaultIntervalStartSound;
+  final String? defaultIntervalEndSound;
+  final String? defaultSessionEndSound;
+  const SettingsEntry(
+      {required this.id,
+      this.defaultIntervalStartSound,
+      this.defaultIntervalEndSound,
+      this.defaultSessionEndSound});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    if (!nullToAbsent || defaultIntervalStartSound != null) {
+      map['default_interval_start_sound'] =
+          Variable<String>(defaultIntervalStartSound);
+    }
+    if (!nullToAbsent || defaultIntervalEndSound != null) {
+      map['default_interval_end_sound'] =
+          Variable<String>(defaultIntervalEndSound);
+    }
+    if (!nullToAbsent || defaultSessionEndSound != null) {
+      map['default_session_end_sound'] =
+          Variable<String>(defaultSessionEndSound);
+    }
+    return map;
+  }
+
+  SettingsCompanion toCompanion(bool nullToAbsent) {
+    return SettingsCompanion(
+      id: Value(id),
+      defaultIntervalStartSound:
+          defaultIntervalStartSound == null && nullToAbsent
+              ? const Value.absent()
+              : Value(defaultIntervalStartSound),
+      defaultIntervalEndSound: defaultIntervalEndSound == null && nullToAbsent
+          ? const Value.absent()
+          : Value(defaultIntervalEndSound),
+      defaultSessionEndSound: defaultSessionEndSound == null && nullToAbsent
+          ? const Value.absent()
+          : Value(defaultSessionEndSound),
+    );
+  }
+
+  factory SettingsEntry.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SettingsEntry(
+      id: serializer.fromJson<String>(json['id']),
+      defaultIntervalStartSound:
+          serializer.fromJson<String?>(json['defaultIntervalStartSound']),
+      defaultIntervalEndSound:
+          serializer.fromJson<String?>(json['defaultIntervalEndSound']),
+      defaultSessionEndSound:
+          serializer.fromJson<String?>(json['defaultSessionEndSound']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'defaultIntervalStartSound':
+          serializer.toJson<String?>(defaultIntervalStartSound),
+      'defaultIntervalEndSound':
+          serializer.toJson<String?>(defaultIntervalEndSound),
+      'defaultSessionEndSound':
+          serializer.toJson<String?>(defaultSessionEndSound),
+    };
+  }
+
+  SettingsEntry copyWith(
+          {String? id,
+          Value<String?> defaultIntervalStartSound = const Value.absent(),
+          Value<String?> defaultIntervalEndSound = const Value.absent(),
+          Value<String?> defaultSessionEndSound = const Value.absent()}) =>
+      SettingsEntry(
+        id: id ?? this.id,
+        defaultIntervalStartSound: defaultIntervalStartSound.present
+            ? defaultIntervalStartSound.value
+            : this.defaultIntervalStartSound,
+        defaultIntervalEndSound: defaultIntervalEndSound.present
+            ? defaultIntervalEndSound.value
+            : this.defaultIntervalEndSound,
+        defaultSessionEndSound: defaultSessionEndSound.present
+            ? defaultSessionEndSound.value
+            : this.defaultSessionEndSound,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('SettingsEntry(')
+          ..write('id: $id, ')
+          ..write('defaultIntervalStartSound: $defaultIntervalStartSound, ')
+          ..write('defaultIntervalEndSound: $defaultIntervalEndSound, ')
+          ..write('defaultSessionEndSound: $defaultSessionEndSound')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, defaultIntervalStartSound,
+      defaultIntervalEndSound, defaultSessionEndSound);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SettingsEntry &&
+          other.id == this.id &&
+          other.defaultIntervalStartSound == this.defaultIntervalStartSound &&
+          other.defaultIntervalEndSound == this.defaultIntervalEndSound &&
+          other.defaultSessionEndSound == this.defaultSessionEndSound);
+}
+
+class SettingsCompanion extends UpdateCompanion<SettingsEntry> {
+  final Value<String> id;
+  final Value<String?> defaultIntervalStartSound;
+  final Value<String?> defaultIntervalEndSound;
+  final Value<String?> defaultSessionEndSound;
+  final Value<int> rowid;
+  const SettingsCompanion({
+    this.id = const Value.absent(),
+    this.defaultIntervalStartSound = const Value.absent(),
+    this.defaultIntervalEndSound = const Value.absent(),
+    this.defaultSessionEndSound = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SettingsCompanion.insert({
+    this.id = const Value.absent(),
+    this.defaultIntervalStartSound = const Value.absent(),
+    this.defaultIntervalEndSound = const Value.absent(),
+    this.defaultSessionEndSound = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  static Insertable<SettingsEntry> custom({
+    Expression<String>? id,
+    Expression<String>? defaultIntervalStartSound,
+    Expression<String>? defaultIntervalEndSound,
+    Expression<String>? defaultSessionEndSound,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (defaultIntervalStartSound != null)
+        'default_interval_start_sound': defaultIntervalStartSound,
+      if (defaultIntervalEndSound != null)
+        'default_interval_end_sound': defaultIntervalEndSound,
+      if (defaultSessionEndSound != null)
+        'default_session_end_sound': defaultSessionEndSound,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SettingsCompanion copyWith(
+      {Value<String>? id,
+      Value<String?>? defaultIntervalStartSound,
+      Value<String?>? defaultIntervalEndSound,
+      Value<String?>? defaultSessionEndSound,
+      Value<int>? rowid}) {
+    return SettingsCompanion(
+      id: id ?? this.id,
+      defaultIntervalStartSound:
+          defaultIntervalStartSound ?? this.defaultIntervalStartSound,
+      defaultIntervalEndSound:
+          defaultIntervalEndSound ?? this.defaultIntervalEndSound,
+      defaultSessionEndSound:
+          defaultSessionEndSound ?? this.defaultSessionEndSound,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (defaultIntervalStartSound.present) {
+      map['default_interval_start_sound'] =
+          Variable<String>(defaultIntervalStartSound.value);
+    }
+    if (defaultIntervalEndSound.present) {
+      map['default_interval_end_sound'] =
+          Variable<String>(defaultIntervalEndSound.value);
+    }
+    if (defaultSessionEndSound.present) {
+      map['default_session_end_sound'] =
+          Variable<String>(defaultSessionEndSound.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SettingsCompanion(')
+          ..write('id: $id, ')
+          ..write('defaultIntervalStartSound: $defaultIntervalStartSound, ')
+          ..write('defaultIntervalEndSound: $defaultIntervalEndSound, ')
+          ..write('defaultSessionEndSound: $defaultSessionEndSound, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$SessionDatabase extends GeneratedDatabase {
   _$SessionDatabase(QueryExecutor e) : super(e);
   late final $SessionsTable sessions = $SessionsTable(this);
@@ -1018,10 +1342,11 @@ abstract class _$SessionDatabase extends GeneratedDatabase {
   late final $SoundsTable sounds = $SoundsTable(this);
   late final $SessionIntervalsTable sessionIntervals =
       $SessionIntervalsTable(this);
+  late final $SettingsTable settings = $SettingsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [sessions, sessionBlocks, sounds, sessionIntervals];
+      [sessions, sessionBlocks, sounds, sessionIntervals, settings];
 }

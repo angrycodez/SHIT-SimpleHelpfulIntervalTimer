@@ -22,6 +22,11 @@ class SessionCubit extends Cubit<SessionState> {
       session,
       this,
     ));
+    loadedState.steps.forEach((element) {
+      element.durationUpdatedStream.listen((newDuration) {
+        emit(loadedState.copyWith(duration: loadedState.computeDuration()));
+      });
+    });
   }
 
   SessionStateLoaded get loadedState {
@@ -31,7 +36,7 @@ class SessionCubit extends Cubit<SessionState> {
 
   void selectionChanged(SessionStepCubit? step) {
     _editModeChangedStreamController.sink.add(step?.state.id);
-    if(state is SessionStateLoaded) {
+    if (state is SessionStateLoaded) {
       emit((state as SessionStateLoaded).withSelectedStep(step));
     }
   }
@@ -221,28 +226,41 @@ class SessionCubit extends Cubit<SessionState> {
     }
   }
 
-  void addInterval(){
+  void addInterval() {
     var state = this.state as SessionStateLoaded;
-    var interval = SessionInterval(id: Uuid().v4(), sequenceIndex: state.steps.length, duration: Duration(seconds: 1), isPause: false);
+    var interval = SessionInterval(
+      id: const Uuid().v4(),
+      name: "",
+      sequenceIndex: state.steps.length,
+      duration: const Duration(seconds: 1),
+      isPause: false,
+    );
     var cubit = SessionIntervalCubit(interval, this);
     var steps = List.of(state.steps);
     steps.add(cubit);
     emit(state.copyWith(steps: steps));
   }
 
-  void addBlock(){
+  void addBlock() {
     var state = this.state as SessionStateLoaded;
-    var block = SessionBlock(id: Uuid().v4(), sequenceIndex: state.steps.length, repetitions: 1, children: []);
+    var block = SessionBlock(
+      id: const Uuid().v4(),
+      name: "",
+      sequenceIndex: state.steps.length,
+      repetitions: 1,
+      children: [],
+    );
     var cubit = SessionBlockCubit(block, this);
     var steps = List.of(state.steps);
     steps.add(cubit);
     emit(state.copyWith(steps: steps));
   }
 
-  void setName(String name){
+  void setName(String name) {
     emit(loadedState.copyWith(name: name));
   }
-  void setDescription(String description){
+
+  void setDescription(String description) {
     emit(loadedState.copyWith(description: description));
   }
 
@@ -260,7 +278,7 @@ class SessionCubit extends Cubit<SessionState> {
     );
   }
 
-  List<SessionInterval> getIntervalSequence(){
+  List<SessionInterval> getIntervalSequence() {
     return getObject().intervalSequence;
   }
 

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:core';
 
 import 'package:bloc/bloc.dart';
@@ -10,6 +11,8 @@ part 'session_step_state.dart';
 
 abstract class SessionStepCubit extends Cubit<SessionStepState> {
   SessionCubit sessionCubit;
+  final StreamController<Duration> durationUpdatedStreamController = StreamController();
+  Stream<Duration> get durationUpdatedStream => durationUpdatedStreamController.stream;
   SessionStepCubit(
     SessionStep sessionStep,
     this.sessionCubit, ) : super(sessionStep is SessionBlock
@@ -20,10 +23,6 @@ abstract class SessionStepCubit extends Cubit<SessionStepState> {
   }
   bool get hasChanges => state.hasChanges;
 
-  @override
-  Future<void> close() {
-    return super.close();
-  }
 
   // if referenceStep is null, use movingStep for reference
   void moveUp() => sessionCubit.moveUpChild(this);

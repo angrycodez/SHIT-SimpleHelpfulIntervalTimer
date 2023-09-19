@@ -15,10 +15,17 @@ part 'database.g.dart';
 
 @DriftDatabase(
   tables: [
-    Sessions, SessionBlocks, SessionIntervals, Sounds
+    Sessions,
+    SessionBlocks,
+    SessionIntervals,
+    Sounds,
+    Settings,
   ],
   daos: [
-    SessionsDao, SessionStepsDao
+    SessionsDao,
+    SessionStepsDao,
+    SoundsDao,
+    SettingsDao
   ],
 )
 class SessionDatabase extends _$SessionDatabase {
@@ -44,17 +51,19 @@ class SessionDatabase extends _$SessionDatabase {
       await customStatement('PRAGMA foreign_keys = ON');
 
       if (details.wasCreated) {
-        sessions.insertOne(SessionsCompanion.insert(id: Value("1") ,name: "Test", description: "Eine Testsession"));
+        settings.insertOne(SettingsCompanion.insert(id: Value(const Uuid().v4()),));
 
-        sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: Value("1"), name: Value("first"),sequenceIndex: 0, durationInSeconds: 10, isPause: false,));
+        sessions.insertOne(SessionsCompanion.insert(id: const Value("1") ,name: "Test", description: "Eine Testsession"));
 
-        sessionBlocks.insertOne(SessionBlocksCompanion.insert(sessionId: "1", id: Value("2"), name: Value("first_block"), sequenceIndex: 1, repetitions: 2,));
-        sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: Value("4"), name: Value("second_in_block"), parentBlockId: Value("2"),sequenceIndex: 1, durationInSeconds: 2, isPause: true,));
-        sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: Value("3"), name: Value("first_in_block"), parentBlockId: Value("2"),sequenceIndex: 0, durationInSeconds: 10, isPause: false,));
+        sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: const Value("1"), name: "first",sequenceIndex: 0, durationInSeconds: 10, isPause: false,));
 
-        sessionBlocks.insertOne(SessionBlocksCompanion.insert(sessionId: "1", id: Value("5"), name: Value("second_block"), sequenceIndex: 2, repetitions: 5,));
-        sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: Value("6"), name: Value("second_in_block"), parentBlockId: Value("5"),sequenceIndex: 1, durationInSeconds: 42, isPause: true,));
-        sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: Value("7"), name: Value("first_in_block"), parentBlockId: Value("5"),sequenceIndex: 0, durationInSeconds: 3, isPause: true,));
+        sessionBlocks.insertOne(SessionBlocksCompanion.insert(sessionId: "1", id: const Value("2"), name: "first_block", sequenceIndex: 1, repetitions: 2,));
+        sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: const Value("4"), name: "second_in_block", parentBlockId: const Value("2"),sequenceIndex: 1, durationInSeconds: 2, isPause: true,));
+        sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: const Value("3"), name: "first_in_block", parentBlockId: const Value("2"),sequenceIndex: 0, durationInSeconds: 10, isPause: false,));
+
+        sessionBlocks.insertOne(SessionBlocksCompanion.insert(sessionId: "1", id: const Value("5"), name: "second_block", sequenceIndex: 2, repetitions: 5,));
+        sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: const Value("6"), name: "second_in_block", parentBlockId: const Value("5"),sequenceIndex: 1, durationInSeconds: 42, isPause: true,));
+        sessionIntervals.insertOne(SessionIntervalsCompanion.insert(sessionId: "1", id: const Value("7"), name: "first_in_block", parentBlockId: const Value("5"),sequenceIndex: 0, durationInSeconds: 3, isPause: true,));
 
       }
     }));

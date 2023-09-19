@@ -13,7 +13,9 @@ class SessionIntervalCubit extends SessionStepCubit {
     SessionCubit sessionCubit, ) : super(
           sessionInterval,
           sessionCubit,
-        );
+        ){
+    durationUpdatedStreamController.add(state.duration);
+  }
 
   void setName(String name){
     emit(state.copyWith(name: name));
@@ -39,5 +41,6 @@ class SessionIntervalCubit extends SessionStepCubit {
 
   void setDuration(Duration duration) {
     emit(state.copyWith(duration: duration));
+    durationUpdatedStreamController.add(state.duration);
   }
 }

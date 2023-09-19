@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_interval_timer/core/helper/converter.dart';
 import 'package:simple_interval_timer/core/theme/theme_constants.dart';
 
 class DurationTextField extends StatefulWidget {
@@ -67,15 +68,15 @@ class _DurationTextFieldState extends State<DurationTextField> {
   @override
   void initState() {
     hoursTextEditingController = TextEditingController(
-        text: _hoursFromDuration(widget.initalDuration).toString());
+        text: TypeConverter.hoursFromDuration(widget.initalDuration).toString());
     hoursTextEditingController.addListener(onValueChanged);
 
     minutesTextEditingController = TextEditingController(
-        text: _minutesFromDuration(widget.initalDuration).toString());
+        text: TypeConverter.minutesFromDuration(widget.initalDuration).toString());
     minutesTextEditingController.addListener(onValueChanged);
 
     secondsTextEditingController = TextEditingController(
-        text: _secondsFromDuration(widget.initalDuration).toString());
+        text: TypeConverter.secondsFromDuration(widget.initalDuration).toString());
     secondsTextEditingController.addListener(onValueChanged);
 
     super.initState();
@@ -94,15 +95,4 @@ class _DurationTextFieldState extends State<DurationTextField> {
     super.dispose();
   }
 
-  int _hoursFromDuration(Duration d) {
-    return int.parse(d.toString().split(":")[0]);
-  }
-
-  int _minutesFromDuration(Duration d) {
-    return int.parse(d.toString().split(":")[1]);
-  }
-
-  int _secondsFromDuration(Duration d) {
-    return int.parse(d.toString().split(".")[0].split(":")[2]);
-  }
 }

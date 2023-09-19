@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simple_interval_timer/core/theme/theme_constants.dart';
 import 'package:simple_interval_timer/domain/blocs/blocs.dart';
+import 'package:simple_interval_timer/presentation/widgets/my_scaffold.dart';
 import 'package:simple_interval_timer/presentation/widgets/session_block_edit_controls_widget.dart';
 import 'package:simple_interval_timer/presentation/widgets/session_interval_edit_controls_widget.dart';
 
@@ -37,7 +38,7 @@ class SessionPage extends StatelessWidget {
         value: sessionCubit,
         child: BlocBuilder<SessionCubit, SessionState>(builder: (context, state) {
           return state is SessionStateLoaded
-              ? Scaffold(
+              ? MyScaffold(
                   appBar: StandardComponents.getAppBar(context, state.name),
                   body: Container(
                     margin: Layout.cardMargin,

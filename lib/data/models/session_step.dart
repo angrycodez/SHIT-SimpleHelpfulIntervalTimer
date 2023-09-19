@@ -5,7 +5,7 @@ import 'package:simple_interval_timer/data/models/models.dart';
 
 abstract class SessionStep extends Equatable {
   final String id;
-  final String? name;
+  final String name;
   final SessionBlock? parentStep;
   final int sequenceIndex;
   Duration get duration => Duration.zero;
@@ -13,7 +13,7 @@ abstract class SessionStep extends Equatable {
 
   const SessionStep({
     required this.id,
-    this.name,
+    required this.name,
     this.parentStep,
     required this.sequenceIndex,
   });
@@ -57,7 +57,7 @@ class SessionBlock extends SessionStep {
 
   const SessionBlock(
       {required String id,
-      String? name,
+      required String name,
       SessionBlock? parentStep,
       required int sequenceIndex,
       required this.repetitions,
@@ -109,7 +109,7 @@ class SessionInterval extends SessionStep {
 
   const SessionInterval({
     required String id,
-    String? name,
+    required String name,
     SessionBlock? parentStep,
     required int sequenceIndex,
     required this.duration,

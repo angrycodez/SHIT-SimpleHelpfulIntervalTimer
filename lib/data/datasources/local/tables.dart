@@ -4,15 +4,17 @@ import 'package:drift/drift.dart';
 import 'package:simple_interval_timer/data/datasources/local/daos/models.dart';
 import 'package:uuid/uuid.dart';
 
+const maxNameLength = 128;
+
 @DataClassName("SessionEntry")
 class Sessions extends Table with UuidPrimaryKey{
-  TextColumn get name => text().withLength(min: 1, max: 64)();
-  TextColumn get description => text().withLength(min: 1, max: 1024)();
+  TextColumn get name => text().withLength(min: 0, max: maxNameLength)();
+  TextColumn get description => text().withLength(min: 0, max: 1024)();
 }
 
 @UseRowClass(SessionIntervalEntry)
 class SessionIntervals extends Table with UuidPrimaryKey{
-  TextColumn get name => text().nullable().withLength(min: 1, max: 64)();
+  TextColumn get name => text().withLength(min: 0, max: maxNameLength)();
 
   TextColumn get sessionId => text().references(Sessions, #id)();
   TextColumn get parentBlockId => text().nullable().references(SessionBlocks, #id)();
@@ -26,7 +28,7 @@ class SessionIntervals extends Table with UuidPrimaryKey{
 
 @UseRowClass(SessionBlockEntry)
 class SessionBlocks extends Table with UuidPrimaryKey{
-  TextColumn get name => text().nullable().withLength(min: 1, max: 64)();
+  TextColumn get name => text().withLength(min: 0, max: maxNameLength)();
 
   TextColumn get sessionId => text().references(Sessions, #id)();
   TextColumn get parentBlockId => text().nullable().references(SessionBlocks, #id)();
@@ -39,6 +41,12 @@ class SessionBlocks extends Table with UuidPrimaryKey{
 class Sounds extends Table with UuidPrimaryKey{
   TextColumn get filename => text()();
   TextColumn get path => text()();
+}
+@DataClassName("SettingsEntry")
+class Settings extends Table with UuidPrimaryKey{
+  TextColumn get defaultIntervalStartSound => text().nullable().references(Sounds, #id)();
+  TextColumn get defaultIntervalEndSound => text().nullable().references(Sounds, #id)();
+  TextColumn get defaultSessionEndSound => text().nullable().references(Sounds, #id)();
 }
 
 // Tables can mix-in common definitions if needed

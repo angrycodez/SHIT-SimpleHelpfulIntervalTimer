@@ -13,10 +13,14 @@ class SessionStateLoaded extends SessionState {
   final List<SessionStepCubit> steps;
   final SessionStepCubit? selectedStep;
   bool get hasSelectedStep => selectedStep != null;
-  Duration get duration => steps.fold(
+
+  final Duration duration;
+  Duration computeDuration() => steps.fold(
       Duration.zero,
       (previousValue, element) => Duration(
           seconds: previousValue.inSeconds + element.state.duration.inSeconds));
+
+
   final bool hasChanges;
 
   SessionStateLoaded.fromSession(
@@ -26,10 +30,7 @@ class SessionStateLoaded extends SessionState {
           name: session.name,
           description: session.description,
           steps: session.steps
-              .map((e) => SessionStepCubit.getCubit(
-                    e,
-                    sessionCubit,
-                  ))
+              .map((e) => SessionStepCubit.getCubit(e,sessionCubit))
               .toList(),
         );
 
@@ -38,6 +39,7 @@ class SessionStateLoaded extends SessionState {
     required this.name,
     required this.description,
     required this.steps,
+    this.duration = Duration.zero,
     this.selectedStep,
     this.hasChanges = false,
   }) : super();
@@ -48,6 +50,7 @@ class SessionStateLoaded extends SessionState {
         name,
         description,
         steps,
+        duration,
         selectedStep,
         hasChanges,
       ];
@@ -58,6 +61,7 @@ class SessionStateLoaded extends SessionState {
       name: name,
       description: description,
       steps: steps,
+      duration: duration,
       selectedStep: selectedStep,
       hasChanges: hasChanges,
     );
@@ -66,6 +70,7 @@ class SessionStateLoaded extends SessionState {
     String? id,
     String? name,
     String? description,
+    Duration? duration,
     List<SessionStepCubit>? steps,
   }) {
     return SessionStateLoaded(
@@ -73,6 +78,7 @@ class SessionStateLoaded extends SessionState {
       name: name ?? this.name,
       description: description ?? this.description,
       steps: steps ?? this.steps,
+      duration: duration ?? this.duration,
       selectedStep: selectedStep,
       hasChanges: true,
     );
