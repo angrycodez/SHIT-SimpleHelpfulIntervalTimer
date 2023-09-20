@@ -36,9 +36,8 @@ class TimerPage extends StatelessWidget {
                 child: Stack(
                   children: [
                     Center(
-                      child: SizedBox(
-                        height: 280,
-                        width: 280,
+                      child: SizedBox.square(
+                        dimension: 280,
                         child: CircularProgressIndicator(
                           value: _currentIntervalProgress(state),
 
@@ -49,14 +48,28 @@ class TimerPage extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          if(!state.isTicking)...[
+                            IconButton(onPressed: ()=>timerCubit.resume(), icon: MyIcons.playIcon)
+                          ]else...[
+                            IconButton(onPressed: ()=>timerCubit.pause(), icon: MyIcons.pauseIcon)
+                          ],
                           Text(state.currentInterval.name ?? ""),
                           Text(
                             TypeConverter.durationToString(
                               state.remainingTimeCurrentInterval,
+                              showFractions: true,
                               addAppendix: false,
                             ),
                             style: TextStyle(fontSize: 25),
                           ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(onPressed: () => timerCubit.resetInterval(), icon: MyIcons.restartIntervalIcon),
+                              IconButton(onPressed: () => timerCubit.stop(), icon: MyIcons.stopIntervalIcon),
+                              IconButton(onPressed: () => timerCubit.startNextInterval(), icon: MyIcons.skipIntervalIcon),
+                            ],
+                          )
                         ],
                       ),
                     ),

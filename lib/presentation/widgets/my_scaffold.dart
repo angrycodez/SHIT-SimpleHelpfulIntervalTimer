@@ -26,7 +26,7 @@ class MyScaffold extends StatelessWidget{
   Widget _timerBar(){
     return BlocBuilder<TimerCubit, TimerState>(
         builder: (context, state){
-          if(state is! TimerStateLoaded || state.isDone){
+          if(state is! TimerStateLoaded || !state.isTicking){
             return const SizedBox.shrink();
           }
           return TimerBar(timerState: state);

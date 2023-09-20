@@ -42,7 +42,10 @@ class TimerStateLoaded extends TimerState {
         intervals,
         currentIntervalIndex,
         remainingTimeCurrentInterval,
-    intervalStartedTimestamp, isPaused, isDone, isTicking,
+        intervalStartedTimestamp,
+        isPaused,
+        isDone,
+        isTicking,
       ];
 
   TimerStateLoaded copyWith({

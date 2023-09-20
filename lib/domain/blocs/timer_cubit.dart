@@ -67,6 +67,8 @@ class TimerCubit extends Cubit<TimerState> {
       var referenceTimestamp = DateTime.now().subtract(timePassed);
       emit(loadedState.copyWith(isPaused: false, intervalStartedTimestamp: referenceTimestamp,));
       _tick();
+    }else{
+      start();
     }
 
   }
@@ -75,6 +77,17 @@ class TimerCubit extends Cubit<TimerState> {
       return;
     }
     init(loadedState.session);
+  }
+
+  void resetInterval(){
+    if(!isLoaded){
+      return;
+    }
+    bool startTicking = !loadedState.isTicking;
+    emit(loadedState.copyWith(intervalStartedTimestamp: DateTime.now(), isPaused: false, isDone: false,));
+    if(startTicking){
+      _tick();
+    }
   }
 
   bool startNextInterval(){

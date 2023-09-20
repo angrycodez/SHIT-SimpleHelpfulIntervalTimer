@@ -17,6 +17,7 @@ class MyColors {
 
 class MyIcons {
   static const Icon startSessionIcon = Icon(Icons.play_arrow);
+  static const Icon playIcon = Icon(Icons.play_arrow);
   static const Icon pauseIcon = Icon(Icons.pause);
   static const Icon workIcon = Icon(Icons.work);
   static const Icon moveUpIcon = Icon(Icons.arrow_upward);
@@ -28,9 +29,13 @@ class MyIcons {
   static const Icon editOffIcon = Icon(Icons.edit_off);
   static const Icon settingsIcon = Icon(Icons.settings);
   static const Icon navigateMenuIcon = Icon(Icons.chevron_right);
+  static const Icon nextIntervalIcon = Icon(Icons.account_tree);
   static const Icon addSoundIcon = Icon(Icons.add_alarm);
   static const Icon soundIcon = Icon(Icons.music_note_outlined);
   static const Icon soundPreviewIcon = Icon(Icons.volume_up_outlined);
+  static const Icon restartIntervalIcon = Icon(Icons.restart_alt);
+  static const Icon stopIntervalIcon = Icon(Icons.stop);
+  static const Icon skipIntervalIcon = Icon(Icons.skip_next);
   static const Icon deleteIcon = Icon(
     Icons.delete_forever,
     color: Colors.red,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_interval_timer/core/helper/converter.dart';
+import 'package:simple_interval_timer/core/theme/theme_constants.dart';
 import 'package:simple_interval_timer/data/models/models.dart';
 import 'package:simple_interval_timer/domain/blocs/timer_cubit.dart';
 import 'package:simple_interval_timer/presentation/pages/timer_page.dart';
@@ -15,49 +16,54 @@ class TimerBar extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          Flexible(
-            fit: FlexFit.loose,
-            flex: 3,
+          Expanded(
             child: _currentInterval(),
           ),
-          if(timerState.hasNextInterval)...[
-            Flexible(
-              fit: FlexFit.loose,
-              flex: 1,
-              child: _previewNextInterval(),
-            ),
-          ],
         ],
       ),
     );
+  }
+
+  int _getProgress(){
+    double part = (timerState.remainingTimeCurrentInterval.inMilliseconds / timerState.currentInterval.duration.inMilliseconds);
+    return (part * 100).floor();
   }
 
   Widget _currentInterval() {
-    return Container(
-      color: Colors.lightGreenAccent,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Text(
-              timerState.currentInterval.name ?? timerState.currentInterval.id),
-          Text(TypeConverter.durationToString(
-              timerState.remainingTimeCurrentInterval)),
-        ],
-      ),
-    );
-  }
+    int progress = _getProgress();
+    return SizedBox(height: 25, child: Stack(
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+          Flexible(flex: 100 - progress, child: Container(color: Colors.greenAccent,),),
+          Flexible(flex: progress, child: Container(color: Colors.red,),)
+        ],),
+        Container(
+        color: Colors.transparent,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+                timerState.currentInterval.name ?? timerState.currentInterval.id),
+            Text(TypeConverter.durationToString(
+                timerState.remainingTimeCurrentInterval)),
+            if(timerState.hasNextInterval)...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                MyIcons.nextIntervalIcon,
+                SizedBox(width: 5),
+                Text(timerState.intervals[timerState.nextIndex].name),
+              ],),
 
-  Widget _previewNextInterval() {
-    int nextIndex = timerState.nextIndex;
-    SessionInterval nextInterval = timerState.intervals[nextIndex];
-    return Container(
-      color: Colors.orange,
-      child: Row(
-        children: [
-          Text(nextInterval.name ?? nextInterval.id),
-          Text(TypeConverter.durationToString(nextInterval.duration)),
-        ],
-      ),
-    );
+            ]
+          ],
+        ),
+      ),],
+    ),);
   }
 }
