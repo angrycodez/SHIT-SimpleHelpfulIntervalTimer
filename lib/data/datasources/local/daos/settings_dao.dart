@@ -22,9 +22,9 @@ class SettingsDao extends DatabaseAccessor<SessionDatabase>
             defaultIntervalStartSound:
                 Value(settings.defaultIntervalStartSound?.id),
             defaultIntervalEndSound:
-                Value(settings.defaultIntervalStartSound?.id),
+                Value(settings.defaultIntervalEndSound?.id),
             defaultSessionEndSound:
-                Value(settings.defaultIntervalStartSound?.id),
+                Value(settings.defaultSessionEndSound?.id),
           ),
         );
   }

@@ -12,7 +12,7 @@ part 'session_step_state.dart';
 abstract class SessionStepCubit extends Cubit<SessionStepState> {
   SessionCubit sessionCubit;
   final StreamController<Duration> durationUpdatedStreamController = StreamController();
-  Stream<Duration> get durationUpdatedStream => durationUpdatedStreamController.stream;
+  Stream<Duration> get durationUpdatedStream => durationUpdatedStreamController.stream.asBroadcastStream();
   SessionStepCubit(
     SessionStep sessionStep,
     this.sessionCubit, ) : super(sessionStep is SessionBlock
@@ -35,7 +35,7 @@ abstract class SessionStepCubit extends Cubit<SessionStepState> {
 
   void onSelectionChanged(String? editStepId) {
     if (editStepId != state.id) {
-      emit(state.copyWith(isSelected: false, isEditMode: false));
+      emit(state.copyWith(isSelected: false, ));
     }
   }
 
@@ -44,9 +44,6 @@ abstract class SessionStepCubit extends Cubit<SessionStepState> {
     emit(state.copyWith(isSelected: true));
   }
 
-  void toggleEditMode(){
-    emit(state.copyWith(isEditMode: !state.isEditMode));
-  }
 
   static SessionStepCubit getCubit(
     SessionStep sessionStep,

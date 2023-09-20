@@ -1,15 +1,16 @@
 
 
 import 'package:drift/drift.dart';
+import 'package:simple_interval_timer/core/helper/constants.dart';
 import 'package:simple_interval_timer/data/datasources/local/daos/models.dart';
 import 'package:uuid/uuid.dart';
 
-const maxNameLength = 128;
 
 @DataClassName("SessionEntry")
 class Sessions extends Table with UuidPrimaryKey{
   TextColumn get name => text().withLength(min: 0, max: maxNameLength)();
-  TextColumn get description => text().withLength(min: 0, max: 1024)();
+  TextColumn get description => text().withLength(min: 0, max: sessionDescriptionLength)();
+  TextColumn get endSoundId => text().nullable().references(Sounds, #id)();
 }
 
 @UseRowClass(SessionIntervalEntry)

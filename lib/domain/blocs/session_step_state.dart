@@ -5,7 +5,6 @@ class SessionStepState extends Equatable {
   final String name;
 
   final bool isSelected;
-  final bool isEditMode;
   final bool hasChanges;
 
   final Duration duration;
@@ -13,13 +12,13 @@ class SessionStepState extends Equatable {
   SessionStepState.fromStep(
     SessionStep sessionStep,
   {
-    bool isEditMode = false,
-  }): this(id: sessionStep.id, name: sessionStep.name, isSelected: isEditMode,);
+    bool isSelected = false,
+  }): this(id: sessionStep.id, name: sessionStep.name, isSelected: isSelected,);
 
-  const SessionStepState({required this.id, required this.name, this.duration = Duration.zero, this.isSelected=false, this.isEditMode=false, this.hasChanges=false});
+  const SessionStepState({required this.id, required this.name, this.duration = Duration.zero, this.isSelected=false, this.hasChanges=false});
 
   @override
-  List<Object?> get props => [id, name, duration, isSelected, isEditMode, hasChanges,];
+  List<Object?> get props => [id, name, duration, isSelected,  hasChanges,];
 
 
   SessionStepState copyWith({
@@ -27,14 +26,12 @@ class SessionStepState extends Equatable {
     String? name,
     Duration? duration,
     bool? isSelected,
-    bool? isEditMode,
   }) {
     return SessionStepState(
       id: id ?? this.id,
       name: name ?? this.name,
       duration: duration ?? this.duration,
       isSelected: isSelected ?? this.isSelected,
-      isEditMode: isEditMode ?? this.isEditMode,
       hasChanges: true,
     );
   }

@@ -21,6 +21,7 @@ class TimerStateLoaded extends TimerState {
                   previousValue + element.duration.inSeconds) +
           remainingTimeCurrentInterval.inSeconds,
   );
+  int get computeRemainingTimeInMillis => currentInterval.duration.inMilliseconds - (DateTime.now().millisecondsSinceEpoch - intervalStartedTimestamp!.millisecondsSinceEpoch);
   final DateTime? intervalStartedTimestamp;
   final bool isPaused;
   final bool isDone;

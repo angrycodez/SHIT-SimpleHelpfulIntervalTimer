@@ -25,12 +25,7 @@ class SessionIntervalWidget extends StatelessWidget {
             ? MyColors.cardEditBorderColor
             : MyColors.cardBorderColor,
       ),
-      child: interval.isEditMode
-          ? SessionIntervalEditWidget(
-              intervalCubit,
-              key: Key(interval.id + "_edit"),
-            )
-          : SessionIntervalInfoWidget(
+      child: SessionIntervalInfoWidget(
               intervalCubit,
               key: Key(interval.id + "_info"),
             ),
@@ -54,55 +49,6 @@ class SessionIntervalInfoWidget extends StatelessWidget {
         Text(interval.isPause ? "Pause" : "Work"),
         if (interval.isPause) ...[MyIcons.pauseIcon] else ...[MyIcons.workIcon]
       ],
-    );
-  }
-}
-
-class SessionIntervalEditWidget extends StatelessWidget {
-  final SessionIntervalCubit intervalCubit;
-  const SessionIntervalEditWidget(this.intervalCubit, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    SessionIntervalState interval = intervalCubit.state;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _nameTextField(),
-        DurationTextField(
-          initalDuration: interval.duration,
-          updateDuration: (duration) => intervalCubit.setDuration(duration),
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Checkbox(
-                value: interval.isPause,
-                onChanged: (newValue) => intervalCubit.setIsPause(newValue)),
-            Text("Pause"),
-            if (interval.isPause) ...[
-              MyIcons.pauseIcon
-            ] else ...[
-              MyIcons.workIcon
-            ]
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _nameTextField() {
-    return SizedBox(
-      width: 100,
-      child: TextFormField(
-        initialValue: intervalCubit.state.name ?? "",
-        decoration: const InputDecoration(
-          helperText: "Name",
-        ),
-        onChanged: (newValue) => intervalCubit.setName(newValue),
-      ),
     );
   }
 }

@@ -15,7 +15,7 @@ class SessionEditControlsWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          IconButton(onPressed: () => session.addInterval(), icon: MyIcons.createNewIntervalIcon,),
+          IconButton(onPressed: () => session.addInterval(context), icon: MyIcons.createNewIntervalIcon,),
           IconButton(onPressed: () => session.addBlock(), icon: MyIcons.createNewBlockIcon,),
         ],
       ),

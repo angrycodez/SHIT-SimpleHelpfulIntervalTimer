@@ -9,6 +9,7 @@ class Session extends Equatable {
   String id;
   String name;
   String description;
+  Sound? endSound;
   List<SessionStep> steps;
   List<SessionStep> get distinctSteps => steps.fold(List<SessionStep>.empty(growable: true), (previousValue, element) {
     if(element is SessionInterval){
@@ -28,11 +29,15 @@ class Session extends Equatable {
   }
   Duration get duration => steps.fold(Duration.zero, (previousValue, element) => Duration(seconds: previousValue.inSeconds + element.duration.inSeconds));
 
-  Session(this.id, this.name, this.description, this.steps);
+  Session(this.id, this.name, this.description, this.steps, {this.endSound});
 
 
   @override
-  List<Object> get props => [id, name, description, steps];
+  List<Object?> get props => [id, name, description, steps, endSound];
+
+  Session copyWithEndSound(Sound? endSound){
+    return Session(id, name, description, steps, endSound: endSound);
+  }
 
   Session copyWith({
     String? id,
@@ -45,6 +50,7 @@ class Session extends Equatable {
       name ?? this.name,
       description ?? this.description,
       steps ?? this.steps,
+      endSound: endSound,
     );
   }
 }

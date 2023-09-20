@@ -12,3 +12,4 @@ export 'text_field.dart';
 export 'timer_bar.dart';
 export 'sound_picker.dart';
 export 'list_entry.dart';
+export 'settings_selection_entry.dart';

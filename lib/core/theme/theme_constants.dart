@@ -30,6 +30,7 @@ class MyIcons {
   static const Icon navigateMenuIcon = Icon(Icons.chevron_right);
   static const Icon addSoundIcon = Icon(Icons.add_alarm);
   static const Icon soundIcon = Icon(Icons.music_note_outlined);
+  static const Icon soundPreviewIcon = Icon(Icons.volume_up_outlined);
   static const Icon deleteIcon = Icon(
     Icons.delete_forever,
     color: Colors.red,

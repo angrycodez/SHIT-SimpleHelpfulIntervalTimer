@@ -5,6 +5,7 @@ import 'package:simple_interval_timer/domain/blocs/settings_cubit.dart';
 import 'package:simple_interval_timer/presentation/pages/sounds_edit_page.dart';
 import 'package:simple_interval_timer/presentation/widgets/list_entry.dart';
 import 'package:simple_interval_timer/presentation/widgets/my_scaffold.dart';
+import 'package:simple_interval_timer/presentation/widgets/settings_selection_entry.dart';
 import 'package:simple_interval_timer/presentation/widgets/sound_picker.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -16,10 +17,10 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (pop) async {
         await _storeSettings(context);
-        return true;
       },
       child: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) => MyScaffold(
@@ -28,8 +29,7 @@ class SettingsPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text("Settings"),
-                _SettingsEntry(
+                SettingsSelectionEntry(
                   name: "Default Interval Start Sound",
                   child: SoundPicker(
                     key: const Key("defaultIntervalStartSound"),
@@ -39,7 +39,7 @@ class SettingsPage extends StatelessWidget {
                         .setDefaultIntervalStartSound(sound),
                   ),
                 ),
-                _SettingsEntry(
+                SettingsSelectionEntry(
                   name: "Default Interval End Sound",
                   child: SoundPicker(
                     key: const Key("defaultIntervalEndSound"),
@@ -49,7 +49,7 @@ class SettingsPage extends StatelessWidget {
                         .setDefaultIntervalEndSound(sound),
                   ),
                 ),
-                _SettingsEntry(
+                SettingsSelectionEntry(
                   name: "Default Session End Sound",
                   child: SoundPicker(
                     key: const Key("defaultSessionEndSound"),
@@ -75,21 +75,7 @@ class SettingsPage extends StatelessWidget {
       await context.read<SettingsCubit>().storeSettings();
 }
 
-class _SettingsEntry extends StatelessWidget {
-  final String name;
-  final Widget child;
-  const _SettingsEntry({super.key, required this.name, required this.child});
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(flex: 1, child: Text(name)),
-        Expanded(flex: 4, child: child),
-      ],
-    );
-  }
-}
 
 class _SubSettingsNavigationEntry extends StatelessWidget {
   final String title;

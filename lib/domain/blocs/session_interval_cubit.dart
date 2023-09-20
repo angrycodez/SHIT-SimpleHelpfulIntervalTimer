@@ -42,5 +42,13 @@ class SessionIntervalCubit extends SessionStepCubit {
   void setDuration(Duration duration) {
     emit(state.copyWith(duration: duration));
     durationUpdatedStreamController.add(state.duration);
+    sessionCubit.updateDuration();
+  }
+
+  void setStartSound(Sound? sound) {
+    emit(state.copyWithStartSound(sound));
+  }
+  void setEndSound(Sound? sound) {
+    emit(state.copyWithEndSound(sound));
   }
 }

@@ -14,7 +14,6 @@ class SessionIntervalState extends SessionStepState {
           startSound: sessionInterval.startSound,
           endSound: sessionInterval.endSound,
           isSelected: false,
-          isEditMode: false,
         );
 
   const SessionIntervalState({
@@ -25,7 +24,6 @@ class SessionIntervalState extends SessionStepState {
     this.startSound,
     this.endSound,
     super.isSelected = false,
-    super.isEditMode = false,
     super.hasChanges = false,
   });
 
@@ -37,6 +35,13 @@ class SessionIntervalState extends SessionStepState {
         endSound,
       ];
 
+  SessionIntervalState copyWithStartSound(Sound? startSound){
+    return SessionIntervalState(id: id, name: name, duration: duration, isPause: isPause, startSound: startSound, endSound: endSound, isSelected: isSelected);
+  }
+  SessionIntervalState copyWithEndSound(Sound? endSound){
+    return SessionIntervalState(id: id, name: name, duration: duration, isPause: isPause, startSound: startSound, endSound: endSound, isSelected: isSelected);
+  }
+
   @override
   SessionIntervalState copyWith({
     String? id,
@@ -46,7 +51,6 @@ class SessionIntervalState extends SessionStepState {
     Sound? startSound,
     Sound? endSound,
     bool? isSelected,
-    bool? isEditMode,
   }) {
     return SessionIntervalState(
       id: id ?? this.id,
@@ -56,7 +60,6 @@ class SessionIntervalState extends SessionStepState {
       startSound: startSound ?? this.startSound,
       endSound: endSound ?? this.endSound,
       isSelected: isSelected ?? this.isSelected,
-      isEditMode: isEditMode ?? this.isEditMode,
       hasChanges: true,
     );
   }

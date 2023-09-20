@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simple_interval_timer/data/datasources/local/daos/daos.dart';
 import 'package:simple_interval_timer/data/models/models.dart';
 import 'package:simple_interval_timer/data/repositories/session_repository.dart';
@@ -22,11 +24,17 @@ class SessionCubit extends Cubit<SessionState> {
       session,
       this,
     ));
+  }
+
+  void _updateDurationListener(){
     loadedState.steps.forEach((element) {
       element.durationUpdatedStream.listen((newDuration) {
-        emit(loadedState.copyWith(duration: loadedState.computeDuration()));
+        updateDuration();
       });
     });
+  }
+  void updateDuration(){
+    emit(loadedState.copyWith(duration: loadedState.computeDuration()));
   }
 
   SessionStateLoaded get loadedState {
@@ -93,6 +101,7 @@ class SessionCubit extends Cubit<SessionState> {
           break;
       }
       block.emit(block.state.copyWith(children: blockSteps));
+      block.updateDuration();
     } else {
       steps.insert(newIndex, step);
     }
@@ -112,6 +121,7 @@ class SessionCubit extends Cubit<SessionState> {
     locationSteps.removeAt(stepLocation.index);
     SessionBlockCubit parent = stepLocation.parent!;
     parent.emit(parent.state.copyWith(children: locationSteps));
+    parent.updateDuration();
 
     // find the steps that contain the parent and insert the step there
     var parentLocation = _findStep(stepLocation.parent!, null)!;
@@ -125,11 +135,13 @@ class SessionCubit extends Cubit<SessionState> {
 
     // emit the new state for the parent
     if (parentLocation.parent == null) {
-      emit((state as SessionStateLoaded).copyWith(steps: locationSteps));
+      emit(loadedState.copyWith(steps: locationSteps));
+      updateDuration();
       return;
     } else {
       SessionBlockCubit parent = parentLocation.parent!;
       parent.emit(parent.state.copyWith(children: locationSteps));
+      parent.updateDuration();
       return;
     }
   }
@@ -164,6 +176,7 @@ class SessionCubit extends Cubit<SessionState> {
           ),
         ),
       );
+      updateDuration();
       return;
     } else {
       // step is found in some block
@@ -219,21 +232,26 @@ class SessionCubit extends Cubit<SessionState> {
     steps.removeAt(stepLocation.index);
 
     if (stepLocation.parent == null) {
-      emit((state as SessionStateLoaded).copyWith(steps: steps));
+      emit(loadedState.copyWith(steps: steps));
     } else {
       SessionBlockCubit parent = stepLocation.parent!;
       parent.emit(parent.state.copyWith(children: steps));
+      parent.emit(parent.state.copyWith(duration: parent.state.computeDuration()));
     }
+    emit(loadedState.copyWith(duration: loadedState.computeDuration()));
   }
 
-  void addInterval() {
+  void addInterval(BuildContext context) {
     var state = this.state as SessionStateLoaded;
+    var settings = context.read<SettingsCubit>();
     var interval = SessionInterval(
       id: const Uuid().v4(),
       name: "",
       sequenceIndex: state.steps.length,
       duration: const Duration(seconds: 1),
       isPause: false,
+      startSound: settings.state.defaultIntervalStartSound,
+      endSound: settings.state.defaultIntervalEndSound,
     );
     var cubit = SessionIntervalCubit(interval, this);
     var steps = List.of(state.steps);

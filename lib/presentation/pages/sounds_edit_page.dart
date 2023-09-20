@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:simple_interval_timer/core/services/audio_service.dart';
 import 'package:simple_interval_timer/domain/blocs/blocs.dart';
 
 import '../../core/theme/theme_constants.dart';
@@ -8,35 +9,44 @@ import '../../data/models/models.dart';
 import '../widgets/widets.dart';
 
 class SoundsEditPage extends StatelessWidget {
-  const SoundsEditPage({super.key});
+  final AudioService audioService = AudioService();
+  SoundsEditPage({super.key});
 
   static MaterialPageRoute getRoute({Key? key}) {
     return MaterialPageRoute(builder: (context) => SoundsEditPage(key: key));
   }
 
+  void dispose(){
+    audioService.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          SoundsEditCubit(context.read<SessionDatabaseCubit>()),
-      child: BlocBuilder<SoundsEditCubit, SoundsEditState>(
-        builder: (context, soundEditState) =>
-            BlocBuilder<SettingsCubit, SettingsState>(
-          builder: (context, settingsState) => MyScaffold(
-            appBar: StandardComponents.getAppBar(context, "Sounds"),
-            body: Column(
-              children: [
-                const _NewSoundButton(),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: settingsState.sounds.length,
-                    itemBuilder: (context, index) => _soundEntry(
-                      context,
-                      settingsState.sounds[index],
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (pop) => dispose(),
+      child: BlocProvider(
+        create: (context) =>
+            SoundsEditCubit(context.read<SessionDatabaseCubit>()),
+        child: BlocBuilder<SoundsEditCubit, SoundsEditState>(
+          builder: (context, soundEditState) =>
+              BlocBuilder<SettingsCubit, SettingsState>(
+            builder: (context, settingsState) => MyScaffold(
+              appBar: StandardComponents.getAppBar(context, "Sounds"),
+              body: Column(
+                children: [
+                  const _NewSoundButton(),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: settingsState.sounds.length,
+                      itemBuilder: (context, index) => _soundEntry(
+                        context,
+                        settingsState.sounds[index],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -57,10 +67,18 @@ class SoundsEditPage extends StatelessWidget {
               Text(sound.filename),
             ],
           ),
-          IconButton(
-            onPressed: () => context.read<SettingsCubit>().deleteSound(sound),
-            icon: MyIcons.deleteIcon,
-          ),
+          Row(
+            children: [
+              IconButton(
+                onPressed: () => audioService.play(sound),
+                icon: MyIcons.soundPreviewIcon,
+              ),
+              IconButton(
+                onPressed: () => context.read<SettingsCubit>().deleteSound(sound),
+                icon: MyIcons.deleteIcon,
+              ),
+          ],)
+
         ],
       ),
     );

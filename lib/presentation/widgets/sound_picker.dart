@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:simple_interval_timer/core/services/audio_service.dart';
 import 'package:simple_interval_timer/domain/blocs/blocs.dart';
 import 'package:simple_interval_timer/presentation/widgets/list_entry.dart';
 
@@ -27,7 +28,8 @@ class SoundPicker extends StatelessWidget {
   }
 
   Future<Sound?> _pickSound(BuildContext context, List<Sound> sounds) async {
-    return await showDialog<Sound?>(
+    AudioService audioService = AudioService();
+    var result = await showDialog<Sound?>(
       context: context,
       builder: (BuildContext context) {
         return SimpleDialog(
@@ -41,9 +43,18 @@ class SoundPicker extends StatelessWidget {
             ),
             ...sounds
                 .map(
-                  (e) => SimpleDialogOption(
-                    onPressed: () => Navigator.of(context).pop(e),
-                    child: Text(e.filename),
+                  (sound) => SimpleDialogOption(
+                    onPressed: () => Navigator.of(context).pop(sound),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(children: [
+                        MyIcons.soundIcon,
+                        Text(sound.filename),
+                      ],),
+                      IconButton(onPressed: ()=>audioService.play(sound), icon: MyIcons.soundPreviewIcon,),
+                    ],
+                    ),
                   ),
                 )
                 .toList(),
@@ -51,5 +62,6 @@ class SoundPicker extends StatelessWidget {
         );
       },
     );
+    return result;
   }
 }
