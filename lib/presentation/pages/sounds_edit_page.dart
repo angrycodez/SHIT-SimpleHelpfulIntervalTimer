@@ -16,15 +16,17 @@ class SoundsEditPage extends StatelessWidget {
     return MaterialPageRoute(builder: (context) => SoundsEditPage(key: key));
   }
 
-  void dispose(){
+  void dispose() {
     audioService.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: true,
-      onPopInvoked: (pop) => dispose(),
+    return WillPopScope(
+      onWillPop: () async {
+        dispose();
+        return true;
+      },
       child: BlocProvider(
         create: (context) =>
             SoundsEditCubit(context.read<SessionDatabaseCubit>()),
@@ -74,11 +76,12 @@ class SoundsEditPage extends StatelessWidget {
                 icon: MyIcons.soundPreviewIcon,
               ),
               IconButton(
-                onPressed: () => context.read<SettingsCubit>().deleteSound(sound),
+                onPressed: () =>
+                    context.read<SettingsCubit>().deleteSound(sound),
                 icon: MyIcons.deleteIcon,
               ),
-          ],)
-
+            ],
+          )
         ],
       ),
     );

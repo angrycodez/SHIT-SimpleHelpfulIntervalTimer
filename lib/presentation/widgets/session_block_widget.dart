@@ -124,6 +124,7 @@ class SessionBlockChildrenWidget extends StatelessWidget {
       child: Flexible(
         child: ListView.builder(
           shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           itemCount: children.length,
           itemBuilder: (context, index) {
             SessionStepCubit step = children[index];

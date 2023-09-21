@@ -3,6 +3,7 @@ import 'dart:core';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:simple_interval_timer/data/models/models.dart';
 
 import 'blocs.dart';
@@ -10,49 +11,78 @@ import 'blocs.dart';
 part 'session_step_state.dart';
 
 abstract class SessionStepCubit extends Cubit<SessionStepState> {
-  SessionCubit sessionCubit;
-  final StreamController<Duration> durationUpdatedStreamController = StreamController();
-  Stream<Duration> get durationUpdatedStream => durationUpdatedStreamController.stream.asBroadcastStream();
-  SessionStepCubit(
-    SessionStep sessionStep,
-    this.sessionCubit, ) : super(sessionStep is SessionBlock
-            ? SessionBlockState.fromBlock(sessionStep, sessionCubit)
-            : SessionIntervalState.fromInterval(
-                sessionStep as SessionInterval)) {
-    sessionCubit.editModeChangedStream.listen(onSelectionChanged);
-  }
+
+  @protected
+  StreamController<Duration> durationUpdatedStreamController =
+      StreamController();
+  Stream<Duration> get durationUpdatedStream =>
+      durationUpdatedStreamController.stream.asBroadcastStream();
+
+  SessionStepCubit.interval(
+    SessionInterval sessionInterval,
+  ) : super(SessionIntervalState(
+          id: sessionInterval.id,
+          name: sessionInterval.name,
+          duration: sessionInterval.duration,
+          isPause: sessionInterval.isPause,
+          startSound: sessionInterval.startSound,
+          endSound: sessionInterval.endSound,
+          isSelected: false,
+        ));
+  SessionStepCubit.block(
+    SessionBlock sessionBlock,
+  ) : super(SessionBlockState(
+          id: sessionBlock.id,
+          name: sessionBlock.name,
+          repetitions: sessionBlock.repetitions,
+          children: List.empty(),
+          isSelected: false,
+          isEditMode: false,
+        ));
   bool get hasChanges => state.hasChanges;
 
+  Future<StreamSubscription> subscribeDurationUpdates(
+      Function(Duration) onUpdate) async {
+    if (durationUpdatedStreamController.hasListener) {
+      await durationUpdatedStreamController.close();
+    }
+    durationUpdatedStreamController = StreamController();
+    return durationUpdatedStreamController.stream.listen(onUpdate);
+  }
+
+  @override
+  Future<void> close() async {
+    await durationUpdatedStreamController.close();
+    return super.close();
+  }
 
   // if referenceStep is null, use movingStep for reference
-  void moveUp() => sessionCubit.moveUpChild(this);
-  void moveDown() => sessionCubit.moveDownChild(this);
+  void moveUp(SessionCubit sessionCubit) => sessionCubit.moveUpChild(this);
+  void moveDown(SessionCubit sessionCubit) => sessionCubit.moveDownChild(this);
 
-  bool canMoveUp()=>sessionCubit.canMoveUpChild(this);
-  bool canMoveDown()=>sessionCubit.canMoveDownChild(this);
+  bool canMoveUp(SessionCubit sessionCubit) =>
+      sessionCubit.canMoveUpChild(this);
+  bool canMoveDown(SessionCubit sessionCubit) =>
+      sessionCubit.canMoveDownChild(this);
 
-  void delete()=>sessionCubit.delete(this);
+  void delete(SessionCubit sessionCubit) => sessionCubit.deleteStep(this);
 
-  void onSelectionChanged(String? editStepId) {
-    if (editStepId != state.id) {
-      emit(state.copyWith(isSelected: false, ));
+  void selectionChanged(SessionStepCubit? editStep) {
+    if (editStep?.state.id != state.id) {
+      emit(state.copyWith(isSelected: false));
     }
   }
 
-  void setSelected() {
+  void setSelected(SessionCubit sessionCubit) {
     sessionCubit.selectionChanged(this);
     emit(state.copyWith(isSelected: true));
   }
 
-
-  static SessionStepCubit getCubit(
-    SessionStep sessionStep,
-    SessionCubit sessionCubit,) {
+  static SessionStepCubit getCubit(SessionStep sessionStep) {
     return sessionStep is SessionBlock
-        ? SessionBlockCubit(sessionStep as SessionBlock, sessionCubit,)
-        : SessionIntervalCubit(sessionStep as SessionInterval, sessionCubit,);
+        ? SessionBlockCubit(sessionStep as SessionBlock)
+        : SessionIntervalCubit(sessionStep as SessionInterval);
   }
-
 
   SessionStep getObject(int sequenceIndex, SessionBlock? parent);
 }

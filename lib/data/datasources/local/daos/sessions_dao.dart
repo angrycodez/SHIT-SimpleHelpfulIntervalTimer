@@ -71,16 +71,15 @@ class SessionsDao extends DatabaseAccessor<SessionDatabase>
     }
   }
 
-  Future deleteSession(String id) async {
+  Future deleteSession(String sessionId) async {
     // delete the session with the given id
-    var session = await getSession(id);
-    if (session == null) {
+    if (!await sessionExists(sessionId)) {
       return;
     }
     await db.sessionIntervals
-        .deleteWhere((tbl) => tbl.parentBlockId.equals(session.id));
+        .deleteWhere((tbl) => tbl.sessionId.equals(sessionId));
     await db.sessionBlocks
-        .deleteWhere((tbl) => tbl.parentBlockId.equals(session.id));
-    await db.sessions.deleteWhere((tbl) => tbl.id.equals(id));
+        .deleteWhere((tbl) => tbl.sessionId.equals(sessionId));
+    await db.sessions.deleteWhere((tbl) => tbl.id.equals(sessionId));
   }
 }

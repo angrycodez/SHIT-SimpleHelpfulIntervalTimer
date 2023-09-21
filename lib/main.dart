@@ -45,15 +45,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future:
-          context.read<SessionDatabaseCubit>().sessionRepository.getSessions(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return SessionOverviewPage(snapshot.requireData);
-        }
-        return const Center(child: CircularProgressIndicator());
-      },
-    );
+    return const SessionOverviewPage();
   }
 }

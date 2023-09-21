@@ -12,6 +12,7 @@ class SessionIntervalEditControlsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SessionCubit sessionCubit = context.read<SessionCubit>();
     return BlocProvider.value(
       value: sessionInterval,
       child: BlocBuilder<SessionIntervalCubit, SessionStepState>(
@@ -19,10 +20,10 @@ class SessionIntervalEditControlsWidget extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              IconButton(onPressed: () => sessionInterval.delete(), icon: MyIcons.deleteIcon,),
+              IconButton(onPressed: () => sessionInterval.delete(sessionCubit), icon: MyIcons.deleteIcon,),
               IconButton(onPressed: () => Navigator.of(context).push(SessionIntervalEditPage.getRoute(sessionInterval)), icon: MyIcons.editOnIcon,),
-              IconButton(onPressed: sessionInterval.canMoveDown() ? () => sessionInterval.moveDown() : null, icon: MyIcons.moveDownIcon,),
-              IconButton(onPressed: sessionInterval.canMoveUp()? () => sessionInterval.moveUp() : null, icon: MyIcons.moveUpIcon,),
+              IconButton(onPressed: sessionInterval.canMoveDown(sessionCubit) ? () => sessionInterval.moveDown(sessionCubit) : null, icon: MyIcons.moveDownIcon,),
+              IconButton(onPressed: sessionInterval.canMoveUp(sessionCubit) ? () => sessionInterval.moveUp(sessionCubit) : null, icon: MyIcons.moveUpIcon,),
             ],
           ),
         ),

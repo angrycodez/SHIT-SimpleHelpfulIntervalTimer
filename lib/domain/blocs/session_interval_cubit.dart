@@ -8,16 +8,18 @@ class SessionIntervalCubit extends SessionStepCubit {
   @override
   SessionIntervalState get state => super.state as SessionIntervalState;
 
-  SessionIntervalCubit(
-    SessionInterval sessionInterval,
-    SessionCubit sessionCubit, ) : super(
-          sessionInterval,
-          sessionCubit,
-        ){
+  SessionIntervalCubit(SessionInterval sessionInterval)
+      : super.interval(sessionInterval) {
+    _updateDuration();
+  }
+
+  void _updateDuration([Duration? duration]){
+    duration ??= state.duration;
+    emit(state.copyWith(duration: duration));
     durationUpdatedStreamController.add(state.duration);
   }
 
-  void setName(String name){
+  void setName(String name) {
     emit(state.copyWith(name: name));
   }
 
@@ -40,14 +42,13 @@ class SessionIntervalCubit extends SessionStepCubit {
   }
 
   void setDuration(Duration duration) {
-    emit(state.copyWith(duration: duration));
-    durationUpdatedStreamController.add(state.duration);
-    sessionCubit.updateDuration();
+    _updateDuration(duration);
   }
 
   void setStartSound(Sound? sound) {
     emit(state.copyWithStartSound(sound));
   }
+
   void setEndSound(Sound? sound) {
     emit(state.copyWithEndSound(sound));
   }

@@ -52,6 +52,10 @@ class SessionRepository {
     return session;
   }
 
+  Future deleteSession(String sessionId)async{
+    await _sessionsDao.deleteSession(sessionId);
+  }
+
   void _addParentReferences(List<SessionStep> steps) {
     for (var step in steps) {
       if (step is SessionBlock) {

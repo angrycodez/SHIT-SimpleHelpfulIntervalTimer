@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:simple_interval_timer/data/models/models.dart';
 import 'package:uuid/uuid.dart';
 import 'blocs.dart';
@@ -8,24 +10,72 @@ class SessionBlockCubit extends SessionStepCubit {
   @override
   SessionBlockState get state => super.state as SessionBlockState;
 
-  SessionBlockCubit(
-    SessionBlock sessionBlock,
-    SessionCubit sessionCubit,
-  ) : super(
-          sessionBlock,
-          sessionCubit,
-        ) {
-    state.children.forEach((element) {
-      element.durationUpdatedStream.listen((newDuration) {
-        updateDuration();
-      });
-    });
+  late List<SessionStepCubit> _children;
+  List<StreamSubscription>? _listener;
+
+  SessionBlockCubit(SessionBlock sessionBlock) : super.block(sessionBlock) {
+    updateChildren(sessionBlock.children
+        .map((step) => SessionStepCubit.getCubit(step))
+        .toList());
+  }
+
+  @override
+  Future<void> close() async {
+    await _disposeStepListener();
+    return super.close();
+  }
+
+  Future updateChildren(List<SessionStepCubit> children) async {
+    await _disposeStepListener();
+    _children = children;
+    emit(state.copyWith(children: List.of(_children)));
+    await _registerStepListener();
+    updateDuration();
+  }
+
+  Future _disposeStepListener() async{
+    if (_listener == null) {
+      return;
+    }
+    for (var sub in _listener!) {
+      await sub.cancel();
+    }
+    _listener = null;
+  }
+
+  Future _registerStepListener() async {
+    _listener ??= List<StreamSubscription>.empty(growable: true);
+    for (var child in _children) {
+      if(child.durationUpdatedStreamController.hasListener){
+      }
+      _listener!.add(await child.subscribeDurationUpdates(_onDurationChanged));
+    }
+  }
+
+  void _onDurationChanged(Duration duration) {
+    updateDuration();
   }
 
   void updateDuration() {
-    emit(state.copyWith(duration: state.computeDuration()));
+    emit(state.copyWith(duration: _computeDuration()));
     durationUpdatedStreamController.add(state.duration);
-    sessionCubit.updateDuration();
+  }
+
+  @override
+  void selectionChanged(SessionStepCubit? editStep) {
+    super.selectionChanged(editStep);
+    for(var child in _children){
+      child.selectionChanged(editStep);
+    }
+  }
+
+  Duration _computeDuration([int? repetitions]) {
+    return Duration(
+        seconds: _children.fold(
+                0,
+                (previousValue, step) =>
+                    previousValue + step.state.duration.inSeconds) *
+            (repetitions ?? state.repetitions));
   }
 
   void addInterval() {
@@ -35,10 +85,9 @@ class SessionBlockCubit extends SessionStepCubit {
         sequenceIndex: state.children.length,
         duration: const Duration(seconds: 1),
         isPause: false);
-    var cubit = SessionIntervalCubit(interval, sessionCubit);
-    var children = List.of(state.children);
-    children.add(cubit);
-    emit(state.copyWith(children: children));
+    var cubit = SessionIntervalCubit(interval);
+    _children.add(cubit);
+    updateChildren(_children);
   }
 
   void addBlock() {
@@ -48,13 +97,12 @@ class SessionBlockCubit extends SessionStepCubit {
         sequenceIndex: state.children.length,
         repetitions: 1,
         children: []);
-    var cubit = SessionBlockCubit(block, sessionCubit);
-    var children = List.of(state.children);
-    children.add(cubit);
-    emit(state.copyWith(children: children));
+    var cubit = SessionBlockCubit(block);
+    _children.add(cubit);
+    updateChildren(_children);
   }
 
-  void toggleEditMode(){
+  void toggleEditMode() {
     emit(state.copyWith(isEditMode: !state.isEditMode));
   }
 
@@ -63,8 +111,8 @@ class SessionBlockCubit extends SessionStepCubit {
     List<SessionStep> children = List.empty(growable: true);
 
     // create children from cubits
-    for (int i = 0; i < state.children.length; i++) {
-      SessionStepCubit child = state.children[i];
+    for (int i = 0; i < _children.length; i++) {
+      SessionStepCubit child = _children[i];
       if (child is SessionBlockCubit) {
         children.add(child.getObject(i, null));
       } else if (child is SessionIntervalCubit) {

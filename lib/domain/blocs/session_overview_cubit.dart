@@ -8,23 +8,35 @@ import '../../data/models/models.dart';
 part 'session_overview_state.dart';
 
 class SessionOverviewCubit extends Cubit<SessionOverviewState> {
-  SessionOverviewStateInitialized get _state {
-    assert(state is SessionOverviewStateInitialized);
-    return state as SessionOverviewStateInitialized;
-  }
-  SessionOverviewCubit(List<Session> sessions) : super(SessionOverviewState()){
-    emit(SessionOverviewStateInitialized(sessions.map((e) => SessionCubit(e)).toList()));
-  }
+  late List<SessionCubit> sessions;
+  final SessionDatabaseCubit _databaseCubit;
 
-  SessionCubit? createNewSession(){
-    if(state is SessionOverviewStateInitialized) {
-      var sessions = List.of(_state.sessions);
-      var sessionCubit = SessionCubit(Session(const Uuid().v4(), "New Session", "", List.empty()));
-      sessions.add(sessionCubit);
-
-      emit(_state.copyWith(sessions: sessions));
-      return sessionCubit;
-    }
+  SessionOverviewCubit(this._databaseCubit)
+      : super(SessionOverviewState(List.empty())) {
+    loadSessions();
   }
 
+  Future loadSessions() async {
+    var sessions = await _databaseCubit.sessionRepository.getSessions();
+    this.sessions =
+        sessions.map((e) => SessionCubit(e, deleteSession)).toList();
+    emit(SessionOverviewState(this.sessions));
+  }
+
+  SessionCubit? createNewSession() {
+    var sessions = List.of(state.sessions);
+    var sessionCubit = SessionCubit(
+      Session(const Uuid().v4(), "New Session", "", List.empty()),
+      deleteSession,
+    );
+    sessions.add(sessionCubit);
+
+    emit(state.copyWith(sessions: sessions));
+    return sessionCubit;
+  }
+
+  Future deleteSession(String sessionId) async {
+    await _databaseCubit.sessionRepository.deleteSession(sessionId);
+    loadSessions();
+  }
 }

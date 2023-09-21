@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simple_interval_timer/core/theme/theme_constants.dart';
+import 'package:simple_interval_timer/domain/blocs/blocs.dart';
 import 'package:simple_interval_timer/domain/blocs/session_overview_cubit.dart';
 import 'package:simple_interval_timer/main.dart';
 import 'package:simple_interval_timer/presentation/pages/session_page.dart';
@@ -10,18 +11,16 @@ import 'package:simple_interval_timer/presentation/widgets/session_widget.dart';
 import '../../data/models/models.dart';
 
 class SessionOverviewPage extends StatelessWidget {
-  final List<Session> sessions;
-  const SessionOverviewPage(this.sessions, {super.key});
+  const SessionOverviewPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MyScaffold(
       appBar: StandardComponents.getAppBar(context, SimpleIntervalTimerApp.title),
       body: BlocProvider(
-        create: (_) => SessionOverviewCubit(sessions),
+        create: (_) => SessionOverviewCubit(context.read<SessionDatabaseCubit>()),
         child: BlocBuilder<SessionOverviewCubit, SessionOverviewState>(
-          builder: (context, state) => state is SessionOverviewStateInitialized
-              ? SingleChildScrollView(
+          builder: (context, state) => SingleChildScrollView(
                   child: Column(
                     children: [
                       ListView.builder(
@@ -45,8 +44,7 @@ class SessionOverviewPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                )
-              : const SizedBox.shrink(),
+          ),
         ),
       ),
     );

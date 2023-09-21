@@ -17,10 +17,10 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: true,
-      onPopInvoked: (pop) async {
+    return WillPopScope(
+      onWillPop: () async {
         await _storeSettings(context);
+        return true;
       },
       child: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) => MyScaffold(

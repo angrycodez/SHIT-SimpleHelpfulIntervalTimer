@@ -18,7 +18,7 @@ class SessionWidget extends StatelessWidget {
     return BlocProvider.value(
       value: sessionCubit,
       child: BlocBuilder<SessionCubit, SessionState>(
-        builder: (context, session) => session is SessionStateLoaded ? GestureDetector(
+        builder: (context, session) => GestureDetector(
           onTap: () => Navigator.of(context).push(
             SessionPage.getRoute(
               sessionCubit,
@@ -48,7 +48,7 @@ class SessionWidget extends StatelessWidget {
               ],
             ),
           ),
-        ):const SizedBox.shrink(),
+        ),
       ),
     );
   }

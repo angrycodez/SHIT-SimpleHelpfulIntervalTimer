@@ -17,7 +17,7 @@ class SessionStepWidget extends StatelessWidget {
       child: BlocBuilder<SessionStepCubit, SessionStepState>(
         builder: (context, state) {
           return GestureDetector(
-            onTap: () => sessionStepCubit.setSelected(),
+            onTap: () => sessionStepCubit.setSelected(context.read<SessionCubit>()),
             child: _getStepWidget(state),
           );
         },

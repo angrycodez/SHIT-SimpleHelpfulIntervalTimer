@@ -25,20 +25,20 @@ class SessionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      onPopInvoked: (pop) async {
-          if(sessionCubit.loadedState.hasChanges) {
+    return WillPopScope(
+      onWillPop: () async {
+          if(sessionCubit.state.hasChanges) {
             await sessionCubit.storeSession(context
               .read<SessionDatabaseCubit>()
               .sessionRepository);
           }
+          return true;
         },
       child: BlocProvider.value(
         value: sessionCubit,
         child: BlocBuilder<SessionCubit, SessionState>(builder: (context, state) {
-          return state is SessionStateLoaded
-              ? GestureDetector(
-            onTap: () => sessionCubit.selectionChanged(null),
+          return GestureDetector(
+            onTap: () => sessionCubit.deselectAll(),
                 child: MyScaffold(
                     appBar: StandardComponents.getAppBar(context, state.name),
                     body: Container(
@@ -97,10 +97,7 @@ class SessionPage extends StatelessWidget {
                       ),
                     ),
                   ),
-              )
-              : const Center(
-                  child: CircularProgressIndicator(),
-                );
+              );
         }),
       ),
     );
