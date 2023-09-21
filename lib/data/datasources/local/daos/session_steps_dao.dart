@@ -40,11 +40,11 @@ class SessionStepsDao extends DatabaseAccessor<SessionDatabase>
   }) async {
     await db.sessionBlocks.insertOnConflictUpdate(SessionBlocksCompanion(
       id: Value(id),
-      name: name != null ? Value(name) : Value.absent(),
-      parentBlockId: parentBlockId != null ? Value(parentBlockId) : Value.absent(),
+      name: name != null ? Value(name) : const Value.absent(),
+      parentBlockId: parentBlockId != null ? Value(parentBlockId) : const Value.absent(),
       sequenceIndex:
-      sequenceIndex != null ? Value(sequenceIndex) : Value.absent(),
-      repetitions: repetitions != null ? Value(repetitions) : Value.absent(),
+      sequenceIndex != null ? Value(sequenceIndex) : const Value.absent(),
+      repetitions: repetitions != null ? Value(repetitions) : const Value.absent(),
     ));
   }
 
@@ -57,17 +57,19 @@ class SessionStepsDao extends DatabaseAccessor<SessionDatabase>
     bool? isPause,
     String? startSoundId,
     String? endSoundId,
+    int? color,
   }) async {
     await db.sessionIntervals.insertOnConflictUpdate(SessionIntervalsCompanion(
       id: Value(id),
-      name: name != null ? Value(name) : Value.absent(),
-      parentBlockId: parentStepId != null ? Value(parentStepId) : Value.absent(),
+      name: name != null ? Value(name) : const Value.absent(),
+      parentBlockId: parentStepId != null ? Value(parentStepId) : const Value.absent(),
       sequenceIndex:
-      sequenceIndex != null ? Value(sequenceIndex) : Value.absent(),
-      durationInSeconds: durationInSeconds != null ? Value(durationInSeconds) : Value.absent(),
-      isPause: isPause != null ? Value(isPause) : Value.absent(),
-      startSoundId: startSoundId != null ? Value(startSoundId) : Value.absent(),
-      endSoundId: endSoundId != null ? Value(endSoundId) : Value.absent(),
+      sequenceIndex != null ? Value(sequenceIndex) : const Value.absent(),
+      durationInSeconds: durationInSeconds != null ? Value(durationInSeconds) : const Value.absent(),
+      isPause: isPause != null ? Value(isPause) : const Value.absent(),
+      startSoundId: startSoundId != null ? Value(startSoundId) : const Value.absent(),
+      endSoundId: endSoundId != null ? Value(endSoundId) : const Value.absent(),
+      color: color != null ? Value(color) : const Value.absent(),
     ));
   }
 

@@ -44,6 +44,7 @@ dependencies:
   equatable: ^2.0.5
   file_picker: ^5.5.0
   audioplayers: ^5.1.0
+  flutter_colorpicker: ^1.0.3
 
 dev_dependencies:
   flutter_test:

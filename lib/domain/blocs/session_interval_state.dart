@@ -5,6 +5,7 @@ class SessionIntervalState extends SessionStepState {
   final bool isPause;
   final Sound? startSound;
   final Sound? endSound;
+  final Color color;
 
   SessionIntervalState.fromInterval(SessionInterval sessionInterval) : this(
           id: sessionInterval.id,
@@ -14,6 +15,7 @@ class SessionIntervalState extends SessionStepState {
           startSound: sessionInterval.startSound,
           endSound: sessionInterval.endSound,
           isSelected: false,
+    color: sessionInterval.color,
         );
 
   const SessionIntervalState({
@@ -25,6 +27,7 @@ class SessionIntervalState extends SessionStepState {
     this.endSound,
     super.isSelected = false,
     super.hasChanges = false,
+    required this.color,
   });
 
   @override
@@ -33,13 +36,14 @@ class SessionIntervalState extends SessionStepState {
         isPause,
         startSound,
         endSound,
+    color,
       ];
 
   SessionIntervalState copyWithStartSound(Sound? startSound){
-    return SessionIntervalState(id: id, name: name, duration: duration, isPause: isPause, startSound: startSound, endSound: endSound, isSelected: isSelected);
+    return SessionIntervalState(id: id, name: name, duration: duration, isPause: isPause, startSound: startSound, endSound: endSound, isSelected: isSelected, color: color,);
   }
   SessionIntervalState copyWithEndSound(Sound? endSound){
-    return SessionIntervalState(id: id, name: name, duration: duration, isPause: isPause, startSound: startSound, endSound: endSound, isSelected: isSelected);
+    return SessionIntervalState(id: id, name: name, duration: duration, isPause: isPause, startSound: startSound, endSound: endSound, isSelected: isSelected, color: color,);
   }
 
   @override
@@ -51,6 +55,7 @@ class SessionIntervalState extends SessionStepState {
     Sound? startSound,
     Sound? endSound,
     bool? isSelected,
+    Color? color,
   }) {
     return SessionIntervalState(
       id: id ?? this.id,
@@ -61,6 +66,7 @@ class SessionIntervalState extends SessionStepState {
       endSound: endSound ?? this.endSound,
       isSelected: isSelected ?? this.isSelected,
       hasChanges: true,
+      color: color ?? this.color,
     );
   }
 

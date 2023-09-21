@@ -3,15 +3,22 @@ import 'package:flutter/material.dart';
 import '../../presentation/pages/pages.dart';
 
 class Layout {
-  static const EdgeInsets cardPadding = EdgeInsets.all(10);
-  static const EdgeInsets cardMargin = EdgeInsets.all(10);
+  static const double _defaultSpace = 5;
+  static const EdgeInsets cardPadding = EdgeInsets.all(_defaultSpace);
+  static const EdgeInsets sessionBlockPadding = EdgeInsets.only(left: _defaultSpace, top: _defaultSpace, bottom: _defaultSpace);
+  static const EdgeInsets cardMargin = EdgeInsets.all(_defaultSpace);
+  static const EdgeInsets defaultVerticalSpacing = EdgeInsets.only(top: _defaultSpace, bottom: _defaultSpace);
+  static const EdgeInsets defaultContentMargin = EdgeInsets.all(_defaultSpace * 1.5);
+  static const EdgeInsets sessionBlockChildMargin = EdgeInsets.only(left: _defaultSpace);
   static const double borderWidth = 2.0;
   static const double durationFieldWidth = 50.0;
+  static const double timerCircularStrokeWidth = 20.0;
 }
 
 class MyColors {
-  static const Color cardEditBorderColor = Colors.amber;
+  static const Color cardEditBorderColor = Colors.grey;
   static const Color cardBorderColor = Colors.grey;
+  static Color sessionBlockBackgroundColor = Colors.grey.withOpacity(0.3);
   static const Color errorColor = Colors.red;
 }
 

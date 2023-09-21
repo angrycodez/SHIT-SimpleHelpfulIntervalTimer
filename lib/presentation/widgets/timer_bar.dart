@@ -36,8 +36,8 @@ class TimerBar extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.max,
           children: [
-          Flexible(flex: 100 - progress, child: Container(color: Colors.greenAccent,),),
-          Flexible(flex: progress, child: Container(color: Colors.red,),)
+          Flexible(flex: 100 - progress, child: Container(color: timerState.currentInterval.color,),),
+          Flexible(flex: progress, child: Container(color: Colors.grey,),)
         ],),
         Container(
         color: Colors.transparent,

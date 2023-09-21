@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:simple_interval_timer/data/datasources/local/daos/models.dart';
 import 'package:simple_interval_timer/data/datasources/local/database.dart';
 
@@ -82,6 +84,7 @@ class SessionRepository {
       isPause: entry.isPause,
       startSound: await _getIntervalSound(entry.startSoundId),
       endSound: await _getIntervalSound(entry.endSoundId),
+      color: Color(entry.color),
     );
   }
 

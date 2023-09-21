@@ -7,8 +7,8 @@ class SessionBlockState extends SessionStepState {
   final bool isEditMode;
 
   @override
-  bool get hasChanges => hasDirectChanges
-      || children.any((child) => child.hasChanges);
+  bool get hasChanges =>
+      hasDirectChanges || children.any((child) => child.hasChanges);
 
   const SessionBlockState({
     required super.id,
@@ -26,6 +26,7 @@ class SessionBlockState extends SessionStepState {
         ...super.props,
         children,
         repetitions,
+        isEditMode,
       ];
 
   @override

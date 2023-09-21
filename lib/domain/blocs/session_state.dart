@@ -8,6 +8,8 @@ class SessionState extends Equatable {
   final SessionStepCubit? selectedStep;
   bool get hasSelectedStep => selectedStep != null;
 
+  final Sound? endSound;
+
   final Duration duration;
 
 
@@ -21,6 +23,7 @@ class SessionState extends Equatable {
     this.duration = Duration.zero,
     this.selectedStep,
     this.hasChanges = false,
+    this.endSound,
   }) : super();
 
   @override
@@ -32,6 +35,7 @@ class SessionState extends Equatable {
         duration,
         selectedStep,
         hasChanges,
+    endSound,
       ];
 
   SessionState withSelectedStep(SessionStepCubit? selectedStep) {
@@ -43,6 +47,20 @@ class SessionState extends Equatable {
       duration: duration,
       selectedStep: selectedStep,
       hasChanges: hasChanges,
+      endSound: endSound,
+    );
+  }
+
+  SessionState copyWithEndSound(Sound? endSound) {
+    return SessionState(
+      id: id,
+      name: name,
+      description: description,
+      steps: steps,
+      duration: duration,
+      selectedStep: selectedStep,
+      hasChanges: hasChanges,
+      endSound: endSound,
     );
   }
   SessionState copyWith({
@@ -60,6 +78,7 @@ class SessionState extends Equatable {
       duration: duration ?? this.duration,
       selectedStep: selectedStep,
       hasChanges: true,
+      endSound: endSound,
     );
   }
 }

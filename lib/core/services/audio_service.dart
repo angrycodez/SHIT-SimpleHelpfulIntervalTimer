@@ -1,5 +1,6 @@
 
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
@@ -10,22 +11,24 @@ class AudioService{
   late AudioPlayer _player;
   final List<Sound> sounds = List.empty(growable: true);
 
+  StreamSubscription? completeListener;
+
   AudioService(){
     _player = AudioPlayer();
-    _player.onPlayerStateChanged.listen(_onPlayerStateChanged);
+    completeListener = _player.onPlayerComplete.listen(_onPlayerComplete);
   }
 
-  void dispose(){
-    _player.dispose();
+  Future dispose() async {
+    await _player.dispose();
+    await completeListener?.cancel();
   }
 
-  void _onPlayerStateChanged(PlayerState state){
-    switch(state){
-      case PlayerState.completed:
-          _play();
-          break;
-      default: break;
-    }
+  void _onPlayerComplete(void _){
+    _play();
+  }
+
+  bool canPlaySound(){
+    return _player.state != PlayerState.playing;
   }
 
   void _play(){
@@ -33,14 +36,13 @@ class AudioService{
       _player.stop();
       return;
     }
-    if(_player.state != PlayerState.playing){
+    if(canPlaySound()){
       String path = sounds.first.filepath;
       if(!File(path).existsSync()){
         return;
       }
-      print("Play sound ${sounds.first.filename}");
       sounds.removeAt(0);
-      print("These are the sounds: ${sounds.map((e) => "${e.filename}, ")}");
+      lastSoundPlayed = DateTime.now();
       _player.play(
         DeviceFileSource(path),
         mode: PlayerMode.lowLatency,
@@ -52,9 +54,7 @@ class AudioService{
     if(sound == null){
       return;
     }
-    print("Add sound ${sound?.filename}");
     sounds.add(sound);
-    print("These are the sounds: ${sounds.map((e) => "${e.filename}, ")}");
     _play();
   }
 }

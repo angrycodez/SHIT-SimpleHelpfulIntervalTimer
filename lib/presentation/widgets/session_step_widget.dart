@@ -18,7 +18,10 @@ class SessionStepWidget extends StatelessWidget {
         builder: (context, state) {
           return GestureDetector(
             onTap: () => sessionStepCubit.setSelected(context.read<SessionCubit>()),
-            child: _getStepWidget(state),
+            child: Container(
+                margin: Layout.defaultVerticalSpacing,
+                child: _getStepWidget(state),
+            ),
           );
         },
       ),

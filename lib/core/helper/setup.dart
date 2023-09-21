@@ -12,7 +12,7 @@ class Setup {
     if(!directory.existsSync()){
       directory.createSync(recursive: true);
     }
-    var soundAssets = List<String>.of(["ding.mp3", "ding2.mp3", "end.mp3"]);
+    var soundAssets = List<String>.of(["ding.mp3", "ding2.mp3", "end.mp3", "water_drop.mp3"]);
     var files = List<(String, String)>.empty(growable: true);
     for (String asset in soundAssets) {
       files.add((asset, await _writeAssetToDirectory(asset, directory.path)));

@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
+import 'package:simple_interval_timer/core/helper/constants.dart';
 import 'package:simple_interval_timer/core/helper/setup.dart';
 import 'package:simple_interval_timer/data/datasources/local/daos/daos.dart';
 import 'package:simple_interval_timer/data/datasources/local/tables.dart';
@@ -96,6 +97,7 @@ class SessionDatabase extends _$SessionDatabase {
           sequenceIndex: 1,
           durationInSeconds: 2,
           isPause: true,
+          color: Value(defaultIntervalColor.value),
         ));
         sessionIntervals.insertOne(SessionIntervalsCompanion.insert(
           sessionId: "1",
@@ -105,6 +107,7 @@ class SessionDatabase extends _$SessionDatabase {
           sequenceIndex: 0,
           durationInSeconds: 10,
           isPause: false,
+          color: Value(defaultIntervalColor.value),
         ));
 
         sessionBlocks.insertOne(SessionBlocksCompanion.insert(
@@ -122,6 +125,7 @@ class SessionDatabase extends _$SessionDatabase {
           sequenceIndex: 1,
           durationInSeconds: 42,
           isPause: true,
+          color: Value(defaultIntervalColor.value),
         ));
         sessionIntervals.insertOne(SessionIntervalsCompanion.insert(
           sessionId: "1",
@@ -131,6 +135,7 @@ class SessionDatabase extends _$SessionDatabase {
           sequenceIndex: 0,
           durationInSeconds: 3,
           isPause: true,
+          color: Value(defaultIntervalColor.value),
         ));
       }
     }));

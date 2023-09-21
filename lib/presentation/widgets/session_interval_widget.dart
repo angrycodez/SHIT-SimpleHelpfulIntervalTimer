@@ -16,14 +16,13 @@ class SessionIntervalWidget extends StatelessWidget {
     SessionIntervalState interval = intervalCubit.state;
     bool isSelected = intervalCubit.state.isSelected;
     return Container(
-      margin: Layout.cardMargin,
       padding: Layout.cardPadding,
       decoration: MyDecoration.cardDecoration(
         context,
-        color: Colors.lightBlueAccent,
+        color: interval.color,
         borderColor: isSelected
             ? MyColors.cardEditBorderColor
-            : MyColors.cardBorderColor,
+            : null,
       ),
       child: SessionIntervalInfoWidget(
               intervalCubit,

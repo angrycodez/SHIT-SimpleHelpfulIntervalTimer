@@ -1,37 +1,30 @@
-
-
 import 'package:audioplayers/audioplayers.dart';
 
 import '../../data/models/models.dart';
 
-class PreviewAudioService{
+class PreviewAudioService {
   late AudioPlayer _player;
 
-  PreviewAudioService(){
+  PreviewAudioService() {
     _player = AudioPlayer();
-    _player.onPlayerStateChanged.listen(_onPlayerStateChanged);
+    _player.onPlayerComplete.listen(_onPlayerComplete);
   }
 
-  void dispose(){
-    _player.dispose();
+  Future dispose() async {
+    await _player.dispose();
   }
 
-  void _onPlayerStateChanged(PlayerState state){
-    switch(state){
-      case PlayerState.completed:
-          _player.stop();
-          break;
-      default: break;
-    }
-  }
-
-  void play(Sound? sound){
-    if(sound == null){
+  void play(Sound? sound) {
+    if (sound == null) {
       return;
     }
     _player.play(
-        DeviceFileSource(sound.filepath),
-        mode: PlayerMode.lowLatency,
+      DeviceFileSource(sound.filepath),
+      mode: PlayerMode.lowLatency,
     );
+  }
+
+  void _onPlayerComplete(void _) {
+    _player.stop();
   }
 }

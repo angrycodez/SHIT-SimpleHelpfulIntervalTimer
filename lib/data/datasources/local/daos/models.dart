@@ -27,6 +27,7 @@ class SessionIntervalEntry extends SessionStepEntry {
   bool isPause;
   String? startSoundId;
   String? endSoundId;
+  int color;
   SessionIntervalEntry({
     required super.id,
     required super.name,
@@ -36,5 +37,6 @@ class SessionIntervalEntry extends SessionStepEntry {
     required this.isPause,
     this.startSoundId,
     this.endSoundId,
+    required this.color,
   });
 }

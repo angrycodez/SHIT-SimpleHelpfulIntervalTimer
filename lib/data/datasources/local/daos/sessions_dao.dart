@@ -66,6 +66,7 @@ class SessionsDao extends DatabaseAccessor<SessionDatabase>
           isPause: Value(interval.isPause),
           startSoundId: Value(interval.startSound?.id),
           endSoundId: Value(interval.endSound?.id),
+          color: Value(interval.color.value),
         ),
       );
     }

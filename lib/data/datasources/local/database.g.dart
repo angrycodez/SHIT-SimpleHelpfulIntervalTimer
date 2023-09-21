@@ -3,6 +3,223 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
+class $SoundsTable extends Sounds with TableInfo<$SoundsTable, SoundEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SoundsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => const Uuid().v4());
+  static const VerificationMeta _filenameMeta =
+      const VerificationMeta('filename');
+  @override
+  late final GeneratedColumn<String> filename = GeneratedColumn<String>(
+      'filename', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _pathMeta = const VerificationMeta('path');
+  @override
+  late final GeneratedColumn<String> path = GeneratedColumn<String>(
+      'path', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, filename, path];
+  @override
+  String get aliasedName => _alias ?? 'sounds';
+  @override
+  String get actualTableName => 'sounds';
+  @override
+  VerificationContext validateIntegrity(Insertable<SoundEntry> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('filename')) {
+      context.handle(_filenameMeta,
+          filename.isAcceptableOrUnknown(data['filename']!, _filenameMeta));
+    } else if (isInserting) {
+      context.missing(_filenameMeta);
+    }
+    if (data.containsKey('path')) {
+      context.handle(
+          _pathMeta, path.isAcceptableOrUnknown(data['path']!, _pathMeta));
+    } else if (isInserting) {
+      context.missing(_pathMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SoundEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SoundEntry(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      filename: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}filename'])!,
+      path: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}path'])!,
+    );
+  }
+
+  @override
+  $SoundsTable createAlias(String alias) {
+    return $SoundsTable(attachedDatabase, alias);
+  }
+}
+
+class SoundEntry extends DataClass implements Insertable<SoundEntry> {
+  final String id;
+  final String filename;
+  final String path;
+  const SoundEntry(
+      {required this.id, required this.filename, required this.path});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['filename'] = Variable<String>(filename);
+    map['path'] = Variable<String>(path);
+    return map;
+  }
+
+  SoundsCompanion toCompanion(bool nullToAbsent) {
+    return SoundsCompanion(
+      id: Value(id),
+      filename: Value(filename),
+      path: Value(path),
+    );
+  }
+
+  factory SoundEntry.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SoundEntry(
+      id: serializer.fromJson<String>(json['id']),
+      filename: serializer.fromJson<String>(json['filename']),
+      path: serializer.fromJson<String>(json['path']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'filename': serializer.toJson<String>(filename),
+      'path': serializer.toJson<String>(path),
+    };
+  }
+
+  SoundEntry copyWith({String? id, String? filename, String? path}) =>
+      SoundEntry(
+        id: id ?? this.id,
+        filename: filename ?? this.filename,
+        path: path ?? this.path,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('SoundEntry(')
+          ..write('id: $id, ')
+          ..write('filename: $filename, ')
+          ..write('path: $path')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, filename, path);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SoundEntry &&
+          other.id == this.id &&
+          other.filename == this.filename &&
+          other.path == this.path);
+}
+
+class SoundsCompanion extends UpdateCompanion<SoundEntry> {
+  final Value<String> id;
+  final Value<String> filename;
+  final Value<String> path;
+  final Value<int> rowid;
+  const SoundsCompanion({
+    this.id = const Value.absent(),
+    this.filename = const Value.absent(),
+    this.path = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SoundsCompanion.insert({
+    this.id = const Value.absent(),
+    required String filename,
+    required String path,
+    this.rowid = const Value.absent(),
+  })  : filename = Value(filename),
+        path = Value(path);
+  static Insertable<SoundEntry> custom({
+    Expression<String>? id,
+    Expression<String>? filename,
+    Expression<String>? path,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (filename != null) 'filename': filename,
+      if (path != null) 'path': path,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SoundsCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? filename,
+      Value<String>? path,
+      Value<int>? rowid}) {
+    return SoundsCompanion(
+      id: id ?? this.id,
+      filename: filename ?? this.filename,
+      path: path ?? this.path,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (filename.present) {
+      map['filename'] = Variable<String>(filename.value);
+    }
+    if (path.present) {
+      map['path'] = Variable<String>(path.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SoundsCompanion(')
+          ..write('id: $id, ')
+          ..write('filename: $filename, ')
+          ..write('path: $path, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $SessionsTable extends Sessions
     with TableInfo<$SessionsTable, SessionEntry> {
   @override
@@ -28,14 +245,24 @@ class $SessionsTable extends Sessions
   static const VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
   @override
-  late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, false,
-      additionalChecks: GeneratedColumn.checkTextLength(
-          minTextLength: 0, maxTextLength: 1024),
-      type: DriftSqlType.string,
-      requiredDuringInsert: true);
+  late final GeneratedColumn<String> description =
+      GeneratedColumn<String>('description', aliasedName, false,
+          additionalChecks: GeneratedColumn.checkTextLength(
+            minTextLength: 0,
+          ),
+          type: DriftSqlType.string,
+          requiredDuringInsert: true);
+  static const VerificationMeta _endSoundIdMeta =
+      const VerificationMeta('endSoundId');
   @override
-  List<GeneratedColumn> get $columns => [id, name, description];
+  late final GeneratedColumn<String> endSoundId = GeneratedColumn<String>(
+      'end_sound_id', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES sounds (id)'));
+  @override
+  List<GeneratedColumn> get $columns => [id, name, description, endSoundId];
   @override
   String get aliasedName => _alias ?? 'sessions';
   @override
@@ -62,6 +289,12 @@ class $SessionsTable extends Sessions
     } else if (isInserting) {
       context.missing(_descriptionMeta);
     }
+    if (data.containsKey('end_sound_id')) {
+      context.handle(
+          _endSoundIdMeta,
+          endSoundId.isAcceptableOrUnknown(
+              data['end_sound_id']!, _endSoundIdMeta));
+    }
     return context;
   }
 
@@ -77,6 +310,8 @@ class $SessionsTable extends Sessions
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       description: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+      endSoundId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}end_sound_id']),
     );
   }
 
@@ -90,14 +325,21 @@ class SessionEntry extends DataClass implements Insertable<SessionEntry> {
   final String id;
   final String name;
   final String description;
+  final String? endSoundId;
   const SessionEntry(
-      {required this.id, required this.name, required this.description});
+      {required this.id,
+      required this.name,
+      required this.description,
+      this.endSoundId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['name'] = Variable<String>(name);
     map['description'] = Variable<String>(description);
+    if (!nullToAbsent || endSoundId != null) {
+      map['end_sound_id'] = Variable<String>(endSoundId);
+    }
     return map;
   }
 
@@ -106,6 +348,9 @@ class SessionEntry extends DataClass implements Insertable<SessionEntry> {
       id: Value(id),
       name: Value(name),
       description: Value(description),
+      endSoundId: endSoundId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endSoundId),
     );
   }
 
@@ -116,6 +361,7 @@ class SessionEntry extends DataClass implements Insertable<SessionEntry> {
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       description: serializer.fromJson<String>(json['description']),
+      endSoundId: serializer.fromJson<String?>(json['endSoundId']),
     );
   }
   @override
@@ -125,51 +371,62 @@ class SessionEntry extends DataClass implements Insertable<SessionEntry> {
       'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
       'description': serializer.toJson<String>(description),
+      'endSoundId': serializer.toJson<String?>(endSoundId),
     };
   }
 
-  SessionEntry copyWith({String? id, String? name, String? description}) =>
+  SessionEntry copyWith(
+          {String? id,
+          String? name,
+          String? description,
+          Value<String?> endSoundId = const Value.absent()}) =>
       SessionEntry(
         id: id ?? this.id,
         name: name ?? this.name,
         description: description ?? this.description,
+        endSoundId: endSoundId.present ? endSoundId.value : this.endSoundId,
       );
   @override
   String toString() {
     return (StringBuffer('SessionEntry(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('description: $description')
+          ..write('description: $description, ')
+          ..write('endSoundId: $endSoundId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, description);
+  int get hashCode => Object.hash(id, name, description, endSoundId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is SessionEntry &&
           other.id == this.id &&
           other.name == this.name &&
-          other.description == this.description);
+          other.description == this.description &&
+          other.endSoundId == this.endSoundId);
 }
 
 class SessionsCompanion extends UpdateCompanion<SessionEntry> {
   final Value<String> id;
   final Value<String> name;
   final Value<String> description;
+  final Value<String?> endSoundId;
   final Value<int> rowid;
   const SessionsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.description = const Value.absent(),
+    this.endSoundId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   SessionsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required String description,
+    this.endSoundId = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : name = Value(name),
         description = Value(description);
@@ -177,12 +434,14 @@ class SessionsCompanion extends UpdateCompanion<SessionEntry> {
     Expression<String>? id,
     Expression<String>? name,
     Expression<String>? description,
+    Expression<String>? endSoundId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
+      if (endSoundId != null) 'end_sound_id': endSoundId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -191,11 +450,13 @@ class SessionsCompanion extends UpdateCompanion<SessionEntry> {
       {Value<String>? id,
       Value<String>? name,
       Value<String>? description,
+      Value<String?>? endSoundId,
       Value<int>? rowid}) {
     return SessionsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
+      endSoundId: endSoundId ?? this.endSoundId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -212,6 +473,9 @@ class SessionsCompanion extends UpdateCompanion<SessionEntry> {
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
+    if (endSoundId.present) {
+      map['end_sound_id'] = Variable<String>(endSoundId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -224,6 +488,7 @@ class SessionsCompanion extends UpdateCompanion<SessionEntry> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
+          ..write('endSoundId: $endSoundId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -469,223 +734,6 @@ class SessionBlocksCompanion extends UpdateCompanion<SessionBlockEntry> {
   }
 }
 
-class $SoundsTable extends Sounds with TableInfo<$SoundsTable, SoundEntry> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $SoundsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      clientDefault: () => const Uuid().v4());
-  static const VerificationMeta _filenameMeta =
-      const VerificationMeta('filename');
-  @override
-  late final GeneratedColumn<String> filename = GeneratedColumn<String>(
-      'filename', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _pathMeta = const VerificationMeta('path');
-  @override
-  late final GeneratedColumn<String> path = GeneratedColumn<String>(
-      'path', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns => [id, filename, path];
-  @override
-  String get aliasedName => _alias ?? 'sounds';
-  @override
-  String get actualTableName => 'sounds';
-  @override
-  VerificationContext validateIntegrity(Insertable<SoundEntry> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('filename')) {
-      context.handle(_filenameMeta,
-          filename.isAcceptableOrUnknown(data['filename']!, _filenameMeta));
-    } else if (isInserting) {
-      context.missing(_filenameMeta);
-    }
-    if (data.containsKey('path')) {
-      context.handle(
-          _pathMeta, path.isAcceptableOrUnknown(data['path']!, _pathMeta));
-    } else if (isInserting) {
-      context.missing(_pathMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  SoundEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return SoundEntry(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      filename: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}filename'])!,
-      path: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}path'])!,
-    );
-  }
-
-  @override
-  $SoundsTable createAlias(String alias) {
-    return $SoundsTable(attachedDatabase, alias);
-  }
-}
-
-class SoundEntry extends DataClass implements Insertable<SoundEntry> {
-  final String id;
-  final String filename;
-  final String path;
-  const SoundEntry(
-      {required this.id, required this.filename, required this.path});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
-    map['filename'] = Variable<String>(filename);
-    map['path'] = Variable<String>(path);
-    return map;
-  }
-
-  SoundsCompanion toCompanion(bool nullToAbsent) {
-    return SoundsCompanion(
-      id: Value(id),
-      filename: Value(filename),
-      path: Value(path),
-    );
-  }
-
-  factory SoundEntry.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return SoundEntry(
-      id: serializer.fromJson<String>(json['id']),
-      filename: serializer.fromJson<String>(json['filename']),
-      path: serializer.fromJson<String>(json['path']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
-      'filename': serializer.toJson<String>(filename),
-      'path': serializer.toJson<String>(path),
-    };
-  }
-
-  SoundEntry copyWith({String? id, String? filename, String? path}) =>
-      SoundEntry(
-        id: id ?? this.id,
-        filename: filename ?? this.filename,
-        path: path ?? this.path,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('SoundEntry(')
-          ..write('id: $id, ')
-          ..write('filename: $filename, ')
-          ..write('path: $path')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, filename, path);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is SoundEntry &&
-          other.id == this.id &&
-          other.filename == this.filename &&
-          other.path == this.path);
-}
-
-class SoundsCompanion extends UpdateCompanion<SoundEntry> {
-  final Value<String> id;
-  final Value<String> filename;
-  final Value<String> path;
-  final Value<int> rowid;
-  const SoundsCompanion({
-    this.id = const Value.absent(),
-    this.filename = const Value.absent(),
-    this.path = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  SoundsCompanion.insert({
-    this.id = const Value.absent(),
-    required String filename,
-    required String path,
-    this.rowid = const Value.absent(),
-  })  : filename = Value(filename),
-        path = Value(path);
-  static Insertable<SoundEntry> custom({
-    Expression<String>? id,
-    Expression<String>? filename,
-    Expression<String>? path,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (filename != null) 'filename': filename,
-      if (path != null) 'path': path,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  SoundsCompanion copyWith(
-      {Value<String>? id,
-      Value<String>? filename,
-      Value<String>? path,
-      Value<int>? rowid}) {
-    return SoundsCompanion(
-      id: id ?? this.id,
-      filename: filename ?? this.filename,
-      path: path ?? this.path,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (filename.present) {
-      map['filename'] = Variable<String>(filename.value);
-    }
-    if (path.present) {
-      map['path'] = Variable<String>(path.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('SoundsCompanion(')
-          ..write('id: $id, ')
-          ..write('filename: $filename, ')
-          ..write('path: $path, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $SessionIntervalsTable extends SessionIntervals
     with TableInfo<$SessionIntervalsTable, SessionIntervalEntry> {
   @override
@@ -765,6 +813,13 @@ class $SessionIntervalsTable extends SessionIntervals
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES sounds (id)'));
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<int> color = GeneratedColumn<int>(
+      'color', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      clientDefault: () => 0);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -775,7 +830,8 @@ class $SessionIntervalsTable extends SessionIntervals
         durationInSeconds,
         isPause,
         startSoundId,
-        endSoundId
+        endSoundId,
+        color
       ];
   @override
   String get aliasedName => _alias ?? 'session_intervals';
@@ -842,6 +898,10 @@ class $SessionIntervalsTable extends SessionIntervals
           endSoundId.isAcceptableOrUnknown(
               data['end_sound_id']!, _endSoundIdMeta));
     }
+    if (data.containsKey('color')) {
+      context.handle(
+          _colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
+    }
     return context;
   }
 
@@ -867,6 +927,8 @@ class $SessionIntervalsTable extends SessionIntervals
           .read(DriftSqlType.string, data['${effectivePrefix}start_sound_id']),
       endSoundId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}end_sound_id']),
+      color: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}color'])!,
     );
   }
 
@@ -886,6 +948,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
   final Value<bool> isPause;
   final Value<String?> startSoundId;
   final Value<String?> endSoundId;
+  final Value<int> color;
   final Value<int> rowid;
   const SessionIntervalsCompanion({
     this.id = const Value.absent(),
@@ -897,6 +960,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
     this.isPause = const Value.absent(),
     this.startSoundId = const Value.absent(),
     this.endSoundId = const Value.absent(),
+    this.color = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   SessionIntervalsCompanion.insert({
@@ -909,6 +973,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
     required bool isPause,
     this.startSoundId = const Value.absent(),
     this.endSoundId = const Value.absent(),
+    this.color = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : name = Value(name),
         sessionId = Value(sessionId),
@@ -925,6 +990,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
     Expression<bool>? isPause,
     Expression<String>? startSoundId,
     Expression<String>? endSoundId,
+    Expression<int>? color,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -937,6 +1003,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
       if (isPause != null) 'is_pause': isPause,
       if (startSoundId != null) 'start_sound_id': startSoundId,
       if (endSoundId != null) 'end_sound_id': endSoundId,
+      if (color != null) 'color': color,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -951,6 +1018,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
       Value<bool>? isPause,
       Value<String?>? startSoundId,
       Value<String?>? endSoundId,
+      Value<int>? color,
       Value<int>? rowid}) {
     return SessionIntervalsCompanion(
       id: id ?? this.id,
@@ -962,6 +1030,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
       isPause: isPause ?? this.isPause,
       startSoundId: startSoundId ?? this.startSoundId,
       endSoundId: endSoundId ?? this.endSoundId,
+      color: color ?? this.color,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -996,6 +1065,9 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
     if (endSoundId.present) {
       map['end_sound_id'] = Variable<String>(endSoundId.value);
     }
+    if (color.present) {
+      map['color'] = Variable<int>(color.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1014,6 +1086,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
           ..write('isPause: $isPause, ')
           ..write('startSoundId: $startSoundId, ')
           ..write('endSoundId: $endSoundId, ')
+          ..write('color: $color, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1337,16 +1410,21 @@ class SettingsCompanion extends UpdateCompanion<SettingsEntry> {
 
 abstract class _$SessionDatabase extends GeneratedDatabase {
   _$SessionDatabase(QueryExecutor e) : super(e);
+  late final $SoundsTable sounds = $SoundsTable(this);
   late final $SessionsTable sessions = $SessionsTable(this);
   late final $SessionBlocksTable sessionBlocks = $SessionBlocksTable(this);
-  late final $SoundsTable sounds = $SoundsTable(this);
   late final $SessionIntervalsTable sessionIntervals =
       $SessionIntervalsTable(this);
   late final $SettingsTable settings = $SettingsTable(this);
+  late final SessionsDao sessionsDao = SessionsDao(this as SessionDatabase);
+  late final SessionStepsDao sessionStepsDao =
+      SessionStepsDao(this as SessionDatabase);
+  late final SoundsDao soundsDao = SoundsDao(this as SessionDatabase);
+  late final SettingsDao settingsDao = SettingsDao(this as SessionDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [sessions, sessionBlocks, sounds, sessionIntervals, settings];
+      [sounds, sessions, sessionBlocks, sessionIntervals, settings];
 }

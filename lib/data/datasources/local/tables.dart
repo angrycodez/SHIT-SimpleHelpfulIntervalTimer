@@ -25,6 +25,8 @@ class SessionIntervals extends Table with UuidPrimaryKey{
   BoolColumn get isPause => boolean()();
   TextColumn get startSoundId => text().nullable().references(Sounds, #id)();
   TextColumn get endSoundId => text().nullable().references(Sounds, #id)();
+
+  IntColumn get color => integer().clientDefault(() => 0)();
 }
 
 @UseRowClass(SessionBlockEntry)

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:simple_interval_timer/data/models/models.dart';
 import 'package:uuid/uuid.dart';
+import '../../core/helper/constants.dart';
 import 'blocs.dart';
 
 part 'session_block_state.dart';
@@ -64,6 +65,9 @@ class SessionBlockCubit extends SessionStepCubit {
   @override
   void selectionChanged(SessionStepCubit? editStep) {
     super.selectionChanged(editStep);
+    if(!state.isSelected){
+      emit(state.copyWith(isEditMode: false));
+    }
     for(var child in _children){
       child.selectionChanged(editStep);
     }
@@ -84,7 +88,9 @@ class SessionBlockCubit extends SessionStepCubit {
         name: "",
         sequenceIndex: state.children.length,
         duration: const Duration(seconds: 1),
-        isPause: false);
+        isPause: false,
+        color: defaultIntervalColor,
+    );
     var cubit = SessionIntervalCubit(interval);
     _children.add(cubit);
     updateChildren(_children);

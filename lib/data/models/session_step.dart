@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:ui';
+
 import 'package:equatable/equatable.dart';
 
 import 'package:simple_interval_timer/data/models/models.dart';
@@ -103,6 +105,7 @@ class SessionInterval extends SessionStep {
   final bool isPause;
   final Sound? startSound;
   final Sound? endSound;
+  final Color color;
 
   @override
   List<SessionInterval> get intervalSequence => List.of([this]);
@@ -116,6 +119,7 @@ class SessionInterval extends SessionStep {
     required this.isPause,
     this.startSound,
     this.endSound,
+    required this.color,
   }) : super(
           id: id,
           name: name,
@@ -130,6 +134,7 @@ class SessionInterval extends SessionStep {
         isPause,
         startSound,
         endSound,
+    color,
       ];
 
   SessionInterval copyWith({
@@ -141,6 +146,7 @@ class SessionInterval extends SessionStep {
     bool? isPause,
     Sound? startSound,
     Sound? endSound,
+    Color? color,
   }) {
     return SessionInterval(
       id: id ?? this.id,
@@ -151,6 +157,7 @@ class SessionInterval extends SessionStep {
       isPause: isPause ?? this.isPause,
       startSound: startSound ?? this.startSound,
       endSound: endSound ?? this.endSound,
+      color: color ?? this.color,
     );
   }
 }

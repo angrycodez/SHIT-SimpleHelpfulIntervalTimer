@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:simple_interval_timer/data/models/models.dart';
 
 import 'blocs.dart';
@@ -34,6 +36,7 @@ class SessionIntervalCubit extends SessionStepCubit {
       isPause: state.isPause,
       startSound: state.startSound,
       endSound: state.endSound,
+      color: state.color,
     );
   }
 
@@ -51,5 +54,8 @@ class SessionIntervalCubit extends SessionStepCubit {
 
   void setEndSound(Sound? sound) {
     emit(state.copyWithEndSound(sound));
+  }
+  void setColor(Color color) {
+    emit(state.copyWith(color: color));
   }
 }

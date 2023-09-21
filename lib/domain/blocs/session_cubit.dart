@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:simple_interval_timer/core/helper/constants.dart';
 import 'package:simple_interval_timer/data/models/models.dart';
 import 'package:simple_interval_timer/data/repositories/session_repository.dart';
 import 'package:uuid/uuid.dart';
@@ -272,6 +273,7 @@ class SessionCubit extends Cubit<SessionState> {
       isPause: false,
       startSound: settings.state.defaultIntervalStartSound,
       endSound: settings.state.defaultIntervalEndSound,
+      color: defaultIntervalColor,
     );
     var cubit = SessionIntervalCubit(interval);
     _steps.add(cubit);
@@ -297,6 +299,9 @@ class SessionCubit extends Cubit<SessionState> {
 
   void setDescription(String description) {
     emit(state.copyWith(description: description));
+  }
+  void setEndSound(Sound? endSound) {
+    emit(state.copyWithEndSound(endSound));
   }
 
   void deselectAll(){

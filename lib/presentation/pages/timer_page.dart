@@ -40,6 +40,8 @@ class TimerPage extends StatelessWidget {
                         dimension: 280,
                         child: CircularProgressIndicator(
                           value: _currentIntervalProgress(state),
+                          color: state.currentInterval.color,
+                          strokeWidth: Layout.timerCircularStrokeWidth,
 
                         ),
                       ),

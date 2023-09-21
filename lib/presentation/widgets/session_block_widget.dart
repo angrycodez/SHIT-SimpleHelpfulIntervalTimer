@@ -15,14 +15,13 @@ class SessionBlockWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     SessionBlockState block = blockCubit.state;
     return Container(
-      margin: Layout.cardMargin,
-      padding: Layout.cardPadding,
+      padding: Layout.sessionBlockPadding,
       decoration: MyDecoration.cardDecoration(
         context,
-        color: Colors.lightGreenAccent,
+        color: MyColors.sessionBlockBackgroundColor,
         borderColor: blockCubit.state.isSelected
             ? MyColors.cardEditBorderColor
-            : MyColors.cardBorderColor,
+            : null,
       ),
       child: block.isEditMode
           ? SessionBlockEditWidget(blockCubit)
@@ -120,7 +119,7 @@ class SessionBlockChildrenWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: Layout.cardPadding,
-      margin: Layout.cardMargin,
+      margin: Layout.sessionBlockChildMargin,
       child: Flexible(
         child: ListView.builder(
           shrinkWrap: true,
