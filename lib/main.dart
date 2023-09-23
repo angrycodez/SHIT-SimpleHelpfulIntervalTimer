@@ -6,7 +6,6 @@ import 'package:simple_interval_timer/domain/blocs/session_database_cubit.dart';
 import 'package:simple_interval_timer/domain/blocs/settings_cubit.dart';
 import 'package:simple_interval_timer/domain/blocs/timer_cubit.dart';
 import 'package:simple_interval_timer/presentation/pages/session_overview_page.dart';
-import 'package:simple_interval_timer/presentation/widgets/my_scaffold.dart';
 
 void main() {
   runApp(const SimpleIntervalTimerApp());

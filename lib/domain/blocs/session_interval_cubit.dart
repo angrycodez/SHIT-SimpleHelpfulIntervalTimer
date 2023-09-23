@@ -35,7 +35,6 @@ class SessionIntervalCubit extends SessionStepCubit {
       duration: state.duration,
       isPause: state.isPause,
       startSound: state.startSound,
-      endSound: state.endSound,
       color: state.color,
     );
   }
@@ -52,9 +51,6 @@ class SessionIntervalCubit extends SessionStepCubit {
     emit(state.copyWithStartSound(sound));
   }
 
-  void setEndSound(Sound? sound) {
-    emit(state.copyWithEndSound(sound));
-  }
   void setColor(Color color) {
     emit(state.copyWith(color: color));
   }

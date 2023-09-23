@@ -4,7 +4,7 @@ class SessionBlockState extends SessionStepState {
   final List<SessionStepCubit> children;
   final int repetitions;
   final bool hasDirectChanges;
-  final bool isEditMode;
+  bool get isEditMode => isSelected;
 
   @override
   bool get hasChanges =>
@@ -17,7 +17,6 @@ class SessionBlockState extends SessionStepState {
     required this.repetitions,
     required this.children,
     super.isSelected = false,
-    this.isEditMode = false,
     this.hasDirectChanges = false,
   });
 
@@ -26,7 +25,6 @@ class SessionBlockState extends SessionStepState {
         ...super.props,
         children,
         repetitions,
-        isEditMode,
       ];
 
   @override
@@ -37,7 +35,6 @@ class SessionBlockState extends SessionStepState {
     List<SessionStepCubit>? children,
     int? repetitions,
     bool? isSelected,
-    bool? isEditMode,
   }) {
     return SessionBlockState(
       id: id ?? this.id,
@@ -46,7 +43,6 @@ class SessionBlockState extends SessionStepState {
       children: children ?? this.children,
       repetitions: repetitions ?? this.repetitions,
       isSelected: isSelected ?? this.isSelected,
-      isEditMode: isEditMode ?? this.isEditMode,
       hasDirectChanges: true,
     );
   }

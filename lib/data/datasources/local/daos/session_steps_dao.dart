@@ -19,7 +19,7 @@ class SessionStepsDao extends DatabaseAccessor<SessionDatabase>
     var intervals = await (db.sessionIntervals.select()
       ..where((tbl) => tbl.sessionId.equals(sessionId)))
         .get();
-    var steps = [...blocks, ...intervals] as List<SessionStepEntry>;
+    var steps = [...blocks, ...intervals];
     steps.sort((SessionStepEntry a, SessionStepEntry b) => a.sequenceIndex.compareTo(b.sequenceIndex));
     return steps;
   }
@@ -68,7 +68,6 @@ class SessionStepsDao extends DatabaseAccessor<SessionDatabase>
       durationInSeconds: durationInSeconds != null ? Value(durationInSeconds) : const Value.absent(),
       isPause: isPause != null ? Value(isPause) : const Value.absent(),
       startSoundId: startSoundId != null ? Value(startSoundId) : const Value.absent(),
-      endSoundId: endSoundId != null ? Value(endSoundId) : const Value.absent(),
       color: color != null ? Value(color) : const Value.absent(),
     ));
   }

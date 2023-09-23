@@ -804,15 +804,6 @@ class $SessionIntervalsTable extends SessionIntervals
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES sounds (id)'));
-  static const VerificationMeta _endSoundIdMeta =
-      const VerificationMeta('endSoundId');
-  @override
-  late final GeneratedColumn<String> endSoundId = GeneratedColumn<String>(
-      'end_sound_id', aliasedName, true,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES sounds (id)'));
   static const VerificationMeta _colorMeta = const VerificationMeta('color');
   @override
   late final GeneratedColumn<int> color = GeneratedColumn<int>(
@@ -830,7 +821,6 @@ class $SessionIntervalsTable extends SessionIntervals
         durationInSeconds,
         isPause,
         startSoundId,
-        endSoundId,
         color
       ];
   @override
@@ -892,12 +882,6 @@ class $SessionIntervalsTable extends SessionIntervals
           startSoundId.isAcceptableOrUnknown(
               data['start_sound_id']!, _startSoundIdMeta));
     }
-    if (data.containsKey('end_sound_id')) {
-      context.handle(
-          _endSoundIdMeta,
-          endSoundId.isAcceptableOrUnknown(
-              data['end_sound_id']!, _endSoundIdMeta));
-    }
     if (data.containsKey('color')) {
       context.handle(
           _colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
@@ -925,8 +909,6 @@ class $SessionIntervalsTable extends SessionIntervals
           .read(DriftSqlType.bool, data['${effectivePrefix}is_pause'])!,
       startSoundId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}start_sound_id']),
-      endSoundId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}end_sound_id']),
       color: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}color'])!,
     );
@@ -947,7 +929,6 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
   final Value<int> durationInSeconds;
   final Value<bool> isPause;
   final Value<String?> startSoundId;
-  final Value<String?> endSoundId;
   final Value<int> color;
   final Value<int> rowid;
   const SessionIntervalsCompanion({
@@ -959,7 +940,6 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
     this.durationInSeconds = const Value.absent(),
     this.isPause = const Value.absent(),
     this.startSoundId = const Value.absent(),
-    this.endSoundId = const Value.absent(),
     this.color = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -972,7 +952,6 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
     required int durationInSeconds,
     required bool isPause,
     this.startSoundId = const Value.absent(),
-    this.endSoundId = const Value.absent(),
     this.color = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : name = Value(name),
@@ -989,7 +968,6 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
     Expression<int>? durationInSeconds,
     Expression<bool>? isPause,
     Expression<String>? startSoundId,
-    Expression<String>? endSoundId,
     Expression<int>? color,
     Expression<int>? rowid,
   }) {
@@ -1002,7 +980,6 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
       if (durationInSeconds != null) 'duration_in_seconds': durationInSeconds,
       if (isPause != null) 'is_pause': isPause,
       if (startSoundId != null) 'start_sound_id': startSoundId,
-      if (endSoundId != null) 'end_sound_id': endSoundId,
       if (color != null) 'color': color,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1017,7 +994,6 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
       Value<int>? durationInSeconds,
       Value<bool>? isPause,
       Value<String?>? startSoundId,
-      Value<String?>? endSoundId,
       Value<int>? color,
       Value<int>? rowid}) {
     return SessionIntervalsCompanion(
@@ -1029,7 +1005,6 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
       durationInSeconds: durationInSeconds ?? this.durationInSeconds,
       isPause: isPause ?? this.isPause,
       startSoundId: startSoundId ?? this.startSoundId,
-      endSoundId: endSoundId ?? this.endSoundId,
       color: color ?? this.color,
       rowid: rowid ?? this.rowid,
     );
@@ -1062,9 +1037,6 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
     if (startSoundId.present) {
       map['start_sound_id'] = Variable<String>(startSoundId.value);
     }
-    if (endSoundId.present) {
-      map['end_sound_id'] = Variable<String>(endSoundId.value);
-    }
     if (color.present) {
       map['color'] = Variable<int>(color.value);
     }
@@ -1085,7 +1057,6 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
           ..write('durationInSeconds: $durationInSeconds, ')
           ..write('isPause: $isPause, ')
           ..write('startSoundId: $startSoundId, ')
-          ..write('endSoundId: $endSoundId, ')
           ..write('color: $color, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -1115,15 +1086,6 @@ class $SettingsTable extends Settings
           requiredDuringInsert: false,
           defaultConstraints:
               GeneratedColumn.constraintIsAlways('REFERENCES sounds (id)'));
-  static const VerificationMeta _defaultIntervalEndSoundMeta =
-      const VerificationMeta('defaultIntervalEndSound');
-  @override
-  late final GeneratedColumn<String> defaultIntervalEndSound =
-      GeneratedColumn<String>('default_interval_end_sound', aliasedName, true,
-          type: DriftSqlType.string,
-          requiredDuringInsert: false,
-          defaultConstraints:
-              GeneratedColumn.constraintIsAlways('REFERENCES sounds (id)'));
   static const VerificationMeta _defaultSessionEndSoundMeta =
       const VerificationMeta('defaultSessionEndSound');
   @override
@@ -1134,12 +1096,8 @@ class $SettingsTable extends Settings
           defaultConstraints:
               GeneratedColumn.constraintIsAlways('REFERENCES sounds (id)'));
   @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        defaultIntervalStartSound,
-        defaultIntervalEndSound,
-        defaultSessionEndSound
-      ];
+  List<GeneratedColumn> get $columns =>
+      [id, defaultIntervalStartSound, defaultSessionEndSound];
   @override
   String get aliasedName => _alias ?? 'settings';
   @override
@@ -1158,13 +1116,6 @@ class $SettingsTable extends Settings
           defaultIntervalStartSound.isAcceptableOrUnknown(
               data['default_interval_start_sound']!,
               _defaultIntervalStartSoundMeta));
-    }
-    if (data.containsKey('default_interval_end_sound')) {
-      context.handle(
-          _defaultIntervalEndSoundMeta,
-          defaultIntervalEndSound.isAcceptableOrUnknown(
-              data['default_interval_end_sound']!,
-              _defaultIntervalEndSoundMeta));
     }
     if (data.containsKey('default_session_end_sound')) {
       context.handle(
@@ -1186,9 +1137,6 @@ class $SettingsTable extends Settings
       defaultIntervalStartSound: attachedDatabase.typeMapping.read(
           DriftSqlType.string,
           data['${effectivePrefix}default_interval_start_sound']),
-      defaultIntervalEndSound: attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}default_interval_end_sound']),
       defaultSessionEndSound: attachedDatabase.typeMapping.read(
           DriftSqlType.string,
           data['${effectivePrefix}default_session_end_sound']),
@@ -1204,12 +1152,10 @@ class $SettingsTable extends Settings
 class SettingsEntry extends DataClass implements Insertable<SettingsEntry> {
   final String id;
   final String? defaultIntervalStartSound;
-  final String? defaultIntervalEndSound;
   final String? defaultSessionEndSound;
   const SettingsEntry(
       {required this.id,
       this.defaultIntervalStartSound,
-      this.defaultIntervalEndSound,
       this.defaultSessionEndSound});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1218,10 +1164,6 @@ class SettingsEntry extends DataClass implements Insertable<SettingsEntry> {
     if (!nullToAbsent || defaultIntervalStartSound != null) {
       map['default_interval_start_sound'] =
           Variable<String>(defaultIntervalStartSound);
-    }
-    if (!nullToAbsent || defaultIntervalEndSound != null) {
-      map['default_interval_end_sound'] =
-          Variable<String>(defaultIntervalEndSound);
     }
     if (!nullToAbsent || defaultSessionEndSound != null) {
       map['default_session_end_sound'] =
@@ -1237,9 +1179,6 @@ class SettingsEntry extends DataClass implements Insertable<SettingsEntry> {
           defaultIntervalStartSound == null && nullToAbsent
               ? const Value.absent()
               : Value(defaultIntervalStartSound),
-      defaultIntervalEndSound: defaultIntervalEndSound == null && nullToAbsent
-          ? const Value.absent()
-          : Value(defaultIntervalEndSound),
       defaultSessionEndSound: defaultSessionEndSound == null && nullToAbsent
           ? const Value.absent()
           : Value(defaultSessionEndSound),
@@ -1253,8 +1192,6 @@ class SettingsEntry extends DataClass implements Insertable<SettingsEntry> {
       id: serializer.fromJson<String>(json['id']),
       defaultIntervalStartSound:
           serializer.fromJson<String?>(json['defaultIntervalStartSound']),
-      defaultIntervalEndSound:
-          serializer.fromJson<String?>(json['defaultIntervalEndSound']),
       defaultSessionEndSound:
           serializer.fromJson<String?>(json['defaultSessionEndSound']),
     );
@@ -1266,8 +1203,6 @@ class SettingsEntry extends DataClass implements Insertable<SettingsEntry> {
       'id': serializer.toJson<String>(id),
       'defaultIntervalStartSound':
           serializer.toJson<String?>(defaultIntervalStartSound),
-      'defaultIntervalEndSound':
-          serializer.toJson<String?>(defaultIntervalEndSound),
       'defaultSessionEndSound':
           serializer.toJson<String?>(defaultSessionEndSound),
     };
@@ -1276,16 +1211,12 @@ class SettingsEntry extends DataClass implements Insertable<SettingsEntry> {
   SettingsEntry copyWith(
           {String? id,
           Value<String?> defaultIntervalStartSound = const Value.absent(),
-          Value<String?> defaultIntervalEndSound = const Value.absent(),
           Value<String?> defaultSessionEndSound = const Value.absent()}) =>
       SettingsEntry(
         id: id ?? this.id,
         defaultIntervalStartSound: defaultIntervalStartSound.present
             ? defaultIntervalStartSound.value
             : this.defaultIntervalStartSound,
-        defaultIntervalEndSound: defaultIntervalEndSound.present
-            ? defaultIntervalEndSound.value
-            : this.defaultIntervalEndSound,
         defaultSessionEndSound: defaultSessionEndSound.present
             ? defaultSessionEndSound.value
             : this.defaultSessionEndSound,
@@ -1295,49 +1226,43 @@ class SettingsEntry extends DataClass implements Insertable<SettingsEntry> {
     return (StringBuffer('SettingsEntry(')
           ..write('id: $id, ')
           ..write('defaultIntervalStartSound: $defaultIntervalStartSound, ')
-          ..write('defaultIntervalEndSound: $defaultIntervalEndSound, ')
           ..write('defaultSessionEndSound: $defaultSessionEndSound')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, defaultIntervalStartSound,
-      defaultIntervalEndSound, defaultSessionEndSound);
+  int get hashCode =>
+      Object.hash(id, defaultIntervalStartSound, defaultSessionEndSound);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is SettingsEntry &&
           other.id == this.id &&
           other.defaultIntervalStartSound == this.defaultIntervalStartSound &&
-          other.defaultIntervalEndSound == this.defaultIntervalEndSound &&
           other.defaultSessionEndSound == this.defaultSessionEndSound);
 }
 
 class SettingsCompanion extends UpdateCompanion<SettingsEntry> {
   final Value<String> id;
   final Value<String?> defaultIntervalStartSound;
-  final Value<String?> defaultIntervalEndSound;
   final Value<String?> defaultSessionEndSound;
   final Value<int> rowid;
   const SettingsCompanion({
     this.id = const Value.absent(),
     this.defaultIntervalStartSound = const Value.absent(),
-    this.defaultIntervalEndSound = const Value.absent(),
     this.defaultSessionEndSound = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   SettingsCompanion.insert({
     this.id = const Value.absent(),
     this.defaultIntervalStartSound = const Value.absent(),
-    this.defaultIntervalEndSound = const Value.absent(),
     this.defaultSessionEndSound = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   static Insertable<SettingsEntry> custom({
     Expression<String>? id,
     Expression<String>? defaultIntervalStartSound,
-    Expression<String>? defaultIntervalEndSound,
     Expression<String>? defaultSessionEndSound,
     Expression<int>? rowid,
   }) {
@@ -1345,8 +1270,6 @@ class SettingsCompanion extends UpdateCompanion<SettingsEntry> {
       if (id != null) 'id': id,
       if (defaultIntervalStartSound != null)
         'default_interval_start_sound': defaultIntervalStartSound,
-      if (defaultIntervalEndSound != null)
-        'default_interval_end_sound': defaultIntervalEndSound,
       if (defaultSessionEndSound != null)
         'default_session_end_sound': defaultSessionEndSound,
       if (rowid != null) 'rowid': rowid,
@@ -1356,15 +1279,12 @@ class SettingsCompanion extends UpdateCompanion<SettingsEntry> {
   SettingsCompanion copyWith(
       {Value<String>? id,
       Value<String?>? defaultIntervalStartSound,
-      Value<String?>? defaultIntervalEndSound,
       Value<String?>? defaultSessionEndSound,
       Value<int>? rowid}) {
     return SettingsCompanion(
       id: id ?? this.id,
       defaultIntervalStartSound:
           defaultIntervalStartSound ?? this.defaultIntervalStartSound,
-      defaultIntervalEndSound:
-          defaultIntervalEndSound ?? this.defaultIntervalEndSound,
       defaultSessionEndSound:
           defaultSessionEndSound ?? this.defaultSessionEndSound,
       rowid: rowid ?? this.rowid,
@@ -1381,10 +1301,6 @@ class SettingsCompanion extends UpdateCompanion<SettingsEntry> {
       map['default_interval_start_sound'] =
           Variable<String>(defaultIntervalStartSound.value);
     }
-    if (defaultIntervalEndSound.present) {
-      map['default_interval_end_sound'] =
-          Variable<String>(defaultIntervalEndSound.value);
-    }
     if (defaultSessionEndSound.present) {
       map['default_session_end_sound'] =
           Variable<String>(defaultSessionEndSound.value);
@@ -1400,7 +1316,6 @@ class SettingsCompanion extends UpdateCompanion<SettingsEntry> {
     return (StringBuffer('SettingsCompanion(')
           ..write('id: $id, ')
           ..write('defaultIntervalStartSound: $defaultIntervalStartSound, ')
-          ..write('defaultIntervalEndSound: $defaultIntervalEndSound, ')
           ..write('defaultSessionEndSound: $defaultSessionEndSound, ')
           ..write('rowid: $rowid')
           ..write(')'))

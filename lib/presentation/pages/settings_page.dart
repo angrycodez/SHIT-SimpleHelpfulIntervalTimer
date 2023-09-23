@@ -22,67 +22,66 @@ class SettingsPage extends StatelessWidget {
         await _storeSettings(context);
         return true;
       },
-      child: BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, state) => MyScaffold(
+      child:
+          BlocBuilder<SettingsCubit, SettingsState>(builder: (context, state) {
+        var settings = _getSettings(context);
+        return MyScaffold(
           appBar: StandardComponents.getAppBar(context, "Settings"),
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SettingsSelectionEntry(
-                  name: "Default Interval Start Sound",
-                  child: SoundPicker(
-                    key: const Key("defaultIntervalStartSound"),
-                    sound: state.defaultIntervalStartSound,
-                    onSoundSelected: (sound) => context
-                        .read<SettingsCubit>()
-                        .setDefaultIntervalStartSound(sound),
-                  ),
-                ),
-                SettingsSelectionEntry(
-                  name: "Default Interval End Sound",
-                  child: SoundPicker(
-                    key: const Key("defaultIntervalEndSound"),
-                    sound: state.defaultIntervalEndSound,
-                    onSoundSelected: (sound) => context
-                        .read<SettingsCubit>()
-                        .setDefaultIntervalEndSound(sound),
-                  ),
-                ),
-                SettingsSelectionEntry(
-                  name: "Default Session End Sound",
-                  child: SoundPicker(
-                    key: const Key("defaultSessionEndSound"),
-                    sound: state.defaultSessionEndSound,
-                    onSoundSelected: (sound) => context
-                        .read<SettingsCubit>()
-                        .setDefaultSessionEndSound(sound),
-                  ),
-                ),
-                _SubSettingsNavigationEntry(
-                  title: "Sounds",
-                  targetRoute: SoundsEditPage.getRoute(),
-                ),
-              ],
+          body: Container(
+            margin: Layout.defaultContentMargin,
+            padding: Layout.cardPadding,
+            child: ListView.separated(
+              itemCount: settings.length,
+              itemBuilder: (BuildContext context, int index) => settings[index],
+              separatorBuilder: (BuildContext context, int index) => const Divider(
+                indent: Layout.defaultHorizontalSpace,
+                endIndent: Layout.defaultHorizontalSpace,
+                height: Layout.defaultVerticalSpace,
+              ),
             ),
           ),
+        );
+      }),
+    );
+  }
+
+  List<Widget> _getSettings(BuildContext context) {
+    var state = context.read<SettingsCubit>().state;
+    return [
+      SettingsSelectionEntry(
+        name: "Default Interval Sound",
+        child: SoundPicker(
+          key: const Key("defaultIntervalStartSound"),
+          sound: state.defaultIntervalStartSound,
+          onSoundSelected: (sound) =>
+              context.read<SettingsCubit>().setDefaultIntervalStartSound(sound),
         ),
       ),
-    );
+      SettingsSelectionEntry(
+        name: "Default Session End Sound",
+        child: SoundPicker(
+          key: const Key("defaultSessionEndSound"),
+          sound: state.defaultSessionEndSound,
+          onSoundSelected: (sound) =>
+              context.read<SettingsCubit>().setDefaultSessionEndSound(sound),
+        ),
+      ),
+      _SubSettingsNavigationEntry(
+        title: "Sounds",
+        targetRoute: SoundsEditPage.getRoute(),
+      ),
+    ];
   }
 
   Future _storeSettings(BuildContext context) async =>
       await context.read<SettingsCubit>().storeSettings();
 }
 
-
-
 class _SubSettingsNavigationEntry extends StatelessWidget {
   final String title;
   final MaterialPageRoute? targetRoute;
 
-  const _SubSettingsNavigationEntry(
-      {super.key, required this.title, this.targetRoute});
+  const _SubSettingsNavigationEntry({required this.title, this.targetRoute});
 
   @override
   Widget build(BuildContext context) {

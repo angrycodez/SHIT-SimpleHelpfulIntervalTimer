@@ -6,11 +6,11 @@ import 'package:equatable/equatable.dart';
 import 'package:simple_interval_timer/data/models/models.dart';
 
 class Session extends Equatable {
-  String id;
-  String name;
-  String description;
-  Sound? endSound;
-  List<SessionStep> steps;
+  final String id;
+  final String name;
+  final String description;
+  final Sound? endSound;
+  final List<SessionStep> steps;
   List<SessionStep> get distinctSteps => steps.fold(List<SessionStep>.empty(growable: true), (previousValue, element) {
     if(element is SessionInterval){
       previousValue.add(element);
@@ -29,7 +29,7 @@ class Session extends Equatable {
   }
   Duration get duration => steps.fold(Duration.zero, (previousValue, element) => Duration(seconds: previousValue.inSeconds + element.duration.inSeconds));
 
-  Session(this.id, this.name, this.description, this.steps, {this.endSound});
+  const Session(this.id, this.name, this.description, this.steps, {this.endSound});
 
 
   @override

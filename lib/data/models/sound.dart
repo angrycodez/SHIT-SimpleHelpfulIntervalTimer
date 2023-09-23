@@ -3,10 +3,10 @@ import 'package:equatable/equatable.dart';
 import 'package:simple_interval_timer/data/datasources/local/database.dart';
 
 class Sound extends Equatable {
-  String id;
-  String filename;
-  String filepath;
-  Sound(this.id, this.filename, this.filepath);
+  final String id;
+  final String filename;
+  final String filepath;
+  const Sound(this.id, this.filename, this.filepath);
 
   Sound.fromEntry(SoundEntry sound)
       : this(

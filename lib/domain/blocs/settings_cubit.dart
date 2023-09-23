@@ -26,7 +26,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     return Settings(
       id: state.id,
       defaultIntervalStartSound: state.defaultIntervalStartSound,
-      defaultIntervalEndSound: state.defaultIntervalEndSound,
+      defaultSessionEndSound: state.defaultSessionEndSound,
     );
   }
 
@@ -40,7 +40,6 @@ class SettingsCubit extends Cubit<SettingsState> {
       state.copyWith(
         id: settings.id,
         defaultIntervalStartSound: settings.defaultIntervalStartSound,
-        defaultIntervalEndSound: settings.defaultIntervalEndSound,
         defaultSessionEndSound: settings.defaultSessionEndSound,
       ),
     );
@@ -84,10 +83,6 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   void setDefaultIntervalStartSound(Sound? sound) {
     emit(state.copyWithDefaultIntervalStartSound(sound));
-  }
-
-  void setDefaultIntervalEndSound(Sound? sound) {
-    emit(state.copyWithDefaultIntervalEndSound(sound));
   }
 
   void setDefaultSessionEndSound(Sound? sound) {

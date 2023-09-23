@@ -104,7 +104,6 @@ class SessionInterval extends SessionStep {
   final Duration duration;
   final bool isPause;
   final Sound? startSound;
-  final Sound? endSound;
   final Color color;
 
   @override
@@ -118,7 +117,6 @@ class SessionInterval extends SessionStep {
     required this.duration,
     required this.isPause,
     this.startSound,
-    this.endSound,
     required this.color,
   }) : super(
           id: id,
@@ -133,7 +131,6 @@ class SessionInterval extends SessionStep {
         duration,
         isPause,
         startSound,
-        endSound,
     color,
       ];
 
@@ -145,7 +142,6 @@ class SessionInterval extends SessionStep {
     Duration? duration,
     bool? isPause,
     Sound? startSound,
-    Sound? endSound,
     Color? color,
   }) {
     return SessionInterval(
@@ -156,7 +152,6 @@ class SessionInterval extends SessionStep {
       duration: duration ?? this.duration,
       isPause: isPause ?? this.isPause,
       startSound: startSound ?? this.startSound,
-      endSound: endSound ?? this.endSound,
       color: color ?? this.color,
     );
   }

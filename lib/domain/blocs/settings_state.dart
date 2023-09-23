@@ -4,13 +4,11 @@ class SettingsState extends Equatable {
   final String id;
   final List<Sound> sounds;
   final Sound? defaultIntervalStartSound;
-  final Sound? defaultIntervalEndSound;
   final Sound? defaultSessionEndSound;
   const SettingsState({
     required this.id,
     this.sounds = const [],
     this.defaultIntervalStartSound,
-    this.defaultIntervalEndSound,
     this.defaultSessionEndSound,
   });
 
@@ -19,7 +17,6 @@ class SettingsState extends Equatable {
         id,
         sounds,
         defaultIntervalStartSound,
-        defaultIntervalEndSound,
         defaultSessionEndSound,
       ];
 
@@ -29,17 +26,6 @@ class SettingsState extends Equatable {
       id: id,
       sounds: sounds,
       defaultIntervalStartSound: defaultIntervalStartSound,
-      defaultIntervalEndSound: defaultIntervalEndSound,
-      defaultSessionEndSound: defaultSessionEndSound,
-    );
-  }
-  SettingsState copyWithDefaultIntervalEndSound(
-      Sound? defaultIntervalEndSound) {
-    return SettingsState(
-      id: id,
-      sounds: sounds,
-      defaultIntervalStartSound: defaultIntervalStartSound,
-      defaultIntervalEndSound: defaultIntervalEndSound,
       defaultSessionEndSound: defaultSessionEndSound,
     );
   }
@@ -49,7 +35,6 @@ class SettingsState extends Equatable {
       id: id,
       sounds: sounds,
       defaultIntervalStartSound: defaultIntervalStartSound,
-      defaultIntervalEndSound: defaultIntervalEndSound,
       defaultSessionEndSound: defaultSessionEndSound,
     );
   }
@@ -57,7 +42,6 @@ class SettingsState extends Equatable {
     String? id,
     List<Sound>? sounds,
     Sound? defaultIntervalStartSound,
-    Sound? defaultIntervalEndSound,
     Sound? defaultSessionEndSound,
   }) {
     return SettingsState(
@@ -65,8 +49,6 @@ class SettingsState extends Equatable {
       sounds: sounds ?? this.sounds,
       defaultIntervalStartSound:
           defaultIntervalStartSound ?? this.defaultIntervalStartSound,
-      defaultIntervalEndSound:
-          defaultIntervalEndSound ?? this.defaultIntervalEndSound,
       defaultSessionEndSound:
           defaultSessionEndSound ?? this.defaultSessionEndSound,
     );

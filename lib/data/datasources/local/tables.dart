@@ -24,7 +24,6 @@ class SessionIntervals extends Table with UuidPrimaryKey{
   IntColumn get durationInSeconds => integer()();
   BoolColumn get isPause => boolean()();
   TextColumn get startSoundId => text().nullable().references(Sounds, #id)();
-  TextColumn get endSoundId => text().nullable().references(Sounds, #id)();
 
   IntColumn get color => integer().clientDefault(() => 0)();
 }
@@ -48,7 +47,6 @@ class Sounds extends Table with UuidPrimaryKey{
 @DataClassName("SettingsEntry")
 class Settings extends Table with UuidPrimaryKey{
   TextColumn get defaultIntervalStartSound => text().nullable().references(Sounds, #id)();
-  TextColumn get defaultIntervalEndSound => text().nullable().references(Sounds, #id)();
   TextColumn get defaultSessionEndSound => text().nullable().references(Sounds, #id)();
 }
 

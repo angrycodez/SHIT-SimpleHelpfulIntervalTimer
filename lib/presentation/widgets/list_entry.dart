@@ -15,7 +15,7 @@ class ListEntry extends StatelessWidget{
       child: Container(
         margin: Layout.cardMargin,
         padding: Layout.cardPadding,
-        decoration: MyDecoration.cardDecoration(context),
+        decoration: MyDecoration.cardDecoration(context, color: Colors.transparent, borderColor: MyColors.lightCardBackgroundColor,),
         child: child,
       ),
     );

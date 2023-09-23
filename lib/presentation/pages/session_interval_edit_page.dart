@@ -61,10 +61,14 @@ class SessionIntervalEditPage extends StatelessWidget {
                                 value: interval.isPause,
                                 onChanged: (newValue) =>
                                     intervalCubit.setIsPause(newValue)),
-                            const Text("Pause"),
+
                             if (interval.isPause) ...[
+                              const Text("Pause"),
+                              const SizedBox(width: Layout.defaultHorizontalSpace),
                               MyIcons.pauseIcon
                             ] else ...[
+                              const Text("Work"),
+                              const SizedBox(width: Layout.defaultHorizontalSpace),
                               MyIcons.workIcon
                             ]
                           ],
@@ -76,15 +80,6 @@ class SessionIntervalEditPage extends StatelessWidget {
                             sound: interval.startSound,
                             onSoundSelected: (sound) =>
                                 intervalCubit.setStartSound(sound),
-                          ),
-                        ),
-                        SettingsSelectionEntry(
-                          name: "End Sound",
-                          child: SoundPicker(
-                            key: const Key("EndSound"),
-                            sound: interval.endSound,
-                            onSoundSelected: (sound) =>
-                                intervalCubit.setEndSound(sound),
                           ),
                         ),
                       ],
@@ -99,7 +94,7 @@ class SessionIntervalEditPage extends StatelessWidget {
 
   Widget _nameTextField() {
     return TextFormField(
-      initialValue: intervalCubit.state.name ?? "",
+      initialValue: intervalCubit.state.name,
       maxLength: maxNameLength,
       decoration: const InputDecoration(
         helperText: "Name",

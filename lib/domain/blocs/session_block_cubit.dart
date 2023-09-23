@@ -65,9 +65,6 @@ class SessionBlockCubit extends SessionStepCubit {
   @override
   void selectionChanged(SessionStepCubit? editStep) {
     super.selectionChanged(editStep);
-    if(!state.isSelected){
-      emit(state.copyWith(isEditMode: false));
-    }
     for(var child in _children){
       child.selectionChanged(editStep);
     }
@@ -87,7 +84,7 @@ class SessionBlockCubit extends SessionStepCubit {
         id: const Uuid().v4(),
         name: "",
         sequenceIndex: state.children.length,
-        duration: const Duration(seconds: 1),
+        duration: Duration.zero,
         isPause: false,
         color: defaultIntervalColor,
     );
@@ -102,14 +99,10 @@ class SessionBlockCubit extends SessionStepCubit {
         name: "",
         sequenceIndex: state.children.length,
         repetitions: 1,
-        children: []);
+        children: const []);
     var cubit = SessionBlockCubit(block);
     _children.add(cubit);
     updateChildren(_children);
-  }
-
-  void toggleEditMode() {
-    emit(state.copyWith(isEditMode: !state.isEditMode));
   }
 
   @override

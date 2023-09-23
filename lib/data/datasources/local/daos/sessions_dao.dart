@@ -1,5 +1,4 @@
 import 'package:drift/drift.dart';
-import 'package:simple_interval_timer/data/datasources/local/daos/daos.dart';
 import 'package:simple_interval_timer/data/datasources/local/database.dart';
 import 'package:simple_interval_timer/data/datasources/local/tables.dart';
 import 'package:simple_interval_timer/data/models/models.dart';
@@ -31,15 +30,20 @@ class SessionsDao extends DatabaseAccessor<SessionDatabase>
     var allSteps = session.distinctSteps;
     var intervals = allSteps.whereType<SessionInterval>().toList();
     var blocks = allSteps.whereType<SessionBlock>().toList();
-    await db.sessionIntervals
-        .deleteWhere((tbl) =>  tbl.sessionId.equals(session.id) & tbl.id.isNotIn(intervals.map((e) => e.id)));
-    await db.sessionBlocks
-        .deleteWhere((tbl) => tbl.sessionId.equals(session.id) & tbl.id.isNotIn(blocks.map((e) => e.id)));
+    await db.sessionIntervals.deleteWhere((tbl) =>
+        tbl.sessionId.equals(session.id) &
+        tbl.id.isNotIn(intervals.map((e) => e.id)));
+    await db.sessionBlocks.deleteWhere((tbl) =>
+        tbl.sessionId.equals(session.id) &
+        tbl.id.isNotIn(blocks.map((e) => e.id)));
 
     await db.sessions.insertOnConflictUpdate(SessionsCompanion(
       id: Value(session.id),
       name: Value(session.name),
       description: Value(session.description),
+      endSoundId: session.endSound != null
+          ? Value(session.endSound!.id)
+          : const Value(null),
     ));
 
     for (var block in blocks) {
@@ -65,7 +69,6 @@ class SessionsDao extends DatabaseAccessor<SessionDatabase>
           durationInSeconds: Value(interval.duration.inSeconds),
           isPause: Value(interval.isPause),
           startSoundId: Value(interval.startSound?.id),
-          endSoundId: Value(interval.endSound?.id),
           color: Value(interval.color.value),
         ),
       );

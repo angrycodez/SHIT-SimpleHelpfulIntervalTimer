@@ -31,7 +31,7 @@ class SessionDatabase extends _$SessionDatabase {
   //   : super.connect(connection);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration {
@@ -39,7 +39,12 @@ class SessionDatabase extends _$SessionDatabase {
       await m.createAll();
     }, onUpgrade: ((Migrator m, int from, int to) async {
       for (var step = from + 1; step <= to; step++) {
-        switch (step) {}
+        switch (step) {
+          case 2:
+            m.alterTable(TableMigration(sessionIntervals));
+            m.alterTable(TableMigration(settings));
+            break;
+        }
       }
     }), beforeOpen: ((details) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -55,16 +60,12 @@ class SessionDatabase extends _$SessionDatabase {
         var intervalStartSound = await (sounds.select()
               ..where((tbl) => tbl.filename.equals("ding.mp3")))
             .getSingle();
-        var intervalEndSound = await (sounds.select()
-              ..where((tbl) => tbl.filename.equals("ding2.mp3")))
-            .getSingle();
         var sessionEndSound = await (sounds.select()
               ..where((tbl) => tbl.filename.equals("end.mp3")))
             .getSingle();
         settings.insertOne(SettingsCompanion.insert(
           id: Value(const Uuid().v4()),
           defaultIntervalStartSound: Value(intervalStartSound.id),
-          defaultIntervalEndSound: Value(intervalEndSound.id),
           defaultSessionEndSound: Value(sessionEndSound.id),
         ));
 

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:simple_interval_timer/core/services/audio_service.dart';
 
-import '../../core/services/audio_service.dart';
 import '../../data/models/models.dart';
 
 part 'timer_state.dart';
@@ -12,8 +12,8 @@ class TimerCubit extends Cubit<TimerState> {
     _audioService = AudioService();
   }
 
-  @override Future<void> close() {
-    _audioService.dispose();
+  @override Future<void> close() async {
+    await _audioService.dispose();
     return super.close();
   }
 
@@ -44,8 +44,7 @@ class TimerCubit extends Cubit<TimerState> {
     if(!isLoaded){
       return;
     }
-    emit(loadedState.copyWith(intervalStartedTimestamp: DateTime.now()));
-    _audioService.play(loadedState.currentInterval.startSound);
+    _startInterval(0);
     _tick();
   }
 
@@ -83,10 +82,30 @@ class TimerCubit extends Cubit<TimerState> {
     if(!isLoaded){
       return;
     }
-    bool startTicking = !loadedState.isTicking;
-    emit(loadedState.copyWith(intervalStartedTimestamp: DateTime.now(), isPaused: false, isDone: false,));
-    if(startTicking){
-      _tick();
+    _startInterval(loadedState.currentIntervalIndex);
+  }
+
+  bool _startInterval(int index){
+    if(!isLoaded){
+      return false;
+    }
+    if(index < 0 || loadedState.intervals.length < index){
+      _finish();
+      return false;
+    }else{
+      bool startTicking = !loadedState.isTicking;
+      emit(loadedState.copyWith(
+        remainingTimeCurrentInterval: loadedState.intervals[index].duration,
+        currentIntervalIndex: index,
+        intervalStartedTimestamp: DateTime.now(),
+        isPaused: false,
+        isDone: false,
+      ));
+      if(startTicking){
+        _tick();
+      }
+      _audioService.play(loadedState.currentInterval.startSound);
+      return true;
     }
   }
 
@@ -96,26 +115,14 @@ class TimerCubit extends Cubit<TimerState> {
     }
     int nextIndex = loadedState.nextIndex;
     // there are no more intervals left => session is done
-    if(nextIndex == -1){
-      _finish();
-      return false;
-    }else{
-      // move to the next interval
-
-      emit(loadedState.copyWith(
-        remainingTimeCurrentInterval: loadedState.intervals[nextIndex].duration,
-        currentIntervalIndex: nextIndex,
-        intervalStartedTimestamp: DateTime.now(),
-      ));
-      _audioService.play(loadedState.currentInterval.startSound);
-      return true;
-    }
+    return _startInterval(nextIndex);
   }
 
   void _finish(){
     if(!isLoaded){
       return;
     }
+    _audioService.play(loadedState.session.endSound);
     emit(loadedState.copyWith(isDone: true));
   }
 
@@ -129,11 +136,10 @@ class TimerCubit extends Cubit<TimerState> {
       return;
     }
 
-    int millisecondsRemaining =  loadedState.computeRemainingTimeInMillis;
+    int millisecondsRemaining =  loadedState.computeCurrentIntervalRemainingTimeInMillis;
 
     // current interval has finished
     if(millisecondsRemaining <= 0){
-      _audioService.play(loadedState.currentInterval.endSound);
       // there are no more intervals left => session is done
       if(!startNextInterval()){
         _finish();

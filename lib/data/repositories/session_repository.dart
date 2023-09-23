@@ -49,7 +49,7 @@ class SessionRepository {
       }
     }
 
-    Session session = Session(id, sessionEntry.name, sessionEntry.description, stepObjects);
+    Session session = Session(id, sessionEntry.name, sessionEntry.description, stepObjects, endSound: await _getSound(sessionEntry.endSoundId),);
     _addParentReferences(session.steps);
     return session;
   }
@@ -82,13 +82,12 @@ class SessionRepository {
       sequenceIndex: entry.sequenceIndex,
       duration: Duration(seconds: entry.durationInSeconds),
       isPause: entry.isPause,
-      startSound: await _getIntervalSound(entry.startSoundId),
-      endSound: await _getIntervalSound(entry.endSoundId),
+      startSound: await _getSound(entry.startSoundId),
       color: Color(entry.color),
     );
   }
 
-  Future<Sound?> _getIntervalSound(String? soundId)async{
+  Future<Sound?> _getSound(String? soundId)async{
     if(soundId == null){
       return null;
     }
@@ -136,7 +135,6 @@ class SessionRepository {
   }
 
   Future storeSession(Session session) async {
-    // TODO: delete all sessionSteps (blocks+intervals) that are no longer part of the session. Then, insertOnConflictUpdate all steps in the session and the session itself
     await _sessionsDao.updateSession(session);
   }
 }

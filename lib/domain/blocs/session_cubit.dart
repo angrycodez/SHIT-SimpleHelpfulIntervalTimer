@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -250,6 +249,7 @@ class SessionCubit extends Cubit<SessionState> {
     stepLocation = stepLocation!;
     var steps = List.of(stepLocation.steps);
     steps.removeAt(stepLocation.index);
+    deselectAll();
 
     if (stepLocation.parent == null) {
       await _updateSteps(steps);
@@ -269,10 +269,9 @@ class SessionCubit extends Cubit<SessionState> {
       id: const Uuid().v4(),
       name: "",
       sequenceIndex: state.steps.length,
-      duration: const Duration(seconds: 1),
+      duration: Duration.zero,
       isPause: false,
       startSound: settings.state.defaultIntervalStartSound,
-      endSound: settings.state.defaultIntervalEndSound,
       color: defaultIntervalColor,
     );
     var cubit = SessionIntervalCubit(interval);
@@ -286,7 +285,7 @@ class SessionCubit extends Cubit<SessionState> {
       name: "",
       sequenceIndex: state.steps.length,
       repetitions: 1,
-      children: [],
+      children: const [],
     );
     var cubit = SessionBlockCubit(block);
     _steps.add(cubit);
@@ -318,6 +317,7 @@ class SessionCubit extends Cubit<SessionState> {
       state.name,
       state.description,
       steps,
+      endSound: state.endSound,
     );
   }
 

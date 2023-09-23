@@ -20,15 +20,12 @@ class SettingsRepository {
     var settingsEntry = await _settingsDao.getSettings();
     Sound? defaultIntervalStartSound =
         await _getSound(settingsEntry.defaultIntervalStartSound);
-    Sound? defaultIntervalEndSound =
-        await _getSound(settingsEntry.defaultIntervalEndSound);
     Sound? defaultSessionEndSound =
         await _getSound(settingsEntry.defaultSessionEndSound);
 
     return Settings(
       id: settingsEntry.id,
       defaultIntervalStartSound: defaultIntervalStartSound,
-      defaultIntervalEndSound: defaultIntervalEndSound,
       defaultSessionEndSound: defaultSessionEndSound,
     );
   }

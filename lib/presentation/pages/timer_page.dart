@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simple_interval_timer/core/helper/converter.dart';
@@ -24,88 +26,145 @@ class TimerPage extends StatelessWidget {
       body: BlocBuilder<TimerCubit, TimerState>(
         builder: (context, state) {
           if (state is! TimerStateLoaded) {
-            return SizedBox.shrink();
+            return const SizedBox.shrink();
           }
           if(state.isDone){
-            return Center(child: Text("Done :)"),);
+            return _isDoneView(context);
           }
-          return Column(
-            children: [
-              Flexible(
-                flex: 3,
-                child: Stack(
-                  children: [
-                    Center(
-                      child: SizedBox.square(
-                        dimension: 280,
-                        child: CircularProgressIndicator(
-                          value: _currentIntervalProgress(state),
-                          color: state.currentInterval.color,
-                          strokeWidth: Layout.timerCircularStrokeWidth,
-
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if(!state.isTicking)...[
-                            IconButton(onPressed: ()=>timerCubit.resume(), icon: MyIcons.playIcon)
-                          ]else...[
-                            IconButton(onPressed: ()=>timerCubit.pause(), icon: MyIcons.pauseIcon)
-                          ],
-                          Text(state.currentInterval.name ?? ""),
-                          Text(
-                            TypeConverter.durationToString(
-                              state.remainingTimeCurrentInterval,
-                              showFractions: true,
-                              addAppendix: false,
-                            ),
-                            style: TextStyle(fontSize: 25),
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(onPressed: () => timerCubit.resetInterval(), icon: MyIcons.restartIntervalIcon),
-                              IconButton(onPressed: () => timerCubit.stop(), icon: MyIcons.stopIntervalIcon),
-                              IconButton(onPressed: () => timerCubit.startNextInterval(), icon: MyIcons.skipIntervalIcon),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (state.hasNextInterval) ...[
+          return Container(
+            margin: Layout.defaultPageContentMargin,
+            child: Column(
+              children: [
                 Flexible(
-                  flex: 1,
-                  child: _nextIntervalPreview(state),
+                  flex: 3,
+                  child: _currentIntervalView(context),
                 ),
-              ]
-            ],
+                if (state.hasNextInterval) ...[
+                  Flexible(
+                    flex: 1,
+                    child: _nextIntervalPreview(context),
+                  ),
+                ]
+              ],
+            ),
           );
         },
       ),
     );
   }
-  
-  Widget _nextIntervalPreview(TimerStateLoaded state){
-    SessionInterval nextInterval = state.intervals[state.nextIndex];
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(nextInterval.name ?? ""),
-          Text(
-            TypeConverter.durationToString(
-              nextInterval.duration,
-              addAppendix: false,
+
+  Widget _isDoneView(BuildContext context){
+    TimerCubit timerCubit = context.read<TimerCubit>();
+    return Container(
+        margin: Layout.defaultContentMargin,
+        decoration: MyDecoration.cardDecoration(context, color: MyColors.cardBackgroundColor),
+    child: Center(child: Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("All done! :)", style: Theme.of(context).textTheme.displayLarge,),
+        IconButton(onPressed: () => timerCubit.start(), icon: MyIcons.restartIntervalIcon),
+      ],
+    ),)
+    );
+  }
+
+  Widget _currentIntervalView(BuildContext context){
+    TimerCubit timerCubit = context.read<TimerCubit>();
+    TimerStateLoaded state = timerCubit.loadedState;
+    return Container(
+      margin: Layout.defaultContentMargin,
+      decoration: MyDecoration.cardDecoration(context, color: state.currentInterval.color.withOpacity(0.2)),
+      child: LayoutBuilder(
+        builder: (context, constraints) => Stack(
+          children: [
+            Center(
+              child: SizedBox.square(
+                dimension: min(constraints.maxHeight, constraints.maxWidth)*0.8,
+                child: CircularProgressIndicator(
+                  value: _currentIntervalProgress(state),
+                  color: state.currentInterval.color,
+                  strokeWidth: Layout.timerCircularStrokeWidth,
+
+                ),
+              ),
             ),
-            style: TextStyle(fontSize: 20),
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if(!state.isTicking)...[
+                    IconButton(onPressed: ()=>timerCubit.resume(), icon: MyIcons.playIcon, iconSize: Layout.hugeIconSize,)
+                  ]else...[
+                    IconButton(onPressed: ()=>timerCubit.pause(), icon: MyIcons.pauseIcon, iconSize: Layout.hugeIconSize,)
+                  ],
+                  Text(state.currentInterval.name, style: Theme.of(context).textTheme.displayMedium,),
+                  Text(
+                    TypeConverter.durationToString(
+                      state.remainingTimeCurrentInterval,
+                      showFractions: true,
+                      addAppendix: false,
+                    ),
+                    style: Theme.of(context).textTheme.displayLarge,
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(onPressed: () => timerCubit.resetInterval(), icon: MyIcons.restartIntervalIcon, iconSize: Layout.hugeIconSize,),
+                      const SizedBox(width: Layout.defaultHorizontalSpace),
+                      IconButton(onPressed: () => timerCubit.stop(), icon: MyIcons.stopIntervalIcon, iconSize: Layout.hugeIconSize,),
+                      //IconButton(onPressed: () => timerCubit.startNextInterval(), icon: MyIcons.skipIntervalIcon),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _nextIntervalPreview(BuildContext context){
+    TimerCubit timerCubit = context.read<TimerCubit>();
+    TimerStateLoaded state = timerCubit.loadedState;
+    SessionInterval nextInterval = state.intervals[state.nextIndex];
+    return LayoutBuilder(
+      builder: (context, constraints) => Center(
+        child: GestureDetector(
+          onTap: () => timerCubit.startNextInterval(),
+          child: Container(
+            padding: Layout.cardPadding,
+            margin: Layout.defaultContentMargin * 3,
+            width: constraints.maxWidth,
+            height: constraints.maxHeight,
+            decoration: MyDecoration.cardDecoration(context, color: nextInterval.color),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Text("Next Interval:", style: Theme.of(context).textTheme.labelLarge,)
+                  ],
+                ),
+                Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(nextInterval.name, style: Theme.of(context).textTheme.labelMedium,),
+                      Text(
+                        TypeConverter.durationToString(
+                          nextInterval.duration,
+                          addAppendix: false,
+                        ),
+                        style: Theme.of(context).textTheme.displayMedium,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        ],
+        ),
       ),
     );
   }

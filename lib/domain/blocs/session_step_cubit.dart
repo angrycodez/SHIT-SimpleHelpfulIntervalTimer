@@ -26,7 +26,6 @@ abstract class SessionStepCubit extends Cubit<SessionStepState> {
           duration: sessionInterval.duration,
           isPause: sessionInterval.isPause,
           startSound: sessionInterval.startSound,
-          endSound: sessionInterval.endSound,
           isSelected: false,
     color: sessionInterval.color,
         ));
@@ -38,7 +37,6 @@ abstract class SessionStepCubit extends Cubit<SessionStepState> {
           repetitions: sessionBlock.repetitions,
           children: List.empty(),
           isSelected: false,
-          isEditMode: false,
         ));
   bool get hasChanges => state.hasChanges;
 
@@ -81,7 +79,7 @@ abstract class SessionStepCubit extends Cubit<SessionStepState> {
 
   static SessionStepCubit getCubit(SessionStep sessionStep) {
     return sessionStep is SessionBlock
-        ? SessionBlockCubit(sessionStep as SessionBlock)
+        ? SessionBlockCubit(sessionStep)
         : SessionIntervalCubit(sessionStep as SessionInterval);
   }
 

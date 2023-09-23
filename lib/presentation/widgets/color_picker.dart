@@ -25,29 +25,10 @@ class MyColorPicker extends StatelessWidget{
     return await showDialog(builder: (context) => AlertDialog(
         title: const Text('Pick a color!'),
         content: SingleChildScrollView(
-          child: ColorPicker(
+          child: BlockPicker(
             pickerColor: color,
             onColorChanged: onColorChanged,
           ),
-          // Use Material color picker:
-          //
-          // child: MaterialPicker(
-          //   pickerColor: pickerColor,
-          //   onColorChanged: changeColor,
-          //   showLabel: true, // only on portrait mode
-          // ),
-          //
-          // Use Block color picker:
-          //
-          // child: BlockPicker(
-          //   pickerColor: currentColor,
-          //   onColorChanged: changeColor,
-          // ),
-          //
-          // child: MultipleChoiceBlockPicker(
-          //   pickerColors: currentColors,
-          //   onColorsChanged: changeColors,
-          // ),
         ),
         actions: <Widget>[
           ElevatedButton(

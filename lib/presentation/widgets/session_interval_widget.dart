@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:simple_interval_timer/core/helper/converter.dart';
 import 'package:simple_interval_timer/core/theme/theme_constants.dart';
-import 'package:simple_interval_timer/data/models/models.dart';
-import 'package:simple_interval_timer/presentation/widgets/duration_text_field.dart';
+import 'package:simple_interval_timer/presentation/widgets/duration_info.dart';
+import 'package:simple_interval_timer/presentation/widgets/scrolling_text.dart';
 
 import '../../domain/blocs/blocs.dart';
 
@@ -20,14 +18,12 @@ class SessionIntervalWidget extends StatelessWidget {
       decoration: MyDecoration.cardDecoration(
         context,
         color: interval.color,
-        borderColor: isSelected
-            ? MyColors.cardEditBorderColor
-            : null,
+        borderColor: isSelected ? MyColors.cardEditBorderColor : null,
       ),
       child: SessionIntervalInfoWidget(
-              intervalCubit,
-              key: Key(interval.id + "_info"),
-            ),
+        intervalCubit,
+        key: Key("${interval.id}_info"),
+      ),
     );
   }
 }
@@ -43,10 +39,27 @@ class SessionIntervalInfoWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(interval.name ?? ""),
-        Text(TypeConverter.durationToString(interval.duration)),
-        Text(interval.isPause ? "Pause" : "Work"),
-        if (interval.isPause) ...[MyIcons.pauseIcon] else ...[MyIcons.workIcon]
+        Expanded(flex: 2, child: _intervalNameInfo(context)),
+        DurationInfo(interval.duration),
+        //Expanded(flex: 1, child: IntervalTypeInfo(interval.isPause)),
+      ],
+    );
+  }
+
+  Widget _intervalNameInfo(BuildContext context) {
+    return Row(
+      children: [
+        intervalCubit.state.isPause
+            ? MyIcons.pauseIcon
+            : MyIcons.sessionIntervalIcon,
+        const SizedBox(width: Layout.defaultHorizontalSpace),
+        Expanded(
+          child: ScrollingText(
+            intervalCubit.state.name,
+            style: Theme.of(context).textTheme.displaySmall,
+          ),
+        ),
+        const SizedBox(width: Layout.defaultHorizontalSpace),
       ],
     );
   }

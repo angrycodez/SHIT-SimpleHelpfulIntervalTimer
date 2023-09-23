@@ -21,8 +21,6 @@ class SettingsDao extends DatabaseAccessor<SessionDatabase>
             id: Value(settings.id),
             defaultIntervalStartSound:
                 Value(settings.defaultIntervalStartSound?.id),
-            defaultIntervalEndSound:
-                Value(settings.defaultIntervalEndSound?.id),
             defaultSessionEndSound:
                 Value(settings.defaultSessionEndSound?.id),
           ),

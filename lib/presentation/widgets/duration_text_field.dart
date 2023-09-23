@@ -7,11 +7,12 @@ class DurationTextField extends StatefulWidget {
   final double fieldWidth;
   final void Function(Duration) updateDuration;
 
-  const DurationTextField(
-      {super.key,
-      required this.initalDuration,
-      required this.updateDuration,
-      this.fieldWidth = Layout.durationFieldWidth});
+  const DurationTextField({
+    super.key,
+    required this.initalDuration,
+    required this.updateDuration,
+    this.fieldWidth = Layout.durationFieldWidth,
+  });
 
   @override
   State<StatefulWidget> createState() => _DurationTextFieldState();
@@ -36,7 +37,7 @@ class _DurationTextFieldState extends State<DurationTextField> {
     );
   }
 
-  Widget _entryField(TextEditingController controller, String helperText){
+  Widget _entryField(TextEditingController controller, String helperText) {
     return SizedBox(
       width: widget.fieldWidth,
       child: TextFormField(
@@ -68,15 +69,18 @@ class _DurationTextFieldState extends State<DurationTextField> {
   @override
   void initState() {
     hoursTextEditingController = TextEditingController(
-        text: TypeConverter.hoursFromDuration(widget.initalDuration).toString());
+        text:
+            TypeConverter.hoursFromDuration(widget.initalDuration).toString());
     hoursTextEditingController.addListener(onValueChanged);
 
     minutesTextEditingController = TextEditingController(
-        text: TypeConverter.minutesFromDuration(widget.initalDuration).toString());
+        text: TypeConverter.minutesFromDuration(widget.initalDuration)
+            .toString());
     minutesTextEditingController.addListener(onValueChanged);
 
     secondsTextEditingController = TextEditingController(
-        text: TypeConverter.secondsFromDuration(widget.initalDuration).toString());
+        text: TypeConverter.secondsFromDuration(widget.initalDuration)
+            .toString());
     secondsTextEditingController.addListener(onValueChanged);
 
     super.initState();
@@ -94,5 +98,4 @@ class _DurationTextFieldState extends State<DurationTextField> {
     secondsTextEditingController.dispose();
     super.dispose();
   }
-
 }
