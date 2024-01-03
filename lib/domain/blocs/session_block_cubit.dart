@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simple_interval_timer/data/models/models.dart';
 import 'package:uuid/uuid.dart';
 import '../../core/helper/constants.dart';
@@ -13,6 +15,7 @@ class SessionBlockCubit extends SessionStepCubit {
 
   late List<SessionStepCubit> _children;
   List<StreamSubscription>? _listener;
+
 
   SessionBlockCubit(SessionBlock sessionBlock) : super.block(sessionBlock) {
     updateChildren(sessionBlock.children
@@ -79,7 +82,8 @@ class SessionBlockCubit extends SessionStepCubit {
             (repetitions ?? state.repetitions));
   }
 
-  void addInterval() {
+  void addInterval(BuildContext context) {
+    SettingsCubit settingsCubit = context.read<SettingsCubit>();
     var interval = SessionInterval(
         id: const Uuid().v4(),
         name: "",
@@ -87,6 +91,7 @@ class SessionBlockCubit extends SessionStepCubit {
         duration: Duration.zero,
         isPause: false,
         color: defaultIntervalColor,
+      startSound: settingsCubit.state.defaultIntervalStartSound,
     );
     var cubit = SessionIntervalCubit(interval);
     _children.add(cubit);

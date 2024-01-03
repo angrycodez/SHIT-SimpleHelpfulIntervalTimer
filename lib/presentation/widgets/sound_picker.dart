@@ -31,7 +31,7 @@ class SoundPicker extends StatelessWidget {
   }
 
   Future<Sound?> _pickSound(BuildContext context) async {
-    AudioService audioService = AudioService();
+    AudioService audioService = AudioService.get();
     var result = await showDialog<Sound?>(
       context: context,
       barrierDismissible: false,

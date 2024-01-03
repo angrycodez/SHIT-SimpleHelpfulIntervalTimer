@@ -47,6 +47,8 @@ dependencies:
   flutter_colorpicker: ^1.0.3
   text_scroll: ^0.2.0
   window_manager: ^0.3.7
+  just_audio: ^0.9.36
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -74,7 +76,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-     - assets/
+    - assets/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

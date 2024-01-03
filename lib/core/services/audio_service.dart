@@ -1,40 +1,21 @@
-import 'dart:async';
-import 'dart:io';
-
-import 'package:audioplayers/audioplayers.dart';
-import 'package:simple_interval_timer/data/models/models.dart';
 
 
-class AudioService {
-  late AudioPlayer _player;
-  StreamSubscription? _completeListener;
+import 'package:simple_interval_timer/core/services/ap_audio_service.dart';
+import 'package:simple_interval_timer/core/services/ja_audio_service.dart';
 
-  AudioService() {
-    _player = AudioPlayer();
-    _completeListener = _player.onPlayerComplete.listen(_onPlayerComplete);
-  }
+import '../../data/models/models.dart';
+import '../helper/platform.dart';
 
-  Future dispose() async {
-    await _completeListener?.cancel();
-    await _player.dispose();
-  }
+abstract class AudioService{
+  Future dispose();
+  Future play(Sound? sound);
+  Future stop();
 
-
-  Future play(Sound? sound) async {
-    if (sound == null) {
-      return;
+  static AudioService get(){
+    if(isMobile()){
+      return JAAudioService();
+    }else{
+      return APAudioService();
     }
-    String path = sound.filepath;
-    if(!File(path).existsSync()){
-      return;
-    }
-    await _player.play(
-      DeviceFileSource(path),
-      mode: PlayerMode.lowLatency,
-    );
-  }
-
-  Future _onPlayerComplete(void _) async{
-    await _player.stop();
   }
 }

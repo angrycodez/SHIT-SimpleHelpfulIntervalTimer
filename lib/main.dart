@@ -5,6 +5,7 @@ import 'package:simple_interval_timer/data/datasources/local/database.dart';
 import 'package:simple_interval_timer/domain/blocs/session_database_cubit.dart';
 import 'package:simple_interval_timer/domain/blocs/settings_cubit.dart';
 import 'package:simple_interval_timer/domain/blocs/timer_cubit.dart';
+import 'package:simple_interval_timer/presentation/pages/pages.dart';
 import 'package:simple_interval_timer/presentation/pages/session_overview_page.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -13,7 +14,7 @@ import 'core/helper/platform.dart';
 void main() {
   runApp(const SimpleIntervalTimerApp());
   if (isDesktop()) {
-    windowManager.setSize(const Size(420, 420));
+    windowManager.setSize(const Size(420, 620));
   }
 }
 
@@ -50,6 +51,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SessionOverviewPage();
+    return const SplashScreen();
   }
 }

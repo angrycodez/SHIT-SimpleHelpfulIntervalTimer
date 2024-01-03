@@ -10,6 +10,10 @@ import 'package:simple_interval_timer/presentation/widgets/session_widget.dart';
 class SessionOverviewPage extends StatelessWidget {
   const SessionOverviewPage({super.key});
 
+  static MaterialPageRoute getRoute({Key? key}) {
+    return MaterialPageRoute(builder: (context) => SessionOverviewPage(key: key));
+  }
+
   @override
   Widget build(BuildContext context) {
     return MyScaffold(
@@ -40,7 +44,7 @@ class SessionOverviewPage extends StatelessWidget {
                     onPressed: () {
                       var sessionCubit = context
                           .read<SessionOverviewCubit>()
-                          .createNewSession();
+                          .createNewSession(context);
                       if (sessionCubit != null) {
                         Navigator.of(context)
                             .push(SessionPage.getRoute(sessionCubit));

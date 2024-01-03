@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simple_interval_timer/domain/blocs/blocs.dart';
 import 'package:uuid/uuid.dart';
 
@@ -23,10 +25,17 @@ class SessionOverviewCubit extends Cubit<SessionOverviewState> {
     emit(SessionOverviewState(this.sessions));
   }
 
-  SessionCubit? createNewSession() {
+  SessionCubit? createNewSession(BuildContext context) {
+    SettingsCubit settingsCubit = context.read<SettingsCubit>();
     var sessions = List.of(state.sessions);
     var sessionCubit = SessionCubit(
-      Session(const Uuid().v4(), "New Session", "", List.empty()),
+      Session(
+        const Uuid().v4(),
+        "New Session",
+        "",
+        List.empty(),
+        endSound: settingsCubit.state.defaultSessionEndSound,
+      ),
       deleteSession,
     );
     sessions.add(sessionCubit);

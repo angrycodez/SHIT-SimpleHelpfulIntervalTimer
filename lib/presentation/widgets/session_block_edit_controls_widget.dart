@@ -21,7 +21,7 @@ class SessionBlockEditControlsWidget extends StatelessWidget {
             IconButton(
                 onPressed: () => _delete(context), icon: MyIcons.deleteIcon),
             IconButton(
-                onPressed: () => sessionBlock.addInterval(),
+                onPressed: () => sessionBlock.addInterval(context),
                 icon: MyIcons.createNewIntervalIcon),
             IconButton(
                 onPressed: () => sessionBlock.addBlock(),

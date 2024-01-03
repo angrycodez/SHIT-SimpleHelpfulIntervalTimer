@@ -36,6 +36,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   Future loadSettings() async {
     Settings settings = await _settingsRepository.getSettings();
+    await loadSounds();
     emit(
       state.copyWith(
         id: settings.id,
@@ -43,7 +44,6 @@ class SettingsCubit extends Cubit<SettingsState> {
         defaultSessionEndSound: settings.defaultSessionEndSound,
       ),
     );
-    loadSounds();
   }
 
   Future loadSounds() async {
@@ -53,7 +53,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   Future deleteSound(Sound sound) async {
     await _soundRepository.deleteSound(sound);
-    loadSounds();
+    await loadSounds();
     var file = File(sound.filepath);
     if(file.existsSync()){
       file.deleteSync();
@@ -78,7 +78,7 @@ class SettingsCubit extends Cubit<SettingsState> {
       newPath,
     );
     await _soundRepository.storeSound(sound);
-    loadSounds();
+    await loadSounds();
   }
 
   void setDefaultIntervalStartSound(Sound? sound) {

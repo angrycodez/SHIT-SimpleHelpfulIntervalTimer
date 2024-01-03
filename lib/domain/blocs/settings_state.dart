@@ -5,6 +5,7 @@ class SettingsState extends Equatable {
   final List<Sound> sounds;
   final Sound? defaultIntervalStartSound;
   final Sound? defaultSessionEndSound;
+  bool get isInitialized => id.isNotEmpty;
   const SettingsState({
     required this.id,
     this.sounds = const [],

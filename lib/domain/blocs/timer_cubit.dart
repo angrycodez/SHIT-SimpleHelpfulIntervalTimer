@@ -9,7 +9,7 @@ part 'timer_state.dart';
 class TimerCubit extends Cubit<TimerState> {
   late AudioService _audioService;
   TimerCubit() : super(const TimerState()){
-    _audioService = AudioService();
+    _audioService = AudioService.get();
   }
 
   @override Future<void> close() async {

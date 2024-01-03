@@ -9,7 +9,7 @@ import '../../data/models/models.dart';
 import '../widgets/widets.dart';
 
 class SoundsEditPage extends StatelessWidget {
-  final AudioService audioService = AudioService();
+  final AudioService audioService = AudioService.get();
   SoundsEditPage({super.key});
 
   static MaterialPageRoute getRoute({Key? key}) {

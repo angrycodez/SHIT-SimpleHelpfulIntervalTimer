@@ -18,12 +18,14 @@ class SessionCubit extends Cubit<SessionState> {
 
   final Future Function(String) _deleteSession;
 
+
   SessionCubit(Session session, this._deleteSession)
       : super(SessionState(
           id: session.id,
           name: session.name,
           description: session.description,
           steps: List.empty(),
+          endSound: session.endSound,
         )) {
     _updateSteps(
         session.steps.map((step) => SessionStepCubit.getCubit(step)).toList());
