@@ -46,6 +46,7 @@ dependencies:
   audioplayers: ^5.1.0
   flutter_colorpicker: ^1.0.3
   text_scroll: ^0.2.0
+  window_manager: ^0.3.7
 
 dev_dependencies:
   flutter_test:
