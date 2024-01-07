@@ -49,6 +49,7 @@ dependencies:
   window_manager: ^0.3.7
   just_audio: ^0.9.36
   flutter_launcher_icons: ^0.13.1
+  process_run: ^0.14.0+1
 
 dev_dependencies:
   flutter_test:

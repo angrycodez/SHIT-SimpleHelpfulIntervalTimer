@@ -3,6 +3,7 @@ part of 'session_interval_cubit.dart';
 class SessionIntervalState extends SessionStepState {
   final bool isPause;
   final Sound? startSound;
+  final String? startCommand;
   final Color color;
 
   SessionIntervalState.fromInterval(SessionInterval sessionInterval)
@@ -12,6 +13,7 @@ class SessionIntervalState extends SessionStepState {
           duration: sessionInterval.duration,
           isPause: sessionInterval.isPause,
           startSound: sessionInterval.startSound,
+          startCommand: sessionInterval.startCommand,
           isSelected: false,
           color: sessionInterval.color,
         );
@@ -22,6 +24,7 @@ class SessionIntervalState extends SessionStepState {
     required super.duration,
     required this.isPause,
     this.startSound,
+    this.startCommand,
     super.isSelected = false,
     super.hasChanges = false,
     required this.color,
@@ -32,6 +35,7 @@ class SessionIntervalState extends SessionStepState {
         ...super.props,
         isPause,
         startSound,
+        startCommand,
         color,
       ];
 
@@ -42,6 +46,7 @@ class SessionIntervalState extends SessionStepState {
       duration: duration,
       isPause: isPause,
       startSound: startSound,
+      startCommand: startCommand,
       isSelected: isSelected,
       color: color,
     );
@@ -54,6 +59,7 @@ class SessionIntervalState extends SessionStepState {
     Duration? duration,
     bool? isPause,
     Sound? startSound,
+    String? startCommand,
     bool? isSelected,
     Color? color,
   }) {
@@ -63,6 +69,7 @@ class SessionIntervalState extends SessionStepState {
       duration: duration ?? this.duration,
       isPause: isPause ?? this.isPause,
       startSound: startSound ?? this.startSound,
+      startCommand: startCommand ?? this.startCommand,
       isSelected: isSelected ?? this.isSelected,
       hasChanges: true,
       color: color ?? this.color,

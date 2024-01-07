@@ -26,6 +26,7 @@ abstract class SessionStepCubit extends Cubit<SessionStepState> {
           duration: sessionInterval.duration,
           isPause: sessionInterval.isPause,
           startSound: sessionInterval.startSound,
+          startCommand: sessionInterval.startCommand,
           isSelected: false,
     color: sessionInterval.color,
         ));

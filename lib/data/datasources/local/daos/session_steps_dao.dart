@@ -56,7 +56,7 @@ class SessionStepsDao extends DatabaseAccessor<SessionDatabase>
     int? durationInSeconds,
     bool? isPause,
     String? startSoundId,
-    String? endSoundId,
+    String? startCommand,
     int? color,
   }) async {
     await db.sessionIntervals.insertOnConflictUpdate(SessionIntervalsCompanion(
@@ -68,6 +68,7 @@ class SessionStepsDao extends DatabaseAccessor<SessionDatabase>
       durationInSeconds: durationInSeconds != null ? Value(durationInSeconds) : const Value.absent(),
       isPause: isPause != null ? Value(isPause) : const Value.absent(),
       startSoundId: startSoundId != null ? Value(startSoundId) : const Value.absent(),
+      startCommand: startCommand != null ? Value(startCommand) : const Value.absent(),
       color: color != null ? Value(color) : const Value.absent(),
     ));
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simple_interval_timer/core/helper/constants.dart';
+import 'package:simple_interval_timer/core/helper/platform.dart';
 
 import '../../core/theme/theme_constants.dart';
 import '../../domain/blocs/blocs.dart';
@@ -61,14 +62,15 @@ class SessionIntervalEditPage extends StatelessWidget {
                                 value: interval.isPause,
                                 onChanged: (newValue) =>
                                     intervalCubit.setIsPause(newValue)),
-
                             if (interval.isPause) ...[
                               const Text("Pause"),
-                              const SizedBox(width: Layout.defaultHorizontalSpace),
+                              const SizedBox(
+                                  width: Layout.defaultHorizontalSpace),
                               MyIcons.pauseIcon
                             ] else ...[
                               const Text("Work"),
-                              const SizedBox(width: Layout.defaultHorizontalSpace),
+                              const SizedBox(
+                                  width: Layout.defaultHorizontalSpace),
                               MyIcons.workIcon
                             ]
                           ],
@@ -82,6 +84,9 @@ class SessionIntervalEditPage extends StatelessWidget {
                                 intervalCubit.setStartSound(sound),
                           ),
                         ),
+                        if (isDesktop()) ...[
+                          _commandTextField(),
+                        ],
                       ],
                     ),
                   ),
@@ -100,6 +105,16 @@ class SessionIntervalEditPage extends StatelessWidget {
         helperText: "Name",
       ),
       onChanged: (newValue) => intervalCubit.setName(newValue),
+    );
+  }
+
+  Widget _commandTextField() {
+    return TextFormField(
+      initialValue: intervalCubit.state.startCommand,
+      decoration: const InputDecoration(
+        helperText: "Command",
+      ),
+      onChanged: (command) => intervalCubit.setStartCommand(command),
     );
   }
 }

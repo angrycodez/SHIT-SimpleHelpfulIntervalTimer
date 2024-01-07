@@ -31,7 +31,7 @@ class SessionDatabase extends _$SessionDatabase {
   //   : super.connect(connection);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration {
@@ -43,6 +43,9 @@ class SessionDatabase extends _$SessionDatabase {
           case 2:
             m.alterTable(TableMigration(sessionIntervals));
             m.alterTable(TableMigration(settings));
+            break;
+          case 4:
+            m.addColumn(sessionIntervals, sessionIntervals.startCommand);
             break;
         }
       }

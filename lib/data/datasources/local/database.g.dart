@@ -804,6 +804,12 @@ class $SessionIntervalsTable extends SessionIntervals
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES sounds (id)'));
+  static const VerificationMeta _startCommandMeta =
+      const VerificationMeta('startCommand');
+  @override
+  late final GeneratedColumn<String> startCommand = GeneratedColumn<String>(
+      'start_command', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _colorMeta = const VerificationMeta('color');
   @override
   late final GeneratedColumn<int> color = GeneratedColumn<int>(
@@ -821,6 +827,7 @@ class $SessionIntervalsTable extends SessionIntervals
         durationInSeconds,
         isPause,
         startSoundId,
+        startCommand,
         color
       ];
   @override
@@ -882,6 +889,12 @@ class $SessionIntervalsTable extends SessionIntervals
           startSoundId.isAcceptableOrUnknown(
               data['start_sound_id']!, _startSoundIdMeta));
     }
+    if (data.containsKey('start_command')) {
+      context.handle(
+          _startCommandMeta,
+          startCommand.isAcceptableOrUnknown(
+              data['start_command']!, _startCommandMeta));
+    }
     if (data.containsKey('color')) {
       context.handle(
           _colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
@@ -909,6 +922,8 @@ class $SessionIntervalsTable extends SessionIntervals
           .read(DriftSqlType.bool, data['${effectivePrefix}is_pause'])!,
       startSoundId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}start_sound_id']),
+      startCommand: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}start_command']),
       color: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}color'])!,
     );
@@ -929,6 +944,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
   final Value<int> durationInSeconds;
   final Value<bool> isPause;
   final Value<String?> startSoundId;
+  final Value<String?> startCommand;
   final Value<int> color;
   final Value<int> rowid;
   const SessionIntervalsCompanion({
@@ -940,6 +956,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
     this.durationInSeconds = const Value.absent(),
     this.isPause = const Value.absent(),
     this.startSoundId = const Value.absent(),
+    this.startCommand = const Value.absent(),
     this.color = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -952,6 +969,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
     required int durationInSeconds,
     required bool isPause,
     this.startSoundId = const Value.absent(),
+    this.startCommand = const Value.absent(),
     this.color = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : name = Value(name),
@@ -968,6 +986,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
     Expression<int>? durationInSeconds,
     Expression<bool>? isPause,
     Expression<String>? startSoundId,
+    Expression<String>? startCommand,
     Expression<int>? color,
     Expression<int>? rowid,
   }) {
@@ -980,6 +999,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
       if (durationInSeconds != null) 'duration_in_seconds': durationInSeconds,
       if (isPause != null) 'is_pause': isPause,
       if (startSoundId != null) 'start_sound_id': startSoundId,
+      if (startCommand != null) 'start_command': startCommand,
       if (color != null) 'color': color,
       if (rowid != null) 'rowid': rowid,
     });
@@ -994,6 +1014,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
       Value<int>? durationInSeconds,
       Value<bool>? isPause,
       Value<String?>? startSoundId,
+      Value<String?>? startCommand,
       Value<int>? color,
       Value<int>? rowid}) {
     return SessionIntervalsCompanion(
@@ -1005,6 +1026,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
       durationInSeconds: durationInSeconds ?? this.durationInSeconds,
       isPause: isPause ?? this.isPause,
       startSoundId: startSoundId ?? this.startSoundId,
+      startCommand: startCommand ?? this.startCommand,
       color: color ?? this.color,
       rowid: rowid ?? this.rowid,
     );
@@ -1037,6 +1059,9 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
     if (startSoundId.present) {
       map['start_sound_id'] = Variable<String>(startSoundId.value);
     }
+    if (startCommand.present) {
+      map['start_command'] = Variable<String>(startCommand.value);
+    }
     if (color.present) {
       map['color'] = Variable<int>(color.value);
     }
@@ -1057,6 +1082,7 @@ class SessionIntervalsCompanion extends UpdateCompanion<SessionIntervalEntry> {
           ..write('durationInSeconds: $durationInSeconds, ')
           ..write('isPause: $isPause, ')
           ..write('startSoundId: $startSoundId, ')
+          ..write('startCommand: $startCommand, ')
           ..write('color: $color, ')
           ..write('rowid: $rowid')
           ..write(')'))

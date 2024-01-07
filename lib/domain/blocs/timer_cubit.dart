@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:process_run/process_run.dart';
 import 'package:simple_interval_timer/core/services/audio_service.dart';
 
 import '../../data/models/models.dart';
@@ -105,8 +106,15 @@ class TimerCubit extends Cubit<TimerState> {
         _tick();
       }
       _audioService.play(loadedState.currentInterval.startSound);
+      _executeCommand(loadedState.currentInterval.startCommand);
       return true;
     }
+  }
+  void _executeCommand(String? command){
+    if(command == null || command.isEmpty){
+      return;
+    }
+    Shell().run(command);
   }
 
   bool startNextInterval(){
@@ -143,7 +151,6 @@ class TimerCubit extends Cubit<TimerState> {
       // there are no more intervals left => session is done
       if(!startNextInterval()){
         _finish();
-        _audioService.play(loadedState.session.endSound);
         return;
       }else{
         Future.delayed(_tickRate, _tick);

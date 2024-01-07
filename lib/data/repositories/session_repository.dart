@@ -83,6 +83,7 @@ class SessionRepository {
       duration: Duration(seconds: entry.durationInSeconds),
       isPause: entry.isPause,
       startSound: await _getSound(entry.startSoundId),
+      startCommand: entry.startCommand,
       color: Color(entry.color),
     );
   }
