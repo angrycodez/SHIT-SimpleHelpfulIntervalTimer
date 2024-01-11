@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:process_run/process_run.dart';
+import 'package:simple_interval_timer/core/helper/platform.dart';
 import 'package:simple_interval_timer/core/services/audio_service.dart';
 
 import '../../data/models/models.dart';
@@ -111,7 +112,7 @@ class TimerCubit extends Cubit<TimerState> {
     }
   }
   void _executeCommand(String? command){
-    if(command == null || command.isEmpty){
+    if(!isDesktop() || command == null || command.isEmpty){
       return;
     }
     Shell().run(command);

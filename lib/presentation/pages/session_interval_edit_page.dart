@@ -110,6 +110,7 @@ class SessionIntervalEditPage extends StatelessWidget {
 
   Widget _commandTextField() {
     return TextFormField(
+      maxLines: null,
       initialValue: intervalCubit.state.startCommand,
       decoration: const InputDecoration(
         helperText: "Command",
