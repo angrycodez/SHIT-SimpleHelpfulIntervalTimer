@@ -127,6 +127,16 @@ class TimerCubit extends Cubit<TimerState> {
     return _startInterval(nextIndex);
   }
 
+  bool startInterval(int intervalIndex){
+    if(!isLoaded
+        || intervalIndex < 0
+        || intervalIndex >= loadedState.intervals.length){
+      return false;
+    }
+    int nextIndex = intervalIndex;
+    return _startInterval(nextIndex);
+  }
+
   void _finish(){
     if(!isLoaded){
       return;
